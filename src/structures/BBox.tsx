@@ -1,3 +1,6 @@
+import ArrayCanvasComponent from "@/canvas_components/ArrayComponent";
+import ArrayVCanvasComponent from "@/canvas_components/ArrayVComponent";
+import StringCanvasComponent from "@/canvas_components/StringComponent";
 import { StructureRendering, getStructureRendering } from "@/canvas_components/render";
 
 export type BBox = {
@@ -90,9 +93,9 @@ const getStringBBox = (swc: StructureWithContext): BBox =>{
 const boxGetters: {
   [key: string]: (structure: any) => BBox
 } = {
-  "ArrayCanvasComponent": getArrayBBox,
-  "ArrayVCanvasComponent": getArrayVBBox,
-  "StringCanvasComponent": getStringBBox,
+  [ArrayCanvasComponent.name]: getArrayBBox,
+  [ArrayVCanvasComponent.name]: getArrayVBBox,
+  [StringCanvasComponent.name]: getStringBBox,
 }
 
 export const getBBox = (swc: StructureWithContext) => {
