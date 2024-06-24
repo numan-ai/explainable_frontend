@@ -1,4 +1,3 @@
-import NumberStructure from "../structures/NumberStructure";
 import { getBaseStyles } from "./BaseComponent";
 
 interface NumberComponentProps {

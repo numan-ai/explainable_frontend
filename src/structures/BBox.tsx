@@ -1,4 +1,4 @@
-import { StructureRendering, getStructureRendering, renderComponentMap } from "@/canvas_components/render";
+import { StructureRendering, getStructureRendering } from "@/canvas_components/render";
 
 export type BBox = {
   w: number,

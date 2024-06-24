@@ -1,4 +1,3 @@
-import StringStructure from "../structures/StringStructure";
 import { getBaseStyles } from "./BaseComponent";
 
 interface StringComponentProps {

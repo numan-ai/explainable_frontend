@@ -1,6 +1,5 @@
 import { Rect, Text } from "react-konva";
 import { getBBox } from "../structures/BBox";
-import { useState } from "react";
 
 type StringComponentProps = {
   structure: StringStructure,

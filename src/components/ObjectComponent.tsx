@@ -1,9 +1,3 @@
-import ArrayStructure from "../structures/ArrayStructure";
-import BaseStructure from "../structures/BaseStructure";
-import NumberStructure from "../structures/NumberStructure";
-import ObjectStructure from "../structures/ObjectStructure";
-import StringStructure from "../structures/StringStructure";
-
 interface ObjectComponentProps {
   structure: ObjectStructure;
   structureMapper: StructureMappers;
@@ -55,7 +49,7 @@ function getMapperValue(data: ObjectStructure, mapperValue: BaseMapperValue): Ba
 }
 
 
-function mapObject(object: ObjectStructure, mapper: BaseStructureMapper, structureMapper: StructureMappers): BaseStructure {
+function mapObject(object: ObjectStructure, mapper: BaseStructureMapper, _structureMapper: StructureMappers): BaseStructure {
   switch (mapper.type) {
     case "array":
       const arrayMapper = mapper as ArrayStructureMapper;

@@ -1,5 +1,3 @@
-import ArrayStructure from "../structures/ArrayStructure";
-import BaseStructure from "../structures/BaseStructure";
 import { getBaseStyles } from "./BaseComponent";
 
 interface ArrayComponentProps {

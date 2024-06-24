@@ -1,6 +1,6 @@
 import { StructureWithContext, getBBox } from "@/structures/BBox";
 import { Rect } from "react-konva";
-import renderCanvas, { getStructureRendering, renderComponentMap } from "./render";
+import renderCanvas, { getStructureRendering } from "./render";
 
 
 const defaultStyle = {

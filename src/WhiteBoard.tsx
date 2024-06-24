@@ -14,7 +14,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     width: 0,
     height: 0,
   });
-  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  // const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [stagePosition, setStagePosition] = useState({
     x: 20,
     y: 20,

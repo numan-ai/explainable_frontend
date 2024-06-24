@@ -1,5 +1,3 @@
-import MapStructure from "../structures/MapStructure";
-import BaseStructure from "../structures/BaseStructure";
 import { getBaseStyles } from "./BaseComponent";
 
 interface MapComponentProps {

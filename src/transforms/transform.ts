@@ -23,11 +23,11 @@ function transformMap(structure: MapStructure) {
   return structure;
 }
 
-function transformNull(structure: NullStructure) {
+function transformNull(_structure: NullStructure) {
   return {
     type: "string",
     value: "Null",
-  };
+  } as StringStructure;
 }
 
 export default function transform(structure: BaseStructure): BaseStructure {
@@ -41,7 +41,7 @@ export default function transform(structure: BaseStructure): BaseStructure {
     return transformMap(structure as MapStructure);
   }
   if (structure.type === "null") {
-    return transformNull(structure as MapStructure);
+    return transformNull(structure as NullStructure);
   }
   return structure;
 }
