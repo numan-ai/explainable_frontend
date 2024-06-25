@@ -1,3 +1,5 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { Cable, Wifi, WifiOff } from "lucide-react";
 import "./App.css";
 
@@ -6,36 +8,100 @@ import { Button } from "./components/ui/button";
 import { useEffect, useState } from "react";
 import api from "./api";
 import ExplainableView from "./ExplainableView";
-import { useCookies } from 'react-cookie';
 import { ThemeProvider } from "./components/theme-provider";
-
 
 const DEFAULT_SERVER_URI = "ws://localhost:8120";
 
 
-type ServerURIInputProps = {
-  defaultValue: string;
-  onUpdated: (uri: string) => void;
+type WebsocketURIStoreType = {
+  uri: string;
+  setURI: (newURI: string) => void;
+};
+
+export const useWebsocketURIStore = create<WebsocketURIStoreType, [
+  ['zustand/persist', WebsocketURIStoreType],
+]>(
+  persist(
+    (set, _get) => ({
+      uri: DEFAULT_SERVER_URI,
+      setURI: (newURI: string) => set({ uri: newURI }),
+    }),
+    {
+      name: 'numan:explainable.ws.uri',
+    },
+  ),
+)
+
+type DashboardViewType = {
+  id: string;
 }
 
-function ServerURIInput(props: ServerURIInputProps) {
-  const [uri, setUri] = useState<string>(props.defaultValue);
+type DashoboardType = {
+  id: string;
+  views: Array<DashboardViewType>;
+};
+
+type LayoutStoreType = {
+  currentDashboard: string;
+  dashboards: Map<string, DashoboardType>;
+  addView: (view: DashboardViewType) => void;
+  addDashboard: (dashboard: DashoboardType) => void;
+  selectDashboard: (dashboardId: string) => void;
+};
+
+export const useDashboardStore = create<LayoutStoreType, [
+  ['zustand/persist', LayoutStoreType],
+]>(
+  persist(
+    (set, _get) => ({
+      currentDashboard: "default",
+      dashboards: new Map<string, DashoboardType>([
+        ["default", {
+          id: "default",
+          views: [],
+        }],
+      ]),
+      addView: (_view: DashboardViewType) => {
+      },
+      addDashboard: (_dashboard: DashoboardType) => {
+      },
+      selectDashboard: (dashboardId: string) => {
+        set({ currentDashboard: dashboardId });
+      },
+    }),
+    {
+      name: 'numan:explainable.dashboard',
+    },
+  ),
+)
+
+
+function ServerURIInput() {
+  const [uri, setURI] = useWebsocketURIStore((s) => [s.uri, s.setURI]);
+
+  useEffect(() => {
+    api.reconnect(uri);
+  }, []);
 
   return (
     <div className="relative flex flex-row items-center">
       <Input 
         placeholder="Server URI"
         value={uri}
-        onChange={(e) => setUri(e.target.value)}
+        onChange={(e) => setURI(e.target.value)}
         className="border-r-0 border-slate-500 min-w-64 rounded-r-none"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            api.reconnect(uri);
+          }
+        }}
       />
       <Button 
         variant="outline" 
         size="icon" 
         className="w-12 border-slate-500 bg-slate-700 hover:bg-slate-600 text-slate-200 hover:text-slate-200 rounded-l-none"
         onClick={() => {
-          props.onUpdated(uri);
-          console.log('hi', uri);
+          api.reconnect(uri);
         }}
       >
         <Cable className="h-4 w-4" />
@@ -46,8 +112,6 @@ function ServerURIInput(props: ServerURIInputProps) {
 
 
 type HeaderProps = {
-  defaultServerURI: string;
-  onServerURIUpdated: (uri: string) => void;
   isConnected?: boolean;
 };
 
@@ -76,10 +140,7 @@ function Header(props: HeaderProps) {
                 )
               )}
             </div>
-            <ServerURIInput
-              defaultValue={props.defaultServerURI}
-              onUpdated={props.onServerURIUpdated}
-            />
+            <ServerURIInput/>
           </div>
         </div>
       </div>
@@ -89,8 +150,6 @@ function Header(props: HeaderProps) {
 
 
 export default function App() {
-  const [cookies, setCookie] = useCookies(['serverUri']);
-  const uri = cookies.serverUri || DEFAULT_SERVER_URI;
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
@@ -100,19 +159,12 @@ export default function App() {
     api.onDisconnected(() => {
       setIsConnected(false);
     });
-    api.reconnect(uri);
   }, []);
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex min-h-screen w-full flex-col">
-        <Header 
-          defaultServerURI={uri}
-          onServerURIUpdated={(newUri) => {
-            api.reconnect(uri);
-            console.log('updated', uri);
-            setCookie('serverUri', newUri);
-          }}
+        <Header
           isConnected={isConnected}
         />
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

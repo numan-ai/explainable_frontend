@@ -30,6 +30,9 @@ class WebSocketClient {
     } catch (e) {
       this.closeCallbacks.forEach(callback => callback());
       console.log(e);
+      for (const callback of this.closeCallbacks) {
+        callback();
+      }
       return;
     }
     this.setCallbacks();

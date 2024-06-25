@@ -1,6 +1,0 @@
-{
-  "swcMinifyOptions": {
-    "minify": true,
-    "keepFnName": true
-  }
-}
