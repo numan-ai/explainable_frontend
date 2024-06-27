@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react';
-import { clearHistory } from './structures/history';
-
 import WhiteBoard from './WhiteBoard';
-import api from './api';
 import renderCanvas from './canvas_components/render';
 import { DashboardViewType } from './storages/dashboardStorage';
 import { StructureWithContext } from './structures/BBox';
