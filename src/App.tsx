@@ -11,7 +11,7 @@ import { DEFAULT_DASHBOARD_ID, useDashboardStore } from './storages/dashboardSto
 
 import api from "./api";
 import { pushHistory } from "./structures/history";
-import NoConnectionComponent from "./ui/NoConnectionComponent copy";
+import NoConnectionComponent from "./ui/NoConnectionComponent";
 
 
 function ServerURIInput() {
