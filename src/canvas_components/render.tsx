@@ -13,7 +13,7 @@ export type StructureRendering = {
 export const renderingContexts: {
   [key: string]: StructureRendering
 } = {
-  "root.parent": {
+  "view1": {
     component: ArrayVCanvasComponent,
   },
 }
@@ -40,7 +40,6 @@ export const renderComponentMap: {
 }
 
 export default function renderCanvas(swc: StructureWithContext, key: number) {
-  console.log('rendering', swc.structure);
   swc.rendering = getStructureRendering(swc.structure);
   const comp = swc.rendering.component;
   const inst = comp({
@@ -50,3 +49,13 @@ export default function renderCanvas(swc: StructureWithContext, key: number) {
   return inst;
 }
 
+export const defaultStyles = {
+  [ArrayCanvasComponent.name]: {
+    margin: 0,
+    spacing: 10,
+  },
+  [ArrayVCanvasComponent.name]: {
+    margin: 0,
+    spacing: 10,
+  }
+}

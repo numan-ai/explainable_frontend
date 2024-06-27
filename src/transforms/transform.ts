@@ -1,3 +1,5 @@
+import { produce } from "immer";
+
 function transformObject(structure: ObjectStructure) {
   const new_structure = {
     "type": "array",
@@ -31,17 +33,18 @@ function transformNull(_structure: NullStructure) {
 }
 
 export default function transform(structure: BaseStructure): BaseStructure {
-  if (structure.type === "object") {
-    return transformObject(structure as ObjectStructure);
-  }
-  if (structure.type === "array") {
-    return transformArray(structure as ArrayStructure);
-  }
-  if (structure.type === "map") {
-    return transformMap(structure as MapStructure);
-  }
-  if (structure.type === "null") {
-    return transformNull(structure as NullStructure);
-  }
-  return structure;
+  return produce(structure, draft => {
+    if (draft.type === "object") {
+      return transformObject(draft as ObjectStructure);
+    }
+    if (draft.type === "array") {
+      return transformArray(draft as ArrayStructure);
+    }
+    if (draft.type === "map") {
+      return transformMap(draft as MapStructure);
+    }
+    if (draft.type === "null") {
+      return transformNull(draft as NullStructure);
+    }
+  });
 }

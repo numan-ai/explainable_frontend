@@ -1,79 +1,17 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { Cable, Wifi, WifiOff } from "lucide-react";
 import "./App.css";
 
+import { Cable, Wifi, WifiOff } from "lucide-react";
 import { Input } from "@/components/ui/input"
 import { Button } from "./components/ui/button";
 import { useEffect, useState } from "react";
-import api from "./api";
 import ExplainableView from "./ExplainableView";
 import { ThemeProvider } from "./components/theme-provider";
+import { useWebsocketURIStore } from './storages/websocketURIStore';
+import { DEFAULT_DASHBOARD_ID, useDashboardStore } from './storages/dashboardStorage';
 
-const DEFAULT_SERVER_URI = "ws://localhost:8120";
-
-
-type WebsocketURIStoreType = {
-  uri: string;
-  setURI: (newURI: string) => void;
-};
-
-export const useWebsocketURIStore = create<WebsocketURIStoreType, [
-  ['zustand/persist', WebsocketURIStoreType],
-]>(
-  persist(
-    (set, _get) => ({
-      uri: DEFAULT_SERVER_URI,
-      setURI: (newURI: string) => set({ uri: newURI }),
-    }),
-    {
-      name: 'numan:explainable.ws.uri',
-    },
-  ),
-)
-
-type DashboardViewType = {
-  id: string;
-}
-
-type DashoboardType = {
-  id: string;
-  views: Array<DashboardViewType>;
-};
-
-type LayoutStoreType = {
-  currentDashboard: string;
-  dashboards: Map<string, DashoboardType>;
-  addView: (view: DashboardViewType) => void;
-  addDashboard: (dashboard: DashoboardType) => void;
-  selectDashboard: (dashboardId: string) => void;
-};
-
-export const useDashboardStore = create<LayoutStoreType, [
-  ['zustand/persist', LayoutStoreType],
-]>(
-  persist(
-    (set, _get) => ({
-      currentDashboard: "default",
-      dashboards: new Map<string, DashoboardType>([
-        ["default", {
-          id: "default",
-          views: [],
-        }],
-      ]),
-      addView: (_view: DashboardViewType) => {
-      },
-      addDashboard: (_dashboard: DashoboardType) => {
-      },
-      selectDashboard: (dashboardId: string) => {
-        set({ currentDashboard: dashboardId });
-      },
-    }),
-    {
-      name: 'numan:explainable.dashboard',
-    },
-  ),
-)
+import api from "./api";
+import { pushHistory } from "./structures/history";
+import NoConnectionComponent from "./ui/NoConnectionComponent copy";
 
 
 function ServerURIInput() {
@@ -117,7 +55,7 @@ type HeaderProps = {
 
 function Header(props: HeaderProps) {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 border-slate-500">
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 border-slate-500 z-10">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <div className="flex flex-col items-left">
           <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
@@ -151,6 +89,9 @@ function Header(props: HeaderProps) {
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
+  const [dashboard, setStructure, modifyStructure] = useDashboardStore((s) => [
+    s.currentDashboard, s.setStructure, s.modifyStructure
+  ]);
 
   useEffect(() => {
     api.onConnected(() => {
@@ -159,7 +100,36 @@ export default function App() {
     api.onDisconnected(() => {
       setIsConnected(false);
     });
+
+    api.onMessage("snapshot", (data) => {
+      setStructure(DEFAULT_DASHBOARD_ID, data.view_id, data.structure);
+      // setViewSettings(data.settings);
+      // setPaused(data.is_paused);
+    });
+
+    api.onMessage("diff", (diff) => {
+      modifyStructure(DEFAULT_DASHBOARD_ID, diff.view_id, data => {
+        pushHistory(data, diff);
+        return data;
+      });
+    });
   }, []);
+
+  const views = dashboard.views.map((view, index) => {
+    return (
+      <ExplainableView 
+        key={index}
+        view={view}
+      />
+    );
+  });
+
+  if (isConnected === false) {
+    views.length = 0;
+    views.push(
+      <NoConnectionComponent/>
+    );
+  }
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -170,8 +140,7 @@ export default function App() {
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
             {/* <ExplainableView /> */}
-            <ExplainableView view_id="view1"/>
-            <ExplainableView view_id="view2"/>
+            { views}
           </div>
         </main>
       </div>

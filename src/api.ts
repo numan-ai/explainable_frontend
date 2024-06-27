@@ -17,19 +17,17 @@ class WebSocketClient {
   }
 
   public reconnect(uri: string) {
-    console.log(uri);
     if (this.uri === uri && this.ws && this.ws.readyState === WebSocket.OPEN) {
       return;
     }
     this.uri = uri;
-    if (this.ws) {
+    if (this.ws && this.ws.readyState !== WebSocket.CONNECTING) {
       this.ws.close();
     }
     try {
       this.ws = new WebSocket(uri);
     } catch (e) {
       this.closeCallbacks.forEach(callback => callback());
-      console.log(e);
       for (const callback of this.closeCallbacks) {
         callback();
       }

@@ -1,7 +1,7 @@
 import ArrayCanvasComponent from "@/canvas_components/ArrayComponent";
 import ArrayVCanvasComponent from "@/canvas_components/ArrayVComponent";
 import StringCanvasComponent from "@/canvas_components/StringComponent";
-import { StructureRendering, getStructureRendering } from "@/canvas_components/render";
+import { StructureRendering, defaultStyles, getStructureRendering } from "@/canvas_components/render";
 
 export type BBox = {
   w: number,
@@ -9,8 +9,9 @@ export type BBox = {
 }
 
 const getArrayBBox = (swc: StructureWithContext): BBox =>{
-  const style = swc.rendering?.style;
+  const style = swc.rendering?.style || defaultStyles[ArrayCanvasComponent.name];
   if (style === undefined) {
+    console.error("Array bbox style is undefined");
     return {
       w: 0,
       h: 0,
@@ -42,8 +43,9 @@ const getArrayBBox = (swc: StructureWithContext): BBox =>{
 }
 
 const getArrayVBBox = (swc: StructureWithContext): BBox =>{
-  const style = swc.rendering?.style;
+  const style = swc.rendering?.style || defaultStyles[ArrayVCanvasComponent.name];
   if (style === undefined) {
+    console.error("Array vbbox style is undefined");
     return {
       w: 0,
       h: 0,
@@ -100,11 +102,13 @@ const boxGetters: {
 
 export const getBBox = (swc: StructureWithContext) => {
   if (swc.rendering === undefined) {
+    console.error("Rendering is undefined");
     return {
       w: 0,
       h: 0,
     };
   }
+
   if (boxGetters[swc.rendering.component.name] === undefined) {
     console.error("Can't find bbox getter", swc.rendering);
   }

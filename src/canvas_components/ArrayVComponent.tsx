@@ -1,12 +1,6 @@
 import { StructureWithContext, getBBox } from "@/structures/BBox";
 import { Rect } from "react-konva";
-import renderCanvas, { getStructureRendering } from "./render";
-
-
-const defaultStyle = {
-  margin: 0,
-  spacing: 10,  
-}
+import renderCanvas, { defaultStyles, getStructureRendering } from "./render";
 
 
 export default function ArrayVCanvasComponent(props: StructureWithContext) {
@@ -15,7 +9,7 @@ export default function ArrayVCanvasComponent(props: StructureWithContext) {
     return <></>
   }
   const structure = props.structure as ArrayStructure;
-  props.rendering.style = props.rendering?.style || defaultStyle;
+  props.rendering.style = props.rendering?.style || defaultStyles[ArrayVCanvasComponent.name];
 
   const bbox = getBBox(props);
   const style = props.rendering.style;
