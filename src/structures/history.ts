@@ -11,13 +11,17 @@ export interface HistoryItemSetValue {
 }
 
 let historyIndex = -1;
-const history: HistoryItem[] = [];
+let history: HistoryItem[] = [];
 
 export function pushHistory(stucture: BaseStructure, item: HistoryItem) {
     if (historyIndex !== history.length - 1) {
         return false;
     }
     history.push(item);
+    if (history.length > 200) {
+        history = history.slice(Math.max(history.length - 100, 0));
+    }
+
     historyIndex = history.length - 2;
     historyForward(stucture);
     return true;
