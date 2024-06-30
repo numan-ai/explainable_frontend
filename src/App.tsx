@@ -12,6 +12,7 @@ import { DEFAULT_DASHBOARD_ID, useDashboardStore } from './storages/dashboardSto
 import api from "./api";
 import { pushHistory } from "./structures/history";
 import NoConnectionComponent from "./ui/NoConnectionComponent";
+import { setDisplayConfig } from "./transforms/transform";
 
 
 function ServerURIInput() {
@@ -105,6 +106,10 @@ export default function App() {
       setStructure(DEFAULT_DASHBOARD_ID, data.view_id, data.structure);
       // setViewSettings(data.settings);
       // setPaused(data.is_paused);
+    });
+
+    api.onMessage("displayConfig", (data) => {
+      setDisplayConfig(data);
     });
 
     api.onMessage("diff", (diff) => {

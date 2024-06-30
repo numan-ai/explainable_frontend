@@ -1,17 +1,53 @@
 import { produce } from "immer";
 
+
+type DisplayConfig = {
+  data_type: string;
+  params: any;
+}
+
+
+let displayConfig: any = {};
+
+
+export function setDisplayConfig(config: any) {
+  displayConfig = config;
+}
+
 function transformObject(structure: ObjectStructure) {
-  const new_structure = {
-    "type": "array",
-    "struct_id": structure.struct_id,
-    "data": [
-      structure.data.name,
-      structure.data.age,
-      structure.data.parent,
-    ]
+  const config = displayConfig[structure.subtype] as DisplayConfig;
+  if (config === undefined) {
+    return {
+      "type": "string",
+      "value": "Unknown"
+    } as StringStructure;
+  }
+  if (config.data_type === "array") {
+    const data = [];
+    const value_defs = config.params.items;
+    for (let value_def of value_defs) {
+      if (value_def.type === "constant") {
+        data.push({
+          "type": "string",
+          "value": value_def.value
+        } as StringStructure);
+      } else if (value_def.type === "field") {
+        data.push(structure.data[value_def.name]);
+      } else {
+        console.error("Unknown value def type", value_def);
+      }
+    }
+    return transform({
+      "type": "array",
+      "struct_id": structure.struct_id,
+      "data": data
+    } as ArrayStructure);
   }
 
-  return transform(new_structure);
+  return {
+    "type": "string",
+    "value": "Unknown"
+  } as StringStructure;
 }
 
 function transformArray(structure: ArrayStructure) {
