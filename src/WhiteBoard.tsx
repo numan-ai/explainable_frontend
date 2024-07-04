@@ -37,32 +37,35 @@ function WhiteBoard(props: WhiteBoardProps) {
     }
   }, []);
 
-  const dragStageStart = (e: KonvaEventObject<MouseEvent>) => {
+  const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
     dragStart.current = {
-      x: e.evt.layerX,
-      y: e.evt.layerY,
+      x: evt.evt.layerX,
+      y: evt.evt.layerY,
       initX: stagePosition.x,
       initY: stagePosition.y,
     };
   }
 
-  const dragStageMove = (e: KonvaEventObject<MouseEvent>) => {
+  const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
+    evt.cancelBubble = true;
     if (dragStart.current) {
-      const x = (e.evt.layerX - dragStart.current.x) / scale;
-      const y = (e.evt.layerY - dragStart.current.y) / scale;
+      const x = (evt.evt.layerX - dragStart.current.x) / scale;
+      const y = (evt.evt.layerY - dragStart.current.y) / scale;
       setStagePosition({ x: dragStart.current.initX - x, y: dragStart.current.initY - y });
     }
   }
 
-  const dragStageEnd = (_: KonvaEventObject<MouseEvent>) => {
+  const dragStageEnd = (evt: KonvaEventObject<MouseEvent>) => {
     dragStart.current = null;
+    evt.cancelBubble = true;
   }
 
-  const onZoom = (e: KonvaEventObject<WheelEvent>) => {
+  const onZoom = (evt: KonvaEventObject<WheelEvent>) => {
     const minScale = 0.2;
     const maxScale = 3;
+    evt.cancelBubble = true;
     setScale(oldScale => {
-      const scale = Math.min(Math.max(oldScale - e.evt.deltaY / 300, minScale), maxScale);
+      const scale = Math.min(Math.max(oldScale - evt.evt.deltaY / 300, minScale), maxScale);
 
       // if (oldScale !== scale) {
       //   console.log(scale);
@@ -76,7 +79,7 @@ function WhiteBoard(props: WhiteBoardProps) {
       
       return scale;
     });
-    e.evt.preventDefault();
+    evt.evt.preventDefault();
   }
 
   return (

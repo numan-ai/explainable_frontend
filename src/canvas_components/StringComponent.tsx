@@ -38,15 +38,18 @@ export default function StringCanvasComponent(props: StringComponentProps) {
         text={structure.value}
         align="center"
         verticalAlign="middle"
-        onClick={() => {
-          console.log(123);
-        }}
-        onMouseEnter={() => {
-          // setIsHovered(true);
-        }}
-        onMouseLeave={() => {
-          // setIsHovered(false);
-        }}
+        // onClick={(evt) => {
+        //   console.log(123);
+        //   evt.cancelBubble = false;
+        // }}
+        // onMouseEnter={(evt) => {
+        //   evt.cancelBubble = false;
+        //   // setIsHovered(true);
+        // }}
+        // onMouseLeave={(evt) => {
+        //   evt.cancelBubble = false;
+        //   // setIsHovered(false);
+        // }}
       />
     </>
   );

@@ -2,6 +2,7 @@ import type { StructureWithContext } from "@/structures/BBox"
 import ArrayVCanvasComponent from "./ArrayVComponent"
 import StringCanvasComponent from "./StringComponent"
 import ArrayCanvasComponent from "./ArrayComponent"
+import React from "react"
 
 
 export type StructureRendering = {
@@ -14,7 +15,7 @@ export const renderingContexts: {
   [key: string]: StructureRendering
 } = {
   "view1": {
-    component: ArrayVCanvasComponent,
+    component: ArrayCanvasComponent,
   },
 }
 
@@ -42,7 +43,7 @@ export const renderComponentMap: {
 export default function renderCanvas(swc: StructureWithContext, key: number) {
   swc.rendering = getStructureRendering(swc.structure);
   const comp = swc.rendering.component;
-  const inst = comp({
+  const inst = React.createElement(comp, {
     ...swc,
     key: key,
   });

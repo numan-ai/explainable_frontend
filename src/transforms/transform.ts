@@ -1,6 +1,3 @@
-import { produce } from "immer";
-
-
 type DisplayConfig = {
   data_type: string;
   params: any;
@@ -25,11 +22,13 @@ function transformObject(structure: ObjectStructure) {
   if (config.data_type === "array") {
     const data = [];
     const value_defs = config.params.items;
-    for (let value_def of value_defs) {
+    for (let i = 0; i < value_defs.length; i++) {
+      const value_def = value_defs[i];
       if (value_def.type === "constant") {
         data.push({
           "type": "string",
-          "value": value_def.value
+          "value": value_def.value,
+          "struct_id": `${structure.struct_id}.data._virt_${i}`,
         } as StringStructure);
       } else if (value_def.type === "field") {
         data.push(structure.data[value_def.name]);
@@ -51,9 +50,14 @@ function transformObject(structure: ObjectStructure) {
 }
 
 function transformArray(structure: ArrayStructure) {
-  structure.data = structure.data.map(item => {
-    return transform(item);
-  });
+  // try {
+    structure.data = structure.data.map(item => {
+      return transform(item);
+    });
+  // } catch (e) {
+  //   console.log('err', structure);
+  //   return null;
+  // }
   return structure;
 }
 
@@ -69,18 +73,32 @@ function transformNull(_structure: NullStructure) {
 }
 
 export default function transform(structure: BaseStructure): BaseStructure {
-  return produce(structure, draft => {
-    if (draft.type === "object") {
-      return transformObject(draft as ObjectStructure);
-    }
-    if (draft.type === "array") {
-      return transformArray(draft as ArrayStructure);
-    }
-    if (draft.type === "map") {
-      return transformMap(draft as MapStructure);
-    }
-    if (draft.type === "null") {
-      return transformNull(draft as NullStructure);
-    }
-  });
+  if (structure === undefined) {
+    console.error("Object is undefinied", structure);
+    return {
+      type: "string",
+      value: "Undef"
+    } as StringStructure;
+  }
+  if (structure.type === "object") {
+    return transformObject(structure as ObjectStructure);
+  }
+  if (structure.type === "array") {
+    return transformArray(structure as ArrayStructure);
+  }
+  if (structure.type === "map") {
+    return transformMap(structure as MapStructure);
+  }
+  if (structure.type === "null") {
+    return transformNull(structure as NullStructure);
+  }
+  if (structure.type === undefined) {
+    console.error("Object is undefinied", structure);
+    console.error("Object does not have type", structure);
+    return {
+      type: "string",
+      value: "No type"
+    } as StringStructure;
+  }
+  return structure;
 }

@@ -87,11 +87,13 @@ function Header(props: HeaderProps) {
   );
 }
 
+const accumulatedDiffs = new Map<string, any[]>();
+
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
-  const [dashboard, setStructure, modifyStructure] = useDashboardStore((s) => [
-    s.currentDashboard, s.setStructure, s.modifyStructure
+  const [dashboard, setStructure, modifyStructure, moveStructure] = useDashboardStore((s) => [
+    s.currentDashboard, s.setStructure, s.modifyStructure, s.moveStructure,
   ]);
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export default function App() {
       setStructure(DEFAULT_DASHBOARD_ID, data.view_id, data.structure);
       // setViewSettings(data.settings);
       // setPaused(data.is_paused);
+      accumulatedDiffs.length = 0;
     });
 
     api.onMessage("displayConfig", (data) => {
@@ -113,11 +116,27 @@ export default function App() {
     });
 
     api.onMessage("diff", (diff) => {
-      modifyStructure(DEFAULT_DASHBOARD_ID, diff.view_id, data => {
-        pushHistory(data, diff);
-        return data;
-      });
+      if (!accumulatedDiffs.has(diff.view_id)) {
+        accumulatedDiffs.set(diff.view_id, []);
+      }
+      accumulatedDiffs.get(diff.view_id)!.push(diff);
     });
+
+    setInterval(() => {
+      for (let view_id of accumulatedDiffs.keys()) {
+        const diffs = accumulatedDiffs.get(view_id)!.slice();
+        accumulatedDiffs.get(view_id)!.length = 0;
+        if (!diffs.length) {
+          continue;
+        }
+        modifyStructure(DEFAULT_DASHBOARD_ID, view_id, data => {
+          for (let diff of diffs) {
+            pushHistory(data, diff);
+          }
+          return data;
+        });
+      }
+    }, 50);
   }, []);
 
   const views = dashboard.views.map((view, index) => {
@@ -125,6 +144,7 @@ export default function App() {
       <ExplainableView 
         key={index}
         view={view}
+        moveStructure={moveStructure}
       />
     );
   });
@@ -132,7 +152,7 @@ export default function App() {
   if (isConnected === false) {
     views.length = 0;
     views.push(
-      <NoConnectionComponent/>
+      <NoConnectionComponent key={-1}/>
     );
   }
   
