@@ -2,14 +2,23 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+type DragPosition = {
+  layerX: number;
+  layerY: number;
+  x: number;
+  y: number;
+}
+
 type WidgetState = {
   isCollapsed: boolean;
-  position: Position;
+  dragStart: DragPosition | null;
+  position: Position | null;
 }
 
 type WidgetStateStorageType = {
   states: { [key: string]: WidgetState };
   setIsCollapsed: (id: string, isClicked: boolean) => void;
+  setDragStart: (id: string, dragStart: DragPosition | null) => void;
   setPosition: (id: string, position: Position) => void;
 };
 
@@ -19,10 +28,8 @@ function ensureDefaultState(state: WidgetStateStorageType, id: string) {
   }
   state.states[id] = {
     isCollapsed: false,
-    position: {
-      x: 0,
-      y: 0,
-    },
+    dragStart: null,
+    position: null,
   } as WidgetState;
 }
 
@@ -34,6 +41,10 @@ export const useWidgetStateStorage = create<WidgetStateStorageType>()(
         setIsCollapsed: (id: string, isCollapsed: boolean) => set(state => {
           ensureDefaultState(state, id);
           state.states[id].isCollapsed = isCollapsed;
+        }),
+        setDragStart: (id: string, dragStart: DragPosition | null) => set(state => {
+          ensureDefaultState(state, id);
+          state.states[id].dragStart = dragStart;
         }),
         setPosition: (id: string, position: Position) => set(state => {
           ensureDefaultState(state, id);

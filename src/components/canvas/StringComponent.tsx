@@ -85,15 +85,16 @@ function StringCanvasComponent(props: WidgetProps) {
   const { structure, representation, position } = props;
   const size = getSize(structure, representation);
 
-  const [startPosition, setStartPosition] = useState<Position | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [
-    widgetState, 
+    widgetState,
     setIsCollapsed,
+    setDragStart,
     setPosition,
   ] = useWidgetStateStorage((s) => [
-    s.states[props.id], 
+    s.states[props.id],
     s.setIsCollapsed,
+    s.setDragStart,
     s.setPosition,
   ]);
 
@@ -110,8 +111,8 @@ function StringCanvasComponent(props: WidgetProps) {
   return (
     <>
       <Rect
-        x={widgetState?.position.x || position.x}
-        y={widgetState?.position.y || position.y}
+        x={currentPosition.x}
+        y={currentPosition.y}
         width={size.w}
         height={size.h}
         fill={isHovered ? "rgba(30, 41, 59, 0.1)" : "rgba(30, 41, 59, 0.2)"}
@@ -120,8 +121,8 @@ function StringCanvasComponent(props: WidgetProps) {
         listening={false}
       />
       <Text
-        x={widgetState?.position.x || position.x}
-        y={widgetState?.position.y || position.y}
+        x={currentPosition.x}
+        y={currentPosition.y}
         width={size.w}
         height={size.h}
         fontSize={18}
@@ -130,43 +131,36 @@ function StringCanvasComponent(props: WidgetProps) {
         align="center"
         verticalAlign="middle"
         onMouseDown={(evt) => {
-          setStartPosition({
-            x: evt.evt.layerX,
-            y: evt.evt.layerY,
+          setDragStart(props.id, {
+            layerX: evt.evt.layerX,
+            layerY: evt.evt.layerY,
+            x: currentPosition.x,
+            y: currentPosition.y,
           });
         }}
         onMouseMove={(evt) => {
-          if (startPosition === null) {
+          if (!widgetState?.dragStart) {
             return;
           }
-          const dx = evt.evt.layerX - position.x;
-          const dy = evt.evt.layerY - position.y;
+          const dx = evt.evt.layerX - (widgetState?.dragStart.layerX || 0);
+          const dy = evt.evt.layerY - (widgetState?.dragStart.layerY || 0);
           setPosition(props.id, {
-            x: position.x + dx,
-            y: position.y + dy,
+            x: widgetState?.dragStart.x + dx,
+            y: widgetState?.dragStart.y + dy,
           });
         }}
-        onMouseUp={(evt) => {
-          if (startPosition === null) {
-            return;
-          }
-          const dx = evt.evt.layerX - position.x;
-          const dy = evt.evt.layerY - position.y;
-          setStartPosition(null);
-          setPosition(props.id, {
-            x: position.x + dx,
-            y: position.y + dy,
-          });
+        onMouseUp={(_) => {
+          setDragStart(props.id, null);
         }}
         onMouseEnter={() => {
           setIsHovered(true);
         }}
         onMouseLeave={() => {
           setIsHovered(false);
-          setStartPosition(null);
+          setDragStart(props.id, null);
         }}
         onClick={() => {
-          setIsCollapsed(props.id, !isCollapsed);
+          // setIsCollapsed(props.id, !isCollapsed);
         }}
       />
     </>
