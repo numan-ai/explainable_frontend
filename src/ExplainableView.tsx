@@ -11,19 +11,7 @@ export type ViewSettings = {
 
 export type ExplainableViewProps = {
   view: ViewType;
-  // moveStructure: (struct_id: string, x: number, y: number) => void
 }
-
-
-// function takePartOfData(component: BaseStructure, path: string) {
-//   const pathArr = path.split(".");
-//   let currentComponent: any = component;
-//   for (let i = 1; i < pathArr.length; i++) {
-//     currentComponent = currentComponent[pathArr[i]];
-//   }
-
-//   return currentComponent;
-// }
 
 
 function ExplainableView(props: ExplainableViewProps) {

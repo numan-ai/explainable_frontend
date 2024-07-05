@@ -15,7 +15,9 @@ export const useWebsocketURIStore = create<WebsocketURIStoreType, [
   persist(
     (set, _get) => ({
       uri: DEFAULT_SERVER_URI,
-      setURI: (newURI: string) => set({ uri: newURI }),
+      setURI: (newURI: string) => set({ 
+        uri: newURI 
+      }),
     }),
     {
       name: 'numan:explainable.ws.uri',

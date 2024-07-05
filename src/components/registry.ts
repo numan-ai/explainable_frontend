@@ -1,7 +1,7 @@
 import { Size } from "@/structures/size";
 import { Representation } from "@/representation";
-import ListCanvasWidget from "./canvas/ListComponent";
-import StringCanvasWidget from "./canvas/StringComponent";
+import ListCanvasWidget from "./canvas/ListWidget";
+import StringCanvasWidget from "./canvas/StringWidget";
 import { BaseStructure } from "@/structures/types";
 
 

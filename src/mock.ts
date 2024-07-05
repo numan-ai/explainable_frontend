@@ -1,5 +1,5 @@
-import { ListCanvasRepresentation } from "./components/canvas/ListComponent";
-import { StringCanvasRepresentation } from "./components/canvas/StringComponent";
+import { ListCanvasRepresentation } from "./components/canvas/ListWidget";
+import { StringCanvasRepresentation } from "./components/canvas/StringWidget";
 import { ViewType } from "./storages/viewStorage";
 
 export const IS_MOCKED = true;

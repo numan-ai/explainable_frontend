@@ -4,7 +4,7 @@ import { Rect, Text } from "react-konva";
 import { useState } from "react";
 import { BaseStructure, StringStructure } from "@/structures/types";
 import getByPath from "@/structures/path_ref";
-import { WidgetProps } from "../widget";
+import { WidgetProps as WidgetComponentProps } from "../widget";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 
 
@@ -81,7 +81,7 @@ const getStringSize = (
 }
 
 
-function StringCanvasComponent(props: WidgetProps) {
+function StringCanvasComponent(props: WidgetComponentProps) {
   const { structure, representation, position } = props;
   const size = getSize(structure, representation);
 
