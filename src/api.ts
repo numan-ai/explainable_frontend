@@ -1,3 +1,5 @@
+import { IS_MOCKED } from "./mock";
+
 class WebSocketClient {
   private ws: WebSocket | null;
   private uri: string;
@@ -17,6 +19,9 @@ class WebSocketClient {
   }
 
   public reconnect(uri: string) {
+    if (IS_MOCKED) {
+      return;
+    }
     if (this.uri === uri && this.ws && this.ws.readyState === WebSocket.OPEN) {
       return;
     }

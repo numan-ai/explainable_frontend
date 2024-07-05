@@ -81,7 +81,6 @@ export function historyForward(stucture: BaseStructure) {
             try {
                 current[parts[parts.length - 1]].justUpdated = true;
             } catch (e) {
-                console.log(current, parts[parts.length - 1]);
                 console.error(e);
             }
             break;

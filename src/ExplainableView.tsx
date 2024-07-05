@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import WhiteBoard from './WhiteBoard';
-import renderCanvas from './canvas_components/render';
 import { Input } from './components/ui/input';
-import { DashboardViewType } from './storages/dashboardStorage';
-import { StructureWithContext } from './structures/BBox';
-import transform from './transforms/transform';
+import { ViewType } from './storages/viewStorage';
+import render from './components/canvas/render.tsx';
 
 
 export type ViewSettings = {
@@ -12,24 +10,25 @@ export type ViewSettings = {
 }
 
 export type ExplainableViewProps = {
-  view: DashboardViewType;
-  moveStructure: (struct_id: string, x: number, y: number) => void
+  view: ViewType;
+  // moveStructure: (struct_id: string, x: number, y: number) => void
 }
 
 
-function takePartOfData(component: BaseStructure, path: string) {
-  const pathArr = path.split(".");
-  let currentComponent: any = component;
-  for (let i = 1; i < pathArr.length; i++) {
-    currentComponent = currentComponent[pathArr[i]];
-  }
+// function takePartOfData(component: BaseStructure, path: string) {
+//   const pathArr = path.split(".");
+//   let currentComponent: any = component;
+//   for (let i = 1; i < pathArr.length; i++) {
+//     currentComponent = currentComponent[pathArr[i]];
+//   }
 
-  return currentComponent;
-}
+//   return currentComponent;
+// }
 
 
 function ExplainableView(props: ExplainableViewProps) {
-  const [path, setPath] = useState<string>(props.view.id);
+  const view = props.view;
+  const [path, setPath] = useState<string>(view.id);
   // useEffect(() => {
   //   api.onConnected(() => {
   //     clearHistory();
@@ -38,17 +37,9 @@ function ExplainableView(props: ExplainableViewProps) {
   //   return () => {}
   // }, []);
 
-  const structure = takePartOfData(props.view.swc.structure, path);
+  // const structure = takePartOfData(props.view.structure, path);
 
-  const swc = {
-    structure: transform(structure),
-    position: {
-      x: 50,
-      y: 50,
-    },
-  } as StructureWithContext;
-
-  const component = renderCanvas(swc, 0);
+  const component = render(view.structure, view.representation, view.position, view.id, 0);
 
   return (
     <div>
@@ -73,7 +64,7 @@ function ExplainableView(props: ExplainableViewProps) {
             setPath(e.target.value);
           }
         }
-      }/>
+      } name='view-path'/>
       <div className="component-container">
         <WhiteBoard>
           {component}

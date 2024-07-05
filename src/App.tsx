@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 import ExplainableView from "./ExplainableView";
 import { ThemeProvider } from "./components/theme-provider";
 import { useWebsocketURIStore } from './storages/websocketURIStore';
-import { DEFAULT_DASHBOARD_ID, useDashboardStore } from './storages/dashboardStorage';
+import { useViewStore } from './storages/viewStorage';
 
 import api from "./api";
 import { pushHistory } from "./structures/history";
-import NoConnectionComponent from "./ui/NoConnectionComponent";
-import { setDisplayConfig } from "./transforms/transform";
+import NoConnectionComponent from "./components/NoConnectionComponent";
+import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 
 
 function ServerURIInput() {
@@ -26,6 +26,7 @@ function ServerURIInput() {
     <div className="relative flex flex-row items-center">
       <Input 
         placeholder="Server URI"
+        name="server-uri"
         value={uri}
         onChange={(e) => setURI(e.target.value)}
         className="border-r-0 border-slate-500 min-w-64 rounded-r-none"
@@ -48,7 +49,6 @@ function ServerURIInput() {
     </div>
   )
 }
-
 
 type HeaderProps = {
   isConnected?: boolean;
@@ -92,8 +92,8 @@ const accumulatedDiffs = new Map<string, any[]>();
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
-  const [dashboard, setStructure, modifyStructure, moveStructure] = useDashboardStore((s) => [
-    s.currentDashboard, s.setStructure, s.modifyStructure, s.moveStructure,
+  const [views, setStructure, modifyStructure] = useViewStore((s) => [
+    s.views, s.setStructure, s.modifyStructure,
   ]);
 
   useEffect(() => {
@@ -105,14 +105,8 @@ export default function App() {
     });
 
     api.onMessage("snapshot", (data) => {
-      setStructure(DEFAULT_DASHBOARD_ID, data.view_id, data.structure);
-      // setViewSettings(data.settings);
-      // setPaused(data.is_paused);
-      accumulatedDiffs.length = 0;
-    });
-
-    api.onMessage("displayConfig", (data) => {
-      setDisplayConfig(data);
+      setStructure(data.view_id, data.structure);
+      accumulatedDiffs.clear();
     });
 
     api.onMessage("diff", (diff) => {
@@ -129,7 +123,7 @@ export default function App() {
         if (!diffs.length) {
           continue;
         }
-        modifyStructure(DEFAULT_DASHBOARD_ID, view_id, data => {
+        modifyStructure(view_id, data => {
           for (let diff of diffs) {
             pushHistory(data, diff);
           }
@@ -139,19 +133,18 @@ export default function App() {
     }, 50);
   }, []);
 
-  const views = dashboard.views.map((view, index) => {
+  const view_components = (IS_MOCKED ? MOCK_VIEWS : views).map((view, index) => {
     return (
-      <ExplainableView 
+      <ExplainableView
         key={index}
         view={view}
-        moveStructure={moveStructure}
       />
     );
   });
 
   if (isConnected === false) {
     views.length = 0;
-    views.push(
+    view_components.push(
       <NoConnectionComponent key={-1}/>
     );
   }
@@ -164,8 +157,7 @@ export default function App() {
         />
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-            {/* <ExplainableView /> */}
-            { views}
+            { view_components}
           </div>
         </main>
       </div>

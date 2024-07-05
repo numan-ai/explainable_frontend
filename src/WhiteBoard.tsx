@@ -87,9 +87,9 @@ function WhiteBoard(props: WhiteBoardProps) {
       <Stage
         width={dimensions.width}
         height={dimensions.height}
-        onMouseDown={dragStageStart}
-        onMouseMove={dragStageMove}
-        onMouseUp={dragStageEnd}
+        // onMouseDown={dragStageStart}
+        // onMouseMove={dragStageMove}
+        // onMouseUp={dragStageEnd}
         onWheel={onZoom}
         onMouseLeave={dragStageEnd}
         offset={stagePosition}

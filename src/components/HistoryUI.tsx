@@ -15,12 +15,6 @@ interface HistoryUIProps {
   viewSettings: ViewSettings;
 }
 
-
-// .history-ui-button {
-//     margin: 0.2rem;
-//     border: 1px solid #aaa;
-//   }
-
 type UIButtonProps = {
   onClick: () => void;
   children: any;
