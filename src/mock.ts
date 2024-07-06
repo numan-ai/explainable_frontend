@@ -50,19 +50,19 @@ export const MOCK_CONNECTED = true;
 const my_data = {
   "type": "list",
   "data": [
-    // {
-    //   "type": "list",
-    //   "data": [
-    //     {
-    //       "type": "string",
-    //       "value": "Mark TwainIn",
-    //     },
-    //     {
-    //       "type": "string",
-    //       "value": "Franz KafkaIn",
-    //     }
-    //   ]
-    // },
+    {
+      "type": "list",
+      "data": [
+        {
+          "type": "string",
+          "value": "Mark TwainIn",
+        },
+        {
+          "type": "string",
+          "value": "Franz KafkaIn",
+        }
+      ]
+    },
     {
       "type": "string",
       "value": "Mark TwainOut",
@@ -110,7 +110,7 @@ const repr = {
 export const MOCK_VIEWS = [{
   id: "view1",
   structure: my_data,
-  representation: repr,
+  representation: null,
   position: {
     x: 100,
     y: 100,

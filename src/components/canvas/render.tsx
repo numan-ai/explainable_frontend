@@ -4,12 +4,12 @@ import { Representation } from "@/representation";
 import { BaseStructure } from "@/structures/types";
 
 
-export default function render(structure: BaseStructure, representation: Representation, position: Position, id: string, key: number) {
-  const component_name = representation.type;
-  const widget = getWidget(component_name);
+export default function render(structure: BaseStructure, representation: Representation | null, position: Position, id: string, key: number) {
+  const widget_name = representation?.type || structure.type;
+  const widget = getWidget(widget_name);
 
   if (widget === undefined) {
-    console.error("Can't find widget", component_name);
+    console.error("Can't find widget", widget_name);
     return null;
   }
   const inst = React.createElement(widget.component, {

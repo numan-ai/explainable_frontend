@@ -1,4 +1,3 @@
-import type { Widget } from "../registry";
 import getSize, { Size } from "@/structures/size";
 import { Rect, Text } from "react-konva";
 import { useState } from "react";
@@ -6,6 +5,10 @@ import { BaseStructure, StringStructure } from "@/structures/types";
 import getByPath from "@/structures/path_ref";
 import { WidgetProps as WidgetComponentProps } from "../widget";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import { Widget } from "../registry";
+
+
+const WIDGET_ID = "string";
 
 
 export type StringCanvasRepresentation = {
@@ -13,6 +16,14 @@ export type StringCanvasRepresentation = {
   max_size?: number;
   format?: string;
 };
+
+
+const getDefaultRepresentation = (_: BaseStructure): StringCanvasRepresentation => {
+  return {
+    type: WIDGET_ID,
+    format: "{item}",
+  } as StringCanvasRepresentation;
+}
 
 
 function extractTemplateParts(template: string): [string[], string[]] {
@@ -66,6 +77,9 @@ const getStringSize = (
   structure: BaseStructure,
   representation: StringCanvasRepresentation,
 ) => {
+  if (!representation) {
+    representation = getDefaultRepresentation(structure);
+  }
   // TODO: implement formatting and support for arbitrary structures
   const stringValue = getStringValue(structure, representation.format || "{item}");
   const lines = stringValue.split("\n");
@@ -82,7 +96,12 @@ const getStringSize = (
 
 
 function StringCanvasComponent(props: WidgetComponentProps) {
-  const { structure, representation, position } = props;
+  const { structure, position } = props;
+  let representation: StringCanvasRepresentation | null = props.representation as StringCanvasRepresentation;
+  if (!props.representation) {
+    representation = getDefaultRepresentation(structure);
+  }
+
   const size = getSize(structure, representation);
 
   const [isHovered, setIsHovered] = useState(false);
@@ -148,6 +167,7 @@ function StringCanvasComponent(props: WidgetComponentProps) {
             x: widgetState?.dragStart.x + dx,
             y: widgetState?.dragStart.y + dy,
           });
+          evt.cancelBubble = true;
         }}
         onMouseUp={(_) => {
           setDragStart(props.id, null);
@@ -158,6 +178,7 @@ function StringCanvasComponent(props: WidgetComponentProps) {
         onMouseLeave={() => {
           setIsHovered(false);
           setDragStart(props.id, null);
+
         }}
         onClick={() => {
           // setIsCollapsed(props.id, !isCollapsed);
@@ -169,7 +190,7 @@ function StringCanvasComponent(props: WidgetComponentProps) {
 
 
 export default {
-  id: "string",
+  id: WIDGET_ID,
   component: StringCanvasComponent,
   sizeGetter: getStringSize,
 } as Widget;

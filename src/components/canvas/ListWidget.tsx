@@ -1,11 +1,13 @@
 import { Group, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
 import { Representation } from "@/representation";
-import render from "./render";
-import { Widget } from "../registry";
 import { BaseStructure, ListStructure, StringStructure } from "@/structures/types";
 import getByPath from "@/structures/path_ref";
 import { WidgetProps } from "../widget";
+import render from "./render";
+import { Widget } from "../registry";
+
+const WIDGET_ID = "list";
 
 export type StructureSource = {
   type: string;
@@ -21,6 +23,17 @@ export type ListCanvasRepresentation = {
   source: StructureSource | StructureSource[];
   item_representation: Representation | Representation[];
 } & Representation;
+
+
+const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation => {
+  return {
+    type: WIDGET_ID,
+    source: {
+      type: "reference",
+      path: "item",
+    } as StructureSource,
+  } as ListCanvasRepresentation;
+}
 
 
 const getStructureFromSource = (base_structure: BaseStructure, source: StructureSource): BaseStructure => {
@@ -39,8 +52,12 @@ const getStructureFromSource = (base_structure: BaseStructure, source: Structure
 
 const getListSize = (
   structure: BaseStructure,
-  representation: ListCanvasRepresentation,
+  representation: ListCanvasRepresentation | null,
 ) => {
+  if (!representation) {
+    representation = getDefaultRepresentation(structure);
+  }
+
   let w = 0;
   let h = 0;
 
@@ -81,7 +98,11 @@ const getListSize = (
 function ListCanvasComponent(props: WidgetProps) {
   const { position } = props;
 
-  const representation = props.representation as ListCanvasRepresentation;
+  let representation: ListCanvasRepresentation | null = props.representation as ListCanvasRepresentation;
+
+  if (!representation) {
+    representation = getDefaultRepresentation(props.structure);
+  }
 
   if (position === undefined || representation === undefined) {
     return <></>;

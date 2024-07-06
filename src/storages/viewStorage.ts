@@ -7,7 +7,7 @@ import { immer } from 'zustand/middleware/immer'
 export type ViewType = {
   id: string;
   structure: BaseStructure;
-  representation: Representation;
+  representation: Representation | null;
   position: Position;
 }
 

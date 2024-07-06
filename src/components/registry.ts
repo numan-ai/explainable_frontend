@@ -10,7 +10,7 @@ export type Widget = {
   component: (props: any) => JSX.Element;
   sizeGetter: (
     structure: BaseStructure,
-    representation: Representation,
+    representation: Representation | null,
   ) => Size | undefined;
 }
 
