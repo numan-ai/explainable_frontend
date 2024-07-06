@@ -30,6 +30,13 @@ export type StringSource = {
 
 
 export const getStructureFromSource = (base_structure: BaseStructure, source: Source): BaseStructure => {
+  if (source === undefined || source.type === undefined) {
+    console.error("Can't get structure from source", source);
+    return {
+      "type": "string",
+      "value": "Unknown",
+    } as StringStructure;
+  }
   switch (source.type) {
     case "ref":
       const ref_source = source as RefSource;

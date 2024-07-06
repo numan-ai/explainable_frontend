@@ -15,15 +15,15 @@ const WIDGET_ID = "graph";
 export type GraphCanvasRepresentation = {
   type: "graph";
   nodes: {
-    node_id: Source;
+    id: Source;
     source: Source | Source[];
-    item_representation?: Representation | Representation[];
+    widget?: Representation | Representation[];
   }
   edges: {
     source: Source | Source[];
     label: Source;
-    start_id: Source;
-    end_id: Source;
+    start: Source;
+    end: Source;
   }
 } & Representation;
 
@@ -32,7 +32,7 @@ const getDefaultRepresentation = (_: BaseStructure): GraphCanvasRepresentation =
   return {
     type: WIDGET_ID,
     nodes: {
-      node_id: {
+      id: {
         type: "ref",
         path: "item",
       } as Source,
@@ -50,11 +50,11 @@ const getDefaultRepresentation = (_: BaseStructure): GraphCanvasRepresentation =
         type: "ref",
         path: "item.label",
       } as Source,
-      start_id: {
+      start: {
         type: "ref",
         path: "item.start",
       } as Source,
-      end_id: {
+      end: {
         type: "ref",
         path: "item.end",
       } as Source,
@@ -98,8 +98,6 @@ function GraphCanvasComponent(props: WidgetProps) {
     node_structures = (getStructureFromSource(props.structure, representation.nodes.source) as ListStructure).data;
   }
 
-  representation.style = representation?.style;
-
   const style = representation.style || {};
 
   let collectedX = representation.style?.margin || 5;
@@ -108,10 +106,10 @@ function GraphCanvasComponent(props: WidgetProps) {
   const node_sizes = new Map<string, Size>();
 
   const children = node_structures.map((node, i) => {
-    const node_representation = Array.isArray(representation.nodes.item_representation) ? (
-      representation.nodes.item_representation[i]
+    const node_representation = Array.isArray(representation.nodes.widget) ? (
+      representation.nodes.widget[i]
     ) : (
-      representation.nodes.item_representation
+      representation.nodes.widget
     ) || null;
 
     const compSize = getSize(node, node_representation);
@@ -137,9 +135,9 @@ function GraphCanvasComponent(props: WidgetProps) {
       id: widgeId,
     });
 
-    const node_id = getStructureFromSource(node, representation.nodes.node_id) as StringStructure;
+    const node_id = getStructureFromSource(node, representation.nodes.id) as StringStructure;
     if (node_id === undefined) {
-      console.error("Can't get node id", node, representation.nodes.node_id);
+      console.error("Can't get node id", node, representation.nodes.id);
       return undefined;
     }
 
@@ -172,11 +170,11 @@ function GraphCanvasComponent(props: WidgetProps) {
   const edges: JSX.Element[] = [];
 
   edge_structures.forEach((edge_struct, i) => {
-    const start_id = getStructureFromSource(edge_struct, representation.edges.start_id) as StringStructure;
-    const end_id = getStructureFromSource(edge_struct, representation.edges.end_id) as StringStructure;
+    const start_id = getStructureFromSource(edge_struct, representation.edges.start) as StringStructure;
+    const end_id = getStructureFromSource(edge_struct, representation.edges.end) as StringStructure;
 
     if (start_id === undefined || end_id === undefined) {
-      console.error("Can't get edge start or end id", edge_struct, representation.edges.start_id, representation.edges.end_id);
+      console.error("Can't get edge start or end id", edge_struct, representation.edges.start, representation.edges.end);
       return undefined;
     }
 
