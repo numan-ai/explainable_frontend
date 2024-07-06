@@ -107,14 +107,8 @@ function StringCanvasComponent(props: WidgetComponentProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [
     widgetState,
-    setIsCollapsed,
-    setDragStart,
-    setPosition,
   ] = useWidgetStateStorage((s) => [
     s.states[props.id],
-    s.setIsCollapsed,
-    s.setDragStart,
-    s.setPosition,
   ]);
 
   const stringValue = getStringValue(structure, (representation as StringCanvasRepresentation).format || "{item}");
@@ -125,13 +119,11 @@ function StringCanvasComponent(props: WidgetComponentProps) {
 
   const isCollapsed = widgetState?.isCollapsed || false;
 
-  const currentPosition = widgetState?.position || position;
-
   return (
     <>
       <Rect
-        x={currentPosition.x}
-        y={currentPosition.y}
+        x={position.x}
+        y={position.y}
         width={size.w}
         height={size.h}
         fill={isHovered ? "rgba(30, 41, 59, 0.1)" : "rgba(30, 41, 59, 0.2)"}
@@ -140,8 +132,8 @@ function StringCanvasComponent(props: WidgetComponentProps) {
         listening={false}
       />
       <Text
-        x={currentPosition.x}
-        y={currentPosition.y}
+        x={position.x}
+        y={position.y}
         width={size.w}
         height={size.h}
         fontSize={18}
@@ -149,40 +141,23 @@ function StringCanvasComponent(props: WidgetComponentProps) {
         text={stringValue}
         align="center"
         verticalAlign="middle"
-        onMouseDown={(evt) => {
-          setDragStart(props.id, {
-            layerX: evt.evt.layerX,
-            layerY: evt.evt.layerY,
-            x: currentPosition.x,
-            y: currentPosition.y,
-          });
-        }}
-        onMouseMove={(evt) => {
-          if (!widgetState?.dragStart) {
-            return;
-          }
-          const dx = evt.evt.layerX - (widgetState?.dragStart.layerX || 0);
-          const dy = evt.evt.layerY - (widgetState?.dragStart.layerY || 0);
-          setPosition(props.id, {
-            x: widgetState?.dragStart.x + dx,
-            y: widgetState?.dragStart.y + dy,
-          });
-          evt.cancelBubble = true;
-        }}
-        onMouseUp={(_) => {
-          setDragStart(props.id, null);
-        }}
-        onMouseEnter={() => {
-          setIsHovered(true);
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setDragStart(props.id, null);
-
-        }}
-        onClick={() => {
-          // setIsCollapsed(props.id, !isCollapsed);
-        }}
+        listening={false}
+        
+        // onMouseDown={(evt) => {
+        //   evt.cancelBubble = false;
+        // }}
+        // onMouseMove={(evt) => {
+        //   evt.cancelBubble = false;
+        // }}
+        // onMouseUp={(evt) => {
+        //   evt.cancelBubble = false;
+        // }}
+        // onMouseEnter={() => {
+        //   setIsHovered(true);
+        // }}
+        // onMouseLeave={() => {
+        //   setIsHovered(false);
+        // }}
       />
     </>
   );

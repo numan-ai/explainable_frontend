@@ -7,9 +7,10 @@ export type ListStructure = {
   data: BaseStructure[];
 } & BaseStructure;
 
-export type MapStructure = {
-  type: "map";
-  data: { [key: string]: BaseStructure };
+export type DictStructure = {
+  type: "dict";
+  keys: BaseStructure[];
+  values: BaseStructure[];
 } & BaseStructure;
 
 export type NullStructure = {

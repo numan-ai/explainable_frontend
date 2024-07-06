@@ -1,27 +1,18 @@
 import { Group, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { Representation } from "@/representation";
-import { BaseStructure, ListStructure, StringStructure } from "@/structures/types";
-import getByPath from "@/structures/path_ref";
+import { getStructureFromSource, Representation, StructureSource, StructureSourceReference } from "@/representation";
+import { BaseStructure, ListStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
 import { Widget } from "../registry";
 
 const WIDGET_ID = "list";
 
-export type StructureSource = {
-  type: string;
-}
-
-export type StructureSourceReference = {
-  type: "reference";
-  path: string;
-} & StructureSource;
 
 export type ListCanvasRepresentation = {
   type: "list";
   source: StructureSource | StructureSource[];
-  item_representation: Representation | Representation[];
+  item_representation?: Representation | Representation[];
 } & Representation;
 
 
@@ -33,20 +24,6 @@ const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation =>
       path: "item",
     } as StructureSource,
   } as ListCanvasRepresentation;
-}
-
-
-const getStructureFromSource = (base_structure: BaseStructure, source: StructureSource): BaseStructure => {
-  switch (source.type) {
-    case "reference":
-      const _source = source as StructureSourceReference;
-      return getByPath(base_structure, _source.path);
-    default:
-      return {
-        "type": "string",
-        "value": "Unknown",
-      } as StringStructure;
-  }
 }
 
 
@@ -78,7 +55,7 @@ const getListSize = (
     ) : (
       representation.item_representation
     );
-    const itemSize = getSize(item_structure, item_representation);
+    const itemSize = getSize(item_structure, item_representation || null);
     if (itemSize === undefined) {
       console.error("Can't get size of item", item_structure, item_representation);
       return undefined;
@@ -131,43 +108,41 @@ function ListCanvasComponent(props: WidgetProps) {
 
   let collectedX = representation.style?.margin || 5;
 
-  // const children = useMemo(() => {
   const children = structure.data.map((item, i) => {
-      const item_representation = Array.isArray(representation.item_representation) ? (
-        representation.item_representation[i]
-      ) : (
-        representation.item_representation
-      );
-      const compSize = getSize(item, item_representation);
-      if (compSize === undefined) {
-        console.error("Can't get size of list item", item, item_representation);
-        return undefined;
-      }
-      const item_position = {
-        x: position.x + collectedX,
-        y: position.y + (style.margin || 5),
-      } as Position;
-      collectedX += compSize.w + (style.spacing || 5);
-      const comp = render(item, item_representation, item_position, `${props.id}.${i}`, i);
-      
-      return (
-        <Group
-          key={i}
-          // onMouseDown={(e) => {
-          //   startDraggingItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-          // }}
-          // onMouseMove={(e) => {
-          //   dragItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-          // }}
-          // onMouseUp={(_) => {
-          //   endDraggingItem(item.struct_id);
-          // }}
-        >
-          {comp}
-        </Group>
-      )
-    });
-  // }, [structure.data]);
+    const item_representation = Array.isArray(representation.item_representation) ? (
+      representation.item_representation[i]
+    ) : (
+      representation.item_representation
+    ) || null;
+    const compSize = getSize(item, item_representation);
+    if (compSize === undefined) {
+      console.error("Can't get size of list item", item, item_representation);
+      return undefined;
+    }
+    const item_position = {
+      x: position.x + collectedX,
+      y: position.y + (style.margin || 5),
+    } as Position;
+    collectedX += compSize.w + (style.spacing || 5);
+    const comp = render(item, item_representation, item_position, `${props.id}.${i}`, i);
+    
+    return (
+      <Group
+        key={i}
+        // onMouseDown={(e) => {
+        //   startDraggingItem(item.struct_id, e.evt.layerX, e.evt.layerY);
+        // }}
+        // onMouseMove={(e) => {
+        //   dragItem(item.struct_id, e.evt.layerX, e.evt.layerY);
+        // }}
+        // onMouseUp={(_) => {
+        //   endDraggingItem(item.struct_id);
+        // }}
+      >
+        {comp}
+      </Group>
+    )
+  });
 
   return (
     <>
@@ -178,6 +153,7 @@ function ListCanvasComponent(props: WidgetProps) {
         height={size.h}
         stroke="rgb(30, 41, 59)"
         strokeWidth={1}
+        listening={false}
       />
       {children}
     </>
@@ -186,7 +162,7 @@ function ListCanvasComponent(props: WidgetProps) {
 
 
 export default {
-  id: "list",
+  id: WIDGET_ID,
   component: ListCanvasComponent,
   sizeGetter: getListSize,
 } as Widget;
