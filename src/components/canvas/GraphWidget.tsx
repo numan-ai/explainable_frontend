@@ -141,12 +141,7 @@ function GraphCanvasComponent(props: WidgetProps) {
       return undefined;
     }
 
-    const nodePos = widgetStates[widgeId]?.position;
-
-    if (nodePos === undefined || nodePos === null) {
-      console.error("Can't get widget state", widgeId);
-      return undefined;
-    }
+    const nodePos = widgetStates[widgeId]?.position || item_position;
 
     node_positions.set(node_id.value, nodePos);
     node_sizes.set(node_id.value, compSize);
