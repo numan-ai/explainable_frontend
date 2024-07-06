@@ -15,7 +15,7 @@ type LayoutStoreType = {
   views: ViewType[];
   dragStartPosition: Position | null;
   addView: (view: ViewType) => void;
-  setStructure: (viewId: string, structure: BaseStructure) => void;
+  setStructure: (viewId: string, structure: BaseStructure, representation: Representation | null) => void;
   modifyStructure: (viewId: string, callback: (structure: BaseStructure) => BaseStructure) => void;
   moveStructure: (struct_id: string, x: number | null, y: number | null, init: boolean) => void;
 };
@@ -33,13 +33,14 @@ export const useViewStore = create<LayoutStoreType>()(
           return state;
         });
       },
-      setStructure: (viewId: string, structure: BaseStructure) => {
+      setStructure: (viewId: string, structure: BaseStructure, representation: Representation | null) => {
         set(state => {
           let view = state.views.find(view => view.id === viewId);
           if (view === undefined) {
             view = {
               id: viewId,
               structure: structure,
+              representation: representation,
             } as ViewType;
             state.views.push(view);
           }

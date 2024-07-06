@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, StructureSource, StructureSourceReference } from "@/representation";
+import { getStructureFromSource, Representation, Source, RefSource } from "@/representation";
 import { BaseStructure, ListStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
@@ -11,7 +11,7 @@ const WIDGET_ID = "list";
 
 export type ListCanvasRepresentation = {
   type: "list";
-  source: StructureSource | StructureSource[];
+  source: Source | Source[];
   item_representation?: Representation | Representation[];
 } & Representation;
 
@@ -20,9 +20,9 @@ const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation =>
   return {
     type: WIDGET_ID,
     source: {
-      type: "reference",
+      type: "ref",
       path: "item",
-    } as StructureSource,
+    } as Source,
   } as ListCanvasRepresentation;
 }
 
@@ -92,11 +92,9 @@ function ListCanvasComponent(props: WidgetProps) {
       "data": representation.source.map(source => getStructureFromSource(props.structure, source)),
     }
   } else {
-    const source = representation.source as StructureSourceReference;
+    const source = representation.source as RefSource;
     structure = getStructureFromSource(props.structure, source) as ListStructure;
   }
-
-  representation.style = representation?.style;
 
   const size = getSize(props.structure, representation);
   if (size === undefined) {

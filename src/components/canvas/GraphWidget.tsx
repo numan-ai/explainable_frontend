@@ -1,6 +1,6 @@
 import { Group, Line, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, StructureSource, StructureSourceReference } from "@/representation";
+import { getStructureFromSource, Representation, Source, RefSource } from "@/representation";
 import { BaseStructure, ListStructure, StringStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
@@ -15,15 +15,15 @@ const WIDGET_ID = "graph";
 export type GraphCanvasRepresentation = {
   type: "graph";
   nodes: {
-    node_id: StructureSource;
-    source: StructureSource | StructureSource[];
+    node_id: Source;
+    source: Source | Source[];
     item_representation?: Representation | Representation[];
   }
   edges: {
-    source: StructureSource | StructureSource[];
-    label: StructureSource;
-    start_id: StructureSource;
-    end_id: StructureSource;
+    source: Source | Source[];
+    label: Source;
+    start_id: Source;
+    end_id: Source;
   }
 } & Representation;
 
@@ -33,31 +33,31 @@ const getDefaultRepresentation = (_: BaseStructure): GraphCanvasRepresentation =
     type: WIDGET_ID,
     nodes: {
       node_id: {
-        type: "reference",
+        type: "ref",
         path: "item",
-      } as StructureSource,
+      } as Source,
       source: {
-        type: "reference",
+        type: "ref",
         path: "item.nodes",
-      } as StructureSource,
+      } as Source,
     },
     edges: {
       source: {
-        type: "reference",
+        type: "ref",
         path: "item.edges",
-      } as StructureSource,
+      } as Source,
       label: {
-        type: "reference",
+        type: "ref",
         path: "item.label",
-      } as StructureSource,
+      } as Source,
       start_id: {
-        type: "reference",
+        type: "ref",
         path: "item.start",
-      } as StructureSource,
+      } as Source,
       end_id: {
-        type: "reference",
+        type: "ref",
         path: "item.end",
-      } as StructureSource,
+      } as Source,
     }
   } as GraphCanvasRepresentation;
 }

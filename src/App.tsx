@@ -105,7 +105,7 @@ export default function App() {
     });
 
     api.onMessage("snapshot", (data) => {
-      setStructure(data.view_id, data.structure);
+      setStructure(data.view_id, data.structure, data.widget);
       accumulatedDiffs.clear();
     });
 

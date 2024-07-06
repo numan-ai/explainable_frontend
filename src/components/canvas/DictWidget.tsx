@@ -1,6 +1,6 @@
 import { Arrow, Group, Line, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, StructureSource, StructureSourceReference } from "@/representation";
+import { getStructureFromSource, Representation, Source, RefSource } from "@/representation";
 import { BaseStructure, DictStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
@@ -13,7 +13,7 @@ const WIDGET_ID = "dict";
 
 export type DictCanvasRepresentation = {
   type: "dict";
-  source: StructureSource;
+  source: Source;
   key_representation?: Representation;
   value_representation?: Representation;
 } & Representation;
@@ -23,9 +23,9 @@ const getDefaultRepresentation = (_: BaseStructure): DictCanvasRepresentation =>
   return {
     type: WIDGET_ID,
     source: {
-      type: "reference",
+      type: "ref",
       path: "item",
-    } as StructureSource,
+    } as Source,
   } as DictCanvasRepresentation;
 }
 
@@ -92,7 +92,7 @@ function DictCanvasComponent(props: WidgetProps) {
   }
 
   let structure: DictStructure;
-  const source = representation.source as StructureSourceReference;
+  const source = representation.source as RefSource;
   structure = getStructureFromSource(props.structure, source) as DictStructure;
 
   representation.style = representation?.style;

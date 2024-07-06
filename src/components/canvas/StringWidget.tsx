@@ -56,7 +56,7 @@ function extractTemplateParts(template: string): [string[], string[]] {
 }
 
 
-const getStringValue = (structure: BaseStructure, format: string): string => {
+export const getStringValue = (structure: BaseStructure, format: string): string => {
   const [parts, placeholders] = extractTemplateParts(format);
   return parts.map((part, i) => {
     const placeholder = placeholders[i];
