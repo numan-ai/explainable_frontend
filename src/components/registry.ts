@@ -1,9 +1,11 @@
 import { Size } from "@/structures/size";
 import { Representation } from "@/representation";
 import ListCanvasWidget from "./canvas/ListWidget";
+import VListCanvasWidget from "./canvas/VListWidget";
 import DictCanvasWidget from "./canvas/DictWidget";
 import GraphCanvasWidget from "./canvas/GraphWidget";
 import StringCanvasWidget from "./canvas/StringWidget";
+import NumberCanvasWidget from "./canvas/NumberWidget";
 import { BaseStructure } from "@/structures/types";
 
 
@@ -19,9 +21,11 @@ export type Widget = {
 
 const registeredWidgets: Map<string, Widget> = new Map<string, Widget>([
   [ListCanvasWidget.id, ListCanvasWidget],
+  [VListCanvasWidget.id, VListCanvasWidget],
   [DictCanvasWidget.id, DictCanvasWidget],
   [GraphCanvasWidget.id, GraphCanvasWidget],
   [StringCanvasWidget.id, StringCanvasWidget],
+  [NumberCanvasWidget.id, StringCanvasWidget],
 ]);
 
 const getWidget = (name: string) => {
