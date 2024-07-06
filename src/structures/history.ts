@@ -1,3 +1,5 @@
+import { BaseStructure } from "./types";
+
 export interface HistoryItem {
     type: string;
     path: string;
@@ -46,7 +48,6 @@ export function historyBack(stucture: BaseStructure) {
         case "setValue":
             const setValue = item as HistoryItemSetValue;
             current[parts[parts.length - 1]] = setValue.previoiusValue;
-            current[parts[parts.length - 1]].justUpdated = true;
             break;
     }
 
@@ -63,8 +64,9 @@ export function historyForward(stucture: BaseStructure) {
         return undefined;
     }
     const parts = item.path.split(".");
+
     let current: any = stucture;
-    for (let i = 1; i < parts.length - 1; i++) {
+    for (let i = 0; i < parts.length - 1; i++) {
         try {
             current = current[parts[i]];
         } catch (e) {
@@ -78,11 +80,6 @@ export function historyForward(stucture: BaseStructure) {
             const setValue = item as HistoryItemSetValue;
             setValue.previoiusValue = current[parts[parts.length - 1]];
             current[parts[parts.length - 1]] = setValue.value;
-            try {
-                current[parts[parts.length - 1]].justUpdated = true;
-            } catch (e) {
-                console.error(e);
-            }
             break;
     }
 

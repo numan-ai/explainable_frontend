@@ -2,67 +2,81 @@ import { ListCanvasRepresentation } from "./components/canvas/ListWidget";
 import { StringCanvasRepresentation } from "./components/canvas/StringWidget";
 import { ViewType } from "./storages/viewStorage";
 
-export const IS_MOCKED = true;
+export const IS_MOCKED = false;
 
 export const MOCK_CONNECTED = true;
+// const my_data = {
+//   type: "graph",
+//   keys: [
+//     {
+//       type: "string",
+//       value: "nodes",
+//     },
+//     {
+//       type: "string",
+//       value: "edges",
+//     }
+//   ],
+//   values: [
+//     {
+//       "type": "list",
+//       "data": [
+//         {
+//           "type": "string",
+//           "value": "Mark Twain",
+//         },
+//         {
+//           "type": "string",
+//           "value": "Franz Kafka",
+//         }
+//       ]
+//     },
+//     {
+//       "type": "list",
+//       "data": [
+//         {
+//           "type": "dict",
+//           "keys": [
+//             {
+//               "type": "string",
+//               "value": "start",
+//             }, {
+//               "type": "string",
+//               "value": "end",
+//             }, {
+//               "type": "string",
+//               "value": "label",
+//             }
+//           ],
+//           "values": [
+//             {
+//               "type": "string",
+//               "value": "Mark Twain",
+//             }, {
+//               "type": "string",
+//               "value": "Franz Kafka",
+//             }, {
+//               "type": "string",
+//               "value": "Is not",
+//             }
+//           ]
+//         }
+//       ]
+//     },
+//   ]
+// };
+
 const my_data = {
-  type: "graph",
-  keys: [
-    {
-      type: "string",
-      value: "nodes",
-    },
-    {
-      type: "string",
-      value: "edges",
-    }
-  ],
-  values: [
-    {
-      "type": "list",
-      "data": [
-        {
+  "type": "list",
+  "data": [
+      {
           "type": "string",
-          "value": "Mark Twain",
-        },
-        {
+          "value": "1"
+      },
+      {
           "type": "string",
-          "value": "Franz Kafka",
-        }
-      ]
-    },
-    {
-      "type": "list",
-      "data": [
-        {
-          "type": "dict",
-          "keys": [
-            {
-              "type": "string",
-              "value": "start",
-            }, {
-              "type": "string",
-              "value": "end",
-            }, {
-              "type": "string",
-              "value": "label",
-            }
-          ],
-          "values": [
-            {
-              "type": "string",
-              "value": "Mark Twain",
-            }, {
-              "type": "string",
-              "value": "Franz Kafka",
-            }, {
-              "type": "string",
-              "value": "Is not",
-            }
-          ]
-        }
-      ]
-    },
+          "value": "2"
+      }
   ]
 };
 

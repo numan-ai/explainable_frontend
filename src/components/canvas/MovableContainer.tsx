@@ -75,7 +75,7 @@ function MovableContainer(props: {
           arrow_start_x,
           arrow_start_box.position.y + arrow_start_box.size.h / 2,
           arrow_end_x,
-          currentPosition.y + size.h / 2,
+          currentPosition.y + size.h / 2 + props.margin,
         ]}
         stroke="rgb(30, 41, 59)"
         strokeWidth={1}

@@ -3,6 +3,7 @@ import WhiteBoard from './WhiteBoard';
 import { Input } from './components/ui/input';
 import { ViewType } from './storages/viewStorage';
 import render from './components/canvas/render.tsx';
+import { Rect } from 'react-konva';
 
 
 export type ViewSettings = {
@@ -27,7 +28,12 @@ function ExplainableView(props: ExplainableViewProps) {
 
   // const structure = takePartOfData(props.view.structure, path);
 
-  const component = render(view.structure, view.representation, view.position, view.id, 0);
+  const position = props.view.position || {
+    x: 100,
+    y: 100,
+  };
+
+  const component = render(view.structure, view.representation || null, position, view.id, 0);
 
   return (
     <div>

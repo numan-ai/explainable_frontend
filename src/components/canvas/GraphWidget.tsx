@@ -171,10 +171,7 @@ function GraphCanvasComponent(props: WidgetProps) {
 
   const edges: JSX.Element[] = [];
 
-  console.log(node_positions);
-
   edge_structures.forEach((edge_struct, i) => {
-    console.log(representation.edges.start_id);
     const start_id = getStructureFromSource(edge_struct, representation.edges.start_id) as StringStructure;
     const end_id = getStructureFromSource(edge_struct, representation.edges.end_id) as StringStructure;
 
@@ -185,8 +182,6 @@ function GraphCanvasComponent(props: WidgetProps) {
 
     const startSize = node_sizes.get(start_id.value);
     const endSize = node_sizes.get(end_id.value);
-
-    console.log(start_id, end_id);
 
     const start = {
       x: (node_positions.get(start_id.value)?.x || 0) + (startSize?.w || 0) / 2,
