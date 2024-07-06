@@ -6,12 +6,14 @@ import getByPath from "@/structures/path_ref";
 import { WidgetProps as WidgetComponentProps } from "../widget";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Widget } from "../registry";
+import { getStructureFromSource, Source } from "@/representation";
 
 
 const WIDGET_ID = "string";
 
 
 export type StringCanvasRepresentation = {
+  source: Source;
   type: "string";
   max_size?: number;
   format?: string;
@@ -80,7 +82,6 @@ const getStringSize = (
   if (!representation) {
     representation = getDefaultRepresentation(structure);
   }
-  // TODO: implement formatting and support for arbitrary structures
   const stringValue = getStringValue(structure, representation.format || "{item}");
   const lines = stringValue.split("\n");
   const biggestLine = Math.min(
@@ -96,8 +97,12 @@ const getStringSize = (
 
 
 function StringCanvasComponent(props: WidgetComponentProps) {
-  const { structure, position } = props;
+  const { position } = props;
   let representation: StringCanvasRepresentation | null = props.representation as StringCanvasRepresentation;
+  
+  const source = representation.source as Source;
+  const structure = getStructureFromSource(props.structure, source) as StringStructure;
+  
   if (!props.representation) {
     representation = getDefaultRepresentation(structure);
   }
@@ -142,22 +147,6 @@ function StringCanvasComponent(props: WidgetComponentProps) {
         align="center"
         verticalAlign="middle"
         listening={false}
-        
-        // onMouseDown={(evt) => {
-        //   evt.cancelBubble = false;
-        // }}
-        // onMouseMove={(evt) => {
-        //   evt.cancelBubble = false;
-        // }}
-        // onMouseUp={(evt) => {
-        //   evt.cancelBubble = false;
-        // }}
-        // onMouseEnter={() => {
-        //   setIsHovered(true);
-        // }}
-        // onMouseLeave={() => {
-        //   setIsHovered(false);
-        // }}
       />
     </>
   );

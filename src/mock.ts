@@ -148,13 +148,13 @@ const my_data = {
 //   source: {
 //     type: "ref",
 //     path: "item",
-//   } as StructureSource,
+//   } as Source,
 //   item_representation: [{
 //     type: "list",
 //     source: {
 //       type: "ref",
 //       path: "item",
-//     } as StructureSource,
+//     } as Source,
 //     item_representation: {
 //       type: "string",
 //     } as Representation,
