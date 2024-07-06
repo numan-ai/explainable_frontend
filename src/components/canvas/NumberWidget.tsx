@@ -16,7 +16,7 @@ const WIDGET_ID = "number";
 
 export type NumberCanvasRepresentation = {
     type: "number";
-    nth_decimal?: number;
+    round?: number;
     commas?: boolean;
     format?: string;
 };
@@ -43,7 +43,7 @@ function extractTemplateParts(template: string): [string[], string[]] {
 
 const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
     let format = representation.format || "{item}"
-    let nth_decimal = representation.nth_decimal || null
+    let nth_decimal = representation.round || null
     let commas = representation.commas || false
     const [parts, placeholders] = extractTemplateParts(format);
     return parts.map((part, i) => {
