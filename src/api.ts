@@ -1,5 +1,7 @@
 import { IS_MOCKED } from "./mock";
 
+const MIN_CONNECTING_TIME = 250;
+
 class WebSocketClient {
   private ws: WebSocket | null;
   private uri: string;
@@ -7,6 +9,7 @@ class WebSocketClient {
   private messageCallbacks: { [key: string]: Array<(message: any) => void> };
   private closeCallbacks: Array<() => void>;
   private requestId: number;
+  private connectionStartTime: number;
 
   constructor() {
     this.uri = "";
@@ -16,6 +19,7 @@ class WebSocketClient {
     this.messageCallbacks = {};
     this.closeCallbacks = [];
     this.requestId = 0;
+    this.connectionStartTime = 0;
   }
 
   public reconnect(uri: string) {
@@ -25,6 +29,7 @@ class WebSocketClient {
     if (this.uri === uri && this.ws && this.ws.readyState === WebSocket.OPEN) {
       return;
     }
+    this.connectionStartTime = Date.now();
     this.uri = uri;
     if (this.ws && this.ws.readyState !== WebSocket.CONNECTING) {
       this.ws.close();
@@ -46,7 +51,11 @@ class WebSocketClient {
       return;
     }
     this.ws.onopen = () => {
-      this.connectionCallbacks.forEach(callback => callback());
+      const duration = Date.now() - this.connectionStartTime;
+      const needToWait = Math.max(MIN_CONNECTING_TIME - duration, 0);
+      setTimeout(() => {
+        this.connectionCallbacks.forEach(callback => callback());
+      }, needToWait);
     };
 
     this.ws.onmessage = (event) => {

@@ -36,7 +36,7 @@ function ExplainableView(props: ExplainableViewProps) {
   const component = render(view.structure, view.representation || null, position, view.id, 0);
 
   return (
-    <div>
+    <div className='view-container'>
       {/* <HistoryUI 
         paused={false}
         viewSettings={{view_id: ""}}

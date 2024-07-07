@@ -56,39 +56,62 @@ type HeaderProps = {
 
 function Header(props: HeaderProps) {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 border-slate-500 z-10">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <div className="flex flex-col items-left">
-          <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Explainable
-          </h3>
-          <a className="text-xs text-slate-400" href="https://numan.ai/" tabIndex={-1}>by Numan</a>
-        </div>
-      </nav>
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative flex flex-row items-center gap-4">
-            <div>
-              {props.isConnected === true ? (
-                <Wifi className="text-slate-400"/> 
-              ) : (
-                props.isConnected === false ? (
-                  <WifiOff className="text-red-500"/>
+    <div>
+      <header className="sticky top-0 flex h-[64px] items-center gap-4 border-b bg-background px-4 md:px-6 border-slate-500 z-10">
+        <nav className="flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <div className="flex flex-col items-left">
+            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              Explainable
+            </h3>
+            <a className="text-xs text-slate-400" href="https://numan.ai/" tabIndex={-1}>by Numan</a>
+          </div>
+        </nav>
+        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <div className="ml-auto flex-1 sm:flex-initial">
+            <div className="relative flex flex-row items-center gap-4">
+              <div>
+                {props.isConnected === true ? (
+                  <Wifi className="text-slate-400"/> 
                 ) : (
-                  <WifiOff className="text-slate-900"/>
-                )
-              )}
+                  props.isConnected === false ? (
+                    <WifiOff className="text-red-500"/>
+                  ) : (
+                    <WifiOff className="text-slate-900"/>
+                  )
+                )}
+              </div>
+              <ServerURIInput/>
             </div>
-            <ServerURIInput/>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }
 
 const accumulatedDiffs = new Map<string, any[]>();
 
+
+function Spinner() {
+  return (
+    <div role="status" className='flex justify-center items-center'>
+      <span className='sr-only'>Loading...</span>
+      <div className='h-3 w-3 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s] mr-2 ml-0'></div>
+      <div className='h-3 w-3 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s] mr-2 ml-0'></div>
+      <div className='h-3 w-3 bg-slate-400 rounded-full animate-bounce mr-2 ml-0'></div>
+    </div>
+  )
+}
+
+
+function ConnectingComponent() {
+  return (
+    <div className="flex w-full items-center justify-center flex-col absolute top-16 left-0 right-0 bottom-0 bg-background z-10 overflow-hidden y h-[100vh - 64px] pb-48">
+      <span className="text-2xl font-semibold mb-5 text-slate-400">Connecting</span>
+      <Spinner/>
+    </div>
+  );
+}
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
@@ -133,23 +156,32 @@ export default function App() {
     }, 50);
   }, []);
 
-  const view_components = (IS_MOCKED ? MOCK_VIEWS : views).map((view, index) => {
-    return (
-      <ExplainableView
-        key={index}
-        view={view}
-        setScale={(scale) => {
-          setScale(view.id, scale);
-        }}
-      />
-    );
-  });
+  let comp = null;
 
   if (isConnected === false) {
-    views.length = 0;
-    view_components.push(
+    comp =(
       <NoConnectionComponent key={-1}/>
     );
+  } else if (isConnected === undefined) {
+    comp = <ConnectingComponent key={-1}/>;
+  } else {
+    const view_components = (IS_MOCKED ? MOCK_VIEWS : views).map((view, index) => {
+      return (
+        <ExplainableView
+          key={index}
+          view={view}
+          setScale={(scale) => {
+            setScale(view.id, scale);
+          }}
+        />
+      );
+    });
+
+    comp = (
+      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
+        { view_components}
+      </div>
+    )
   }
   
   return (
@@ -159,9 +191,8 @@ export default function App() {
           isConnected={isConnected}
         />
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-            { view_components}
-          </div>
+        {/* <ConnectingComponent/> */}
+        {comp}
         </main>
       </div>
     </ThemeProvider>

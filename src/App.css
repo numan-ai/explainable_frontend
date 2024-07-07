@@ -21,3 +21,16 @@ button:active {
     transform: scale(1)
   }
 }
+
+.view-container {
+  animation: view-container-appear 0.2s ease-out;
+}
+
+@keyframes view-container-appear {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  } 
+}
