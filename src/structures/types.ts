@@ -19,7 +19,7 @@ export type NullStructure = {
 
 export type NumberStructure = {
   type: "number";
-  value: number;
+  value: "string";
 } & BaseStructure;
 
 export type ObjectStructure = {
