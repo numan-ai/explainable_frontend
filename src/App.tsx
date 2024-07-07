@@ -158,11 +158,11 @@ export default function App() {
 
   let comp = null;
 
-  if (isConnected === false) {
+  if (isConnected === false && !IS_MOCKED) {
     comp =(
       <NoConnectionComponent key={-1}/>
     );
-  } else if (isConnected === undefined) {
+  } else if (isConnected === undefined && !IS_MOCKED) {
     comp = <ConnectingComponent key={-1}/>;
   } else {
     const view_components = (IS_MOCKED ? MOCK_VIEWS : views).map((view, index) => {
