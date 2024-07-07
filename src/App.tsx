@@ -115,8 +115,8 @@ function ConnectingComponent() {
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
-  const [views, setStructure, modifyStructure, setScale] = useViewStore((s) => [
-    s.views, s.setStructure, s.modifyStructure, s.setScale,
+  const [views, setStructure, modifyStructure] = useViewStore((s) => [
+    s.views, s.setStructure, s.modifyStructure,
   ]);
 
   useEffect(() => {
@@ -170,9 +170,9 @@ export default function App() {
         <ExplainableView
           key={index}
           view={view}
-          setScale={(scale) => {
-            setScale(view.id, scale);
-          }}
+          // setScale={(scale) => {
+          //   setScale(view.id, scale);
+          // }}
         />
       );
     });

@@ -9,7 +9,7 @@ export type ViewType = {
   structure: BaseStructure;
   representation: Representation | null;
   position: Position;
-  scale: number;
+  // scale: number;
 }
 
 type LayoutStoreType = {
@@ -18,7 +18,7 @@ type LayoutStoreType = {
   addView: (view: ViewType) => void;
   setStructure: (viewId: string, structure: BaseStructure, representation: Representation | null) => void;
   modifyStructure: (viewId: string, callback: (structure: BaseStructure) => BaseStructure) => void;
-  setScale: (viewId: string, scale: number) => void;
+  // setScale: (viewId: string, scale: number) => void;
 };
 
 
@@ -62,18 +62,18 @@ export const useViewStore = create<LayoutStoreType>()(
           return state;
         });
       },
-      setScale: (viewId: string, scale: number) => {
-        set(state => {
-          const view = state.views.find(view => view.id === viewId);
-          if (view === undefined) {
-            console.error("Can't find view", viewId);
-            return state;
-          }
-          view.scale = scale;
+      // setScale: (viewId: string, scale: number) => {
+      //   set(state => {
+      //     const view = state.views.find(view => view.id === viewId);
+      //     if (view === undefined) {
+      //       console.error("Can't find view", viewId);
+      //       return state;
+      //     }
+      //     view.scale = scale;
 
-          return state;
-        });
-      },
+      //     return state;
+      //   });
+      // },
     }),
   )
   // , {

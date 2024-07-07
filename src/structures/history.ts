@@ -47,7 +47,18 @@ export function historyBack(stucture: BaseStructure) {
     switch (item.type) {
         case "setValue":
             const setValue = item as HistoryItemSetValue;
-            current[parts[parts.length - 1]] = setValue.previoiusValue;
+            if (current?.type === "dict" || current?.type === "graph") {
+                const idx = current.keys.findIndex((key: any) => {
+                    return key.type === "string" && key.value === parts[parts.length - 1];
+                });
+                if (idx === -1) {
+                    console.error("Can't find:", parts[parts.length - 1], current, item.path);
+                    return undefined;
+                }
+                current.values[idx] = setValue.previoiusValue;
+            } else {
+                current[parts[parts.length - 1]] = setValue.previoiusValue;
+            }
             break;
     }
 
@@ -67,10 +78,21 @@ export function historyForward(stucture: BaseStructure) {
 
     let current: any = stucture;
     for (let i = 0; i < parts.length - 1; i++) {
+        if (current?.type === "dict" || current?.type === "graph") {
+            const idx = current.keys.findIndex((key: any) => {
+                return key.type === "string" && key.value === parts[i];
+            });
+            if (idx === -1) {
+                console.error("Can't find:", parts[i], current, item.path);
+                return undefined;
+            }
+            current = current.values[idx];
+            continue;
+        }
         try {
             current = current[parts[i]];
         } catch (e) {
-            console.error("Can't find", parts[i], current, item.path);
+            console.error("Can't find:", parts[i], current, item.path);
             return undefined;
         }
     }
@@ -78,8 +100,18 @@ export function historyForward(stucture: BaseStructure) {
     switch (item.type) {
         case "setValue":
             const setValue = item as HistoryItemSetValue;
-            setValue.previoiusValue = current[parts[parts.length - 1]];
-            current[parts[parts.length - 1]] = setValue.value;
+            if (current?.type === "dict" || current?.type === "graph") {
+                const idx = current.keys.findIndex((key: any) => {
+                    return key.type === "string" && key.value === parts[parts.length - 1];
+                });
+                if (idx === -1) {
+                    console.error("Can't find:", parts[parts.length - 1], current, item.path);
+                    return undefined;
+                }
+                current.values[idx] = setValue.value;
+            } else {
+                current[parts[parts.length - 1]] = setValue.value;
+            }
             break;
     }
 

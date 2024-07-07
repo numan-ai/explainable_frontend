@@ -22,7 +22,7 @@ button:active {
   }
 }
 
-.view-container {
+.slow-appear {
   animation: view-container-appear 0.2s ease-out;
 }
 

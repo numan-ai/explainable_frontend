@@ -5,9 +5,12 @@ import { Layer, Stage } from 'react-konva';
 
 type WhiteBoardProps = {
   children: any;
-  scale: number;
-  setScale: (scale: number) => void;
+  // scale: number;
+  view_id: string;
+  // setScale: (scale: number) => void;
 }
+
+export const scaleValues = new Map<string, number>();
 
 
 function WhiteBoard(props: WhiteBoardProps) {
@@ -16,6 +19,9 @@ function WhiteBoard(props: WhiteBoardProps) {
     width: 0,
     height: 0,
   });
+
+  const [scale, setScale] = useState(scaleValues.get(props.view_id) || 1);
+
   // const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [stagePosition, setStagePosition] = useState({
     x: 20,
@@ -50,8 +56,8 @@ function WhiteBoard(props: WhiteBoardProps) {
   const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
     evt.cancelBubble = true;
     if (dragStart.current) {
-      const x = (evt.evt.layerX - dragStart.current.x) / props.scale;
-      const y = (evt.evt.layerY - dragStart.current.y) / props.scale;
+      const x = (evt.evt.layerX - dragStart.current.x) / scale;
+      const y = (evt.evt.layerY - dragStart.current.y) / scale;
       setStagePosition({ x: dragStart.current.initX - x, y: dragStart.current.initY - y });
     }
   }
@@ -62,11 +68,12 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   const onZoom = (evt: KonvaEventObject<WheelEvent>) => {
-    const minScale = 0.2;
+    const minScale = 0.05;
     const maxScale = 3;
     evt.cancelBubble = true;
-    const scale = Math.min(Math.max((props.scale || 1) - evt.evt.deltaY / 300, minScale), maxScale);
-    props.setScale(scale);
+    const _scale = Math.min(Math.max((scale || 1) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
+    setScale(_scale);
+    scaleValues.set(props.view_id, _scale);
     evt.evt.preventDefault();
   }
 
@@ -82,8 +89,8 @@ function WhiteBoard(props: WhiteBoardProps) {
         onMouseLeave={dragStageEnd}
         offset={stagePosition}
         scale={{
-          x: props.scale,
-          y: props.scale,
+          x: scale,
+          y: scale,
         }}
       >
         <Layer>

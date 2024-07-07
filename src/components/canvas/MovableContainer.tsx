@@ -3,8 +3,12 @@ import getSize, { Size } from "@/structures/size";
 import { BaseStructure } from "@/structures/types";
 import { Arrow, Rect } from "react-konva";
 import render from "./render";
-import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
-import { useViewStore } from "@/storages/viewStorage";
+import { useWidgetStateStorage, WidgetState, WidgetStateStorageType } from "@/storages/widgetStateStorage";
+import React, { useEffect, useRef, useState } from "react";
+import { scaleValues } from "@/WhiteBoard";
+import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
+
 
 
 export const getMovableContainerSize = (
@@ -35,15 +39,43 @@ function MovableContainer(props: {
     widgetState,
     setDragStart,
     setPosition,
-  ] = useWidgetStateStorage((s) => [
+  ] = useWidgetStateStorage(useShallow((s) => [
     s.states[props.id],
     s.setDragStart,
     s.setPosition,
-  ]);
+  ]));
 
-  const [view] = useViewStore((s) => [s.views.find(view => view.id === props.id.split(".")[0])]);
+  // const widgetStateRef = useRef(useWidgetStateStorage.getState().states[props.id]);
+  // // Connect to the store on mount, disconnect on unmount, catch state-changes in a reference
+  // useEffect(() => useWidgetStateStorage.subscribe(
+  //   state => (widgetStateRef.current = state.states[props.id]),
+  // ), []);
 
-  const { position } = props;
+  // const widgetState = widgetStateRef.current;
+
+  // const widgetState = null;
+  // , (old, new_) => {
+  //   return (
+  //     (old[0]?.position === new_[0]?.position) &&
+  //     (old[0]?.dragStart === new_[0]?.dragStart)
+  //   );
+  // }
+
+  // const lastDrag = useRef<number>(Date.now());
+  // const [currentPosition, setPos] = useState(widgetState?.position || props.position);
+  // const [dragStart, _setDragStart] = useState(widgetState?.dragStart || null);
+
+  const _setDragStart = (dragStart: any) => {
+    setDragStart(props.id, dragStart);
+  }
+  const currentPosition = widgetState?.position || props.position;
+  const dragStart = widgetState?.dragStart || null;
+
+  // const storeRef = useRef<WidgetState>();
+  // if (!storeRef.current) {
+  //   storeRef.current = useWidgetStateStorage((s) => useShallow(s.states[props.id]));
+  // }
+
   const item = props.item;
   const item_representation = props.item_representation;
   const size = getMovableContainerSize(item, item_representation);
@@ -51,13 +83,13 @@ function MovableContainer(props: {
     console.error("Can't get size of list item", item, item_representation);
     return <></>;
   }
-  const currentPosition = widgetState?.position || position;
+
   const item_position = {
     x: currentPosition.x + props.margin,
     y: currentPosition.y + props.margin,
   }
   const comp = render(item, item_representation, item_position, props.id, 0);
-  
+
   const arrow_start_box = props.arrow_start_box;
   let arrow_comp = null;
   if (arrow_start_box !== null) {
@@ -96,7 +128,10 @@ function MovableContainer(props: {
         stroke="rgb(30, 41, 59)"
         strokeWidth={1}
         onMouseDown={(evt) => {
-          setDragStart(props.id, {
+          if (evt.evt.shiftKey) {
+            return;
+          }
+          _setDragStart({
             layerX: evt.evt.layerX,
             layerY: evt.evt.layerY,
             x: currentPosition.x,
@@ -105,22 +140,39 @@ function MovableContainer(props: {
           evt.cancelBubble = true;
         }}
         onMouseMove={(evt) => {
-          if (!widgetState?.dragStart) {
+          if (evt.evt.shiftKey) {
             return;
           }
-          const dx = (evt.evt.layerX - (widgetState?.dragStart.layerX || 0)) / (view?.scale || 1);
-          const dy = (evt.evt.layerY - (widgetState?.dragStart.layerY || 0)) / (view?.scale || 1);
-          setPosition(props.id, {
-            x: widgetState?.dragStart.x + dx,
-            y: widgetState?.dragStart.y + dy,
-          });
+          if (!dragStart) {
+            return;
+          }
+          // if ((Date.now() - lastDrag.current) < 20) {
+          //   return;
+          // }
+          // lastDrag.current = Date.now();
+
+          const view_scale = scaleValues.get(props.id.split(".")[0]) || 1;
+          const dx = (evt.evt.layerX - (dragStart?.layerX || 0)) / view_scale;
+          const dy = (evt.evt.layerY - (dragStart?.layerY || 0)) / view_scale;
+          const newPos = {
+            x: (dragStart?.x || 0) + dx,
+            y: (dragStart?.y || 0) + dy,
+          };
+          // setTimeout(() => {
+            setPosition(props.id, newPos);
+          // }, 10);
+
+          // setPos(newPos);
           evt.cancelBubble = true;
         }}
-        onMouseUp={(_) => {
-          setDragStart(props.id, null);
+        onMouseUp={(evt) => {
+          if (evt.evt.shiftKey) {
+            return;
+          }
+          _setDragStart(null);
         }}
         onMouseLeave={() => {
-          setDragStart(props.id, null);
+          _setDragStart(null);
         }}
       />
       {comp}

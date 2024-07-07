@@ -11,7 +11,7 @@ export type ViewSettings = {
 
 export type ExplainableViewProps = {
   view: ViewType;
-  setScale: (scale: number) => void;
+  // setScale: (scale: number) => void;
 }
 
 
@@ -36,7 +36,7 @@ function ExplainableView(props: ExplainableViewProps) {
   const component = render(view.structure, view.representation || null, position, view.id, 0);
 
   return (
-    <div className='view-container'>
+    <div className='slow-appear'>
       {/* <HistoryUI 
         paused={false}
         viewSettings={{view_id: ""}}
@@ -60,7 +60,7 @@ function ExplainableView(props: ExplainableViewProps) {
         }
       } name='view-path'/>
       <div className="component-container">
-        <WhiteBoard scale={view.scale || 1} setScale={props.setScale}>
+        <WhiteBoard view_id={view.id}>
           {component}
         </WhiteBoard>
       </div>

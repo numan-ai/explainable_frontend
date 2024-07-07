@@ -9,13 +9,13 @@ type DragPosition = {
   y: number;
 }
 
-type WidgetState = {
+export type WidgetState = {
   isCollapsed: boolean;
   dragStart: DragPosition | null;
   position: Position | null;
 }
 
-type WidgetStateStorageType = {
+export type WidgetStateStorageType = {
   states: { [key: string]: WidgetState };
   setIsCollapsed: (id: string, isClicked: boolean) => void;
   setDragStart: (id: string, dragStart: DragPosition | null) => void;

@@ -6,7 +6,9 @@ import getByPath from "@/structures/path_ref";
 import { WidgetProps as WidgetComponentProps } from "../widget";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Widget } from "../registry";
-import { getStructureFromSource, Source } from "@/sources";
+import { getStructureFromSource, Representation, Source } from "@/sources";
+import React from "react";
+import { useShallow } from "zustand/react/shallow";
 
 
 const WIDGET_ID = "string";
@@ -81,8 +83,9 @@ export const getStringValue = (structure: BaseStructure, format: string): string
 
 const getStringSize = (
   structure: BaseStructure,
-  representation: StringCanvasRepresentation,
+  representation: Representation,
 ) => {
+  representation = representation as StringCanvasRepresentation;
   if (!representation) {
     representation = getDefaultRepresentation(structure);
   }
@@ -116,9 +119,9 @@ function StringCanvasComponent(props: WidgetComponentProps) {
   const [isHovered, _] = useState(false);
   const [
     widgetState,
-  ] = useWidgetStateStorage((s) => [
+  ] = useWidgetStateStorage(useShallow((s) => [
     s.states[props.id],
-  ]);
+  ]));
 
   const stringValue = getStringValue(structure, (representation as StringCanvasRepresentation).format || "{item}");
   if (size === undefined) {

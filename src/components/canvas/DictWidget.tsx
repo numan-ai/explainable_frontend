@@ -1,7 +1,7 @@
 import { getStructureFromSource, RefSource, Representation, Source } from "@/sources";
 import getSize, { type Size } from "@/structures/size";
 import { BaseStructure, DictStructure } from "@/structures/types";
-import React from "react";
+import React, { useMemo } from "react";
 import { Group } from "react-konva";
 import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
@@ -97,7 +97,10 @@ function DictCanvasComponent(props: WidgetProps) {
 
   representation.style = representation?.style;
 
-  const size = getSize(props.structure, representation);
+  const size = useMemo(() => {
+    return getSize(props.structure, representation);
+  }, [props.structure, representation]);
+
   if (size === undefined) {
     console.error("Can't get size of list", structure, representation);
     return <></>;
@@ -111,68 +114,69 @@ function DictCanvasComponent(props: WidgetProps) {
   const maxKeyWidth = Math.max(...structure.keys.map(key => getSize(key, representation.key_representation || null)?.w || 0));
 
   // const children = useMemo(() => {
-  const children = structure.keys.map((key, i) => {
-    const value = structure.values[i];
-    const key_representation = representation.key_representation || null;
-    const value_representation = representation.value_representation || null;
+    const children = structure.keys.map((key, i) => {
+      const value = structure.values[i];
+      const key_representation = representation.key_representation || null;
+      const value_representation = representation.value_representation || null;
 
-    const keySize = getSize(key, key_representation);
-    if (keySize === undefined) {
-      console.error("Can't get size of item's key", key, key_representation);
-      return undefined;
-    }
+      const keySize = getSize(key, key_representation);
+      if (keySize === undefined) {
+        console.error("Can't get size of item's key", key, key_representation);
+        return undefined;
+      }
 
-    const valueSize = getSize(value, value_representation);
-    if (valueSize === undefined) {
-      console.error("Can't get size of item's value", value, value_representation);
-      return undefined;
-    }
+      const valueSize = getSize(value, value_representation);
+      if (valueSize === undefined) {
+        console.error("Can't get size of item's value", value, value_representation);
+        return undefined;
+      }
 
-    const itemH = Math.max(keySize.h, valueSize.h);
-    
-    const key_position = {
-      x: position.x + margin,
-      y: position.y + collectedY,
-    } as Position;
-    const value_position = {
-      x: position.x + maxKeyWidth + margin + spacing * 2,
-      y: position.y + collectedY,
-    }
-    collectedY += itemH + spacing * 3;
-    const key_comp = render(key, key_representation, key_position, `${props.id}.keys.${i}`, -(i+1));
-    const value_id = `${props.id}.values.${i}`;
-    const value_comp = React.createElement(MovableContainer, {
-      item: value,
-      margin: margin,
-      arrow_start_box: {
-        position: key_position,
-        size: keySize,
-      },
-      item_representation: value_representation,
-      position: value_position,
-      id: value_id,
+      const itemH = Math.max(keySize.h, valueSize.h);
+      
+      const key_position = {
+        x: position.x + margin,
+        y: position.y + collectedY,
+      } as Position;
+      const value_position = {
+        x: position.x + maxKeyWidth + margin + spacing * 2,
+        y: position.y + collectedY,
+      }
+      collectedY += itemH + spacing * 3;
+      const key_comp = render(key, key_representation, key_position, `${props.id}.keys.${i}`, -(i+1));
+      const value_id = `${props.id}.values.${i}`;
+      const value_comp = React.createElement(MovableContainer, {
+        item: value,
+        margin: margin,
+        arrow_start_box: {
+          position: key_position,
+          size: keySize,
+        },
+        item_representation: value_representation,
+        position: value_position,
+        id: value_id,
+      });
+      // const value_comp = render(value, value_representation, value_position, `${props.id}.values.${i}`, i);
+
+      return (
+        <Group
+          key={i}
+          // onMouseDown={(e) => {
+          //   startDraggingItem(item.struct_id, e.evt.layerX, e.evt.layerY);
+          // }}
+          // onMouseMove={(e) => {
+          //   dragItem(item.struct_id, e.evt.layerX, e.evt.layerY);
+          // }}
+          // onMouseUp={(_) => {
+          //   endDraggingItem(item.struct_id);
+          // }}
+        >
+          {key_comp}
+          {value_comp}
+        </Group>
+      )
     });
-    // const value_comp = render(value, value_representation, value_position, `${props.id}.values.${i}`, i);
-
-    return (
-      <Group
-        key={i}
-        // onMouseDown={(e) => {
-        //   startDraggingItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-        // }}
-        // onMouseMove={(e) => {
-        //   dragItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-        // }}
-        // onMouseUp={(_) => {
-        //   endDraggingItem(item.struct_id);
-        // }}
-      >
-        {key_comp}
-        {value_comp}
-      </Group>
-    )
-  });
-  // }, [structure.data]);
+  //   return children;
+  // }, [structure]);
 
   return (
     <>

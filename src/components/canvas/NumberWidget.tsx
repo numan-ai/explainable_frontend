@@ -3,11 +3,13 @@ import getByPath from "@/structures/path_ref";
 import { WidgetProps } from "../widget";
 import { useState } from "react";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
-import { getStructureFromSource, Source } from "@/sources";
+import { getStructureFromSource, Representation, Source } from "@/sources";
 import getSize, { Size } from "@/structures/size";
 import { Rect, Text } from "react-konva";
 
 import { BaseStructure, NumberStructure } from "@/structures/types";
+import React from "react";
+import { useShallow } from "zustand/react/shallow";
 
 
 const WIDGET_ID = "number";
@@ -60,8 +62,9 @@ export const getNumberValue = (structure: BaseStructure, representation: NumberC
 
 const getNumberSize = (
   structure: BaseStructure,
-  representation: NumberCanvasRepresentation,
+  representation: Representation,
 ) => {
+  representation = representation as NumberCanvasRepresentation;
   if (!representation) {
     representation = getDefaultRepresentation(structure);
   }
@@ -91,9 +94,9 @@ function NumberCanvasComponent(props: WidgetProps) {
   const [isHovered, _] = useState(false);
   const [
     widgetState,
-  ] = useWidgetStateStorage((s) => [
+  ] = useWidgetStateStorage(useShallow((s) => [
     s.states[props.id],
-  ]);
+  ]));
 
   const numberValue = getNumberValue(structure, representation);
   if (size === undefined) {

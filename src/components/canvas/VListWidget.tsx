@@ -5,6 +5,7 @@ import { BaseStructure, ListStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
 import { Widget } from "../registry";
+import React from "react";
 
 const WIDGET_ID = "vlist";
 
