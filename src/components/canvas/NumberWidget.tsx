@@ -1,181 +1,137 @@
 import { Widget } from "../registry";
 import getByPath from "@/structures/path_ref";
 import { WidgetProps } from "../widget";
-
-import getSize, { Size } from "@/structures/size";
-import { Rect, Text } from "react-konva";
-import { BaseStructure, StringStructure } from "@/structures/types";
-// Number structure instead of string^^^?
-
 import { useState } from "react";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import { getStructureFromSource, Source } from "@/representation";
+import getSize, { Size } from "@/structures/size";
+import { Rect, Text } from "react-konva";
+
+import { BaseStructure, NumberStructure } from "@/structures/types";
 
 
 const WIDGET_ID = "number";
 
 
 export type NumberCanvasRepresentation = {
-    type: "number";
-    round?: number;
-    commas?: boolean;
-    format?: string;
+  source: Source;
+  type: "number";
+  round?: number;
+  separation?: boolean;
 };
 
-function extractTemplateParts(template: string): [string[], string[]] {
-    const regex = /\{([^}]+)\}/g;
-    
-    const parts = [];
-    const placeholders = [];
-    
-    let lastIndex = 0;
-    let match;
-  
-    while ((match = regex.exec(template)) !== null) {
-      parts.push(template.slice(lastIndex, match.index));
-      placeholders.push(match[1]);
-      lastIndex = regex.lastIndex;
-    }
-  
-    parts.push(template.slice(lastIndex));
-  
-    return [parts, placeholders];
+
+const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation => {
+  return {
+    type: WIDGET_ID,
+  } as NumberCanvasRepresentation
+}
+
+
+export const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
+  let round = representation.round || null
+  let separation = representation.separation || false
+  console.log(separation)
+
+  const subStructure = getByPath(structure, "item") as NumberStructure;
+  if (typeof subStructure.value !== "number") {
+    console.error("Format placeholder item did not resolve to a number");
   }
 
-const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
-    let format = representation.format || "{item}"
-    let nth_decimal = representation.round || null
-    let commas = representation.commas || false
-    const [parts, placeholders] = extractTemplateParts(format);
-    return parts.map((part, i) => {
-      const placeholder = placeholders[i];
-      if (i === parts.length - 1) {
-        return part;
-      }
-      const subStructure = getByPath(structure, placeholder) as StringStructure;
-      if (typeof subStructure.value !== "number") {
-        console.error("Format placeholder", placeholder, "did not resolve to a number");
-        return part;
-      }
+  var number: number = subStructure.value
+  var formattedNumber = number.toString()
 
-      var number: number = subStructure.value
-      var formattedNumber = number.toString()
+  if (round !== null){
+    formattedNumber = number.toFixed(round)
+  }
 
-      if (nth_decimal !== null){
-        formattedNumber = number.toFixed(nth_decimal)
-      }
+  if (separation){
+    const parts = formattedNumber.split('.');
+    parts[0] = parseFloat(parts[0]).toLocaleString();
+    formattedNumber = parts.join('.');
+  }
 
-      if (commas){
-        const parts = formattedNumber.split('.');
-        parts[0] = parseFloat(parts[0]).toLocaleString();
-        formattedNumber = parts.join('.');
-      }
-
-      return part + formattedNumber;
-    }).join("");
+  return formattedNumber;
 }
+
 
 const getNumberSize = (
-    structure: BaseStructure,
-    representation: NumberCanvasRepresentation,
+  structure: BaseStructure,
+  representation: NumberCanvasRepresentation,
 ) => {
-    const numberValue = getNumberValue(structure, representation);
-    const width = numberValue.toString().length
+  if (!representation) {
+    representation = getDefaultRepresentation(structure);
+  }
+  const numberValue = getNumberValue(structure, representation);
+  const width = numberValue.toString().length
 
-    return {
-        w: Math.max(10 * width + 25, 100),
-        h: 100,
-    } as Size;
-
+  return {
+    w: Math.max(10 * width + 25, 100),
+    h: 100,
+  } as Size;
 }
+
 
 function NumberCanvasComponent(props: WidgetProps) {
-    const { structure, representation, position } = props;
-    const size = getSize(structure, representation);
-  
-    const [isHovered, setIsHovered] = useState(false);
-    const [
-      widgetState,
-      setIsCollapsed,
-      setDragStart,
-      setPosition,
-    ] = useWidgetStateStorage((s) => [
-      s.states[props.id],
-      s.setIsCollapsed,
-      s.setDragStart,
-      s.setPosition,
-    ]);
-  
-    const stringValue = getNumberValue(structure, representation as NumberCanvasRepresentation);
-    if (size === undefined) {
-        console.error("Can't get size of number", structure, representation);
-        return <></>;
-      }
-    
-      const isCollapsed = widgetState?.isCollapsed || false;
-    
-      const currentPosition = widgetState?.position || position;
+  console.log("HEELO")
+  const { position } = props;
+  let representation: NumberCanvasRepresentation | null = props.representation as NumberCanvasRepresentation;
 
-    return (
-        <>
-            <Rect
-            x={currentPosition.x}
-            y={currentPosition.y}
-            width={size.w}
-            height={size.h}
-            fill={isHovered ? "rgba(30, 41, 59, 0.1)" : "rgba(30, 41, 59, 0.2)"}
-            stroke={isCollapsed ? "rgb(30, 41, 59)" : "rgb(20, 20, 20)"}
-            strokeWidth={1}
-            listening={false}
-            />
-            <Text
-            x={currentPosition.x}
-            y={currentPosition.y}
-            width={size.w}
-            height={size.h}
-            fontSize={18}
-            fill="lightgray"
-            text={stringValue}
-            align="center"
-            verticalAlign="middle"
-            onMouseDown={(evt) => {
-                setDragStart(props.id, {
-                layerX: evt.evt.layerX,
-                layerY: evt.evt.layerY,
-                x: currentPosition.x,
-                y: currentPosition.y,
-                });
-            }}
-            onMouseMove={(evt) => {
-                if (!widgetState?.dragStart) {
-                return;
-                }
-                const dx = evt.evt.layerX - (widgetState?.dragStart.layerX || 0);
-                const dy = evt.evt.layerY - (widgetState?.dragStart.layerY || 0);
-                setPosition(props.id, {
-                x: widgetState?.dragStart.x + dx,
-                y: widgetState?.dragStart.y + dy,
-                });
-            }}
-            onMouseUp={(_) => {
-                setDragStart(props.id, null);
-            }}
-            onMouseEnter={() => {
-                setIsHovered(true);
-            }}
-            onMouseLeave={() => {
-                setIsHovered(false);
-                setDragStart(props.id, null);
-            }}
-            onClick={() => {
-                // setIsCollapsed(props.id, !isCollapsed);
-            }}
-            />
-        </>
-        );
+  const source = representation.source as Source
+  const structure = getStructureFromSource(props.structure, source) as NumberStructure;
+
+  if (!props.representation) {
+    representation = getDefaultRepresentation(structure);
+  }
+
+  const size = getSize(structure, representation);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [
+    widgetState,
+  ] = useWidgetStateStorage((s) => [
+    s.states[props.id],
+  ]);
+
+  const numberValue = getNumberValue(structure, representation);
+  if (size === undefined) {
+    console.error("Can't get size of number", structure, representation);
+    return <></>;
+  }
+  
+  const isCollapsed = widgetState?.isCollapsed || false;
+
+  return (
+    <>
+      <Rect
+        x={position.x}
+        y={position.y}
+        width={size.w}
+        height={size.h}
+        fill={isHovered ? "rgba(30, 41, 59, 0.1)" : "rgba(30, 41, 59, 0.2)"}
+        stroke={isCollapsed ? "rgb(30, 41, 59)" : "rgb(20, 20, 20)"}
+        strokeWidth={1}
+        listening={false}
+      />
+      <Text
+        x={position.x}
+        y={position.y}
+        width={size.w}
+        height={size.h}
+        fontSize={18}
+        fill="lightgray"
+        text={numberValue}
+        align="center"
+        verticalAlign="middle"
+        listening={false}
+      />
+    </>
+  );
 }
 
+
 export default {
-    id: WIDGET_ID,
-    component: NumberCanvasComponent,
-    sizeGetter: getNumberSize,
+  id: WIDGET_ID,
+  component: NumberCanvasComponent,
+  sizeGetter: getNumberSize,
 } as Widget;
