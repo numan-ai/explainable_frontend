@@ -68,6 +68,8 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   const onZoom = (evt: KonvaEventObject<WheelEvent>) => {
+    // console.log("Scale before", scale)
+
     const minScale = 0.05;
     const maxScale = 3;
     evt.cancelBubble = true;
@@ -75,6 +77,18 @@ function WhiteBoard(props: WhiteBoardProps) {
     setScale(_scale);
     scaleValues.set(props.view_id, _scale);
     evt.evt.preventDefault();
+
+    const [pastX, pastY] = [evt.evt.layerX/scale + stagePosition.x, evt.evt.layerY/scale + stagePosition.y]
+    const [newX, newY] = [evt.evt.layerX/_scale + stagePosition.x, evt.evt.layerY/_scale + stagePosition.y]
+
+    setStagePosition({x: stagePosition.x + (pastX - newX), y: stagePosition.y + (pastY - newY)})
+
+
+    // console.log(stagePosition.x, stagePosition.y)
+    // console.log(evt.evt.layerX, evt.evt.layerY)
+    // console.log("Scale after", _scale)
+
+    //setStagePosition({x: 10, y: 2})
   }
 
   return (
