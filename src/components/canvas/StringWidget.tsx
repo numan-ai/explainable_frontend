@@ -22,6 +22,10 @@ export type StringCanvasRepresentation = {
 
 const getDefaultRepresentation = (_: BaseStructure): StringCanvasRepresentation => {
   return {
+    source: {
+      type: "ref",
+      path: "item",
+    },
     type: WIDGET_ID,
     format: "{item}",
   } as StringCanvasRepresentation;
@@ -100,12 +104,12 @@ function StringCanvasComponent(props: WidgetComponentProps) {
   const { position } = props;
   let representation: StringCanvasRepresentation | null = props.representation as StringCanvasRepresentation;
   
+  if (!props.representation) {
+    representation = getDefaultRepresentation(props.structure);
+  }
+
   const source = representation.source as Source;
   const structure = getStructureFromSource(props.structure, source) as StringStructure;
-  
-  if (!props.representation) {
-    representation = getDefaultRepresentation(structure);
-  }
 
   const size = getSize(structure, representation);
 

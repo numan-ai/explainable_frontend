@@ -1,7 +1,3 @@
-import { ListCanvasRepresentation } from "./components/canvas/ListWidget";
-import { VListCanvasRepresentation } from "./components/canvas/VListWidget";
-import { StringCanvasRepresentation } from "./components/canvas/StringWidget";
-import { NumberCanvasRepresentation } from "./components/canvas/NumberWidget";
 import { ViewType } from "./storages/viewStorage";
 
 export const IS_MOCKED = false;

@@ -12,6 +12,7 @@ export type ViewSettings = {
 
 export type ExplainableViewProps = {
   view: ViewType;
+  setScale: (scale: number) => void;
 }
 
 
@@ -32,7 +33,7 @@ function ExplainableView(props: ExplainableViewProps) {
     x: 100,
     y: 100,
   };
-
+  
   const component = render(view.structure, view.representation || null, position, view.id, 0);
 
   return (
@@ -60,7 +61,7 @@ function ExplainableView(props: ExplainableViewProps) {
         }
       } name='view-path'/>
       <div className="component-container">
-        <WhiteBoard>
+        <WhiteBoard scale={view.scale || 1} setScale={props.setScale}>
           {component}
         </WhiteBoard>
       </div>

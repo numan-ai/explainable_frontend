@@ -5,6 +5,8 @@ import { Layer, Stage } from 'react-konva';
 
 type WhiteBoardProps = {
   children: any;
+  scale: number;
+  setScale: (scale: number) => void;
 }
 
 
@@ -19,7 +21,6 @@ function WhiteBoard(props: WhiteBoardProps) {
     x: 20,
     y: 20,
   });
-  const [scale, setScale] = useState(1);
 
   let dragStart = useRef<{ 
     x: number, 
@@ -49,8 +50,8 @@ function WhiteBoard(props: WhiteBoardProps) {
   const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
     evt.cancelBubble = true;
     if (dragStart.current) {
-      const x = (evt.evt.layerX - dragStart.current.x) / scale;
-      const y = (evt.evt.layerY - dragStart.current.y) / scale;
+      const x = (evt.evt.layerX - dragStart.current.x) / props.scale;
+      const y = (evt.evt.layerY - dragStart.current.y) / props.scale;
       setStagePosition({ x: dragStart.current.initX - x, y: dragStart.current.initY - y });
     }
   }
@@ -64,21 +65,8 @@ function WhiteBoard(props: WhiteBoardProps) {
     const minScale = 0.2;
     const maxScale = 3;
     evt.cancelBubble = true;
-    setScale(oldScale => {
-      const scale = Math.min(Math.max(oldScale - evt.evt.deltaY / 300, minScale), maxScale);
-
-      // if (oldScale !== scale) {
-      //   console.log(scale);
-      //   setStagePosition(sp => {
-      //     return {
-      //       x: sp.x - e.evt.deltaY / scale * 1,
-      //       y: sp.y - e.evt.deltaY / scale * 1,
-      //     }
-      //   });
-      // }
-      
-      return scale;
-    });
+    const scale = Math.min(Math.max((props.scale || 1) - evt.evt.deltaY / 300, minScale), maxScale);
+    props.setScale(scale);
     evt.evt.preventDefault();
   }
 
@@ -94,8 +82,8 @@ function WhiteBoard(props: WhiteBoardProps) {
         onMouseLeave={dragStageEnd}
         offset={stagePosition}
         scale={{
-          x: scale,
-          y: scale,
+          x: props.scale,
+          y: props.scale,
         }}
       >
         <Layer>

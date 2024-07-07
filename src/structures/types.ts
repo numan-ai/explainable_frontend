@@ -19,7 +19,7 @@ export type NullStructure = {
 
 export type NumberStructure = {
   type: "number";
-  value: "string";
+  value: number;
 } & BaseStructure;
 
 export type ObjectStructure = {
@@ -31,4 +31,9 @@ export type ObjectStructure = {
 export type StringStructure = {
   type: "string";
   value: string;
+} & BaseStructure;
+
+export type DataclassStructure = {
+  type: "dataclass";
+  data: { [key: string]: BaseStructure };
 } & BaseStructure;

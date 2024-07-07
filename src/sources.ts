@@ -14,7 +14,6 @@ export type Representation = {
   style?: RepresentationStyle;
 };
 
-
 export type Source = {
   type: string;
 }

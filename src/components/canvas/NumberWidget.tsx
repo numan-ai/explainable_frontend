@@ -24,6 +24,10 @@ export type NumberCanvasRepresentation = {
 const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation => {
   return {
     type: WIDGET_ID,
+    source: {
+      type: "ref",
+      path: "item",
+    },
   } as NumberCanvasRepresentation
 }
 
@@ -31,7 +35,6 @@ const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation 
 export const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
   let round = representation.round || null
   let separation = representation.separation || false
-
 
   const subStructure = getByPath(structure, "item") as NumberStructure;
   if (typeof subStructure.value !== "number") {
@@ -76,12 +79,12 @@ function NumberCanvasComponent(props: WidgetProps) {
   const { position } = props;
   let representation: NumberCanvasRepresentation | null = props.representation as NumberCanvasRepresentation;
 
+  if (!props.representation) {
+    representation = getDefaultRepresentation(props.structure);
+  }
+
   const source = representation.source as Source
   const structure = getStructureFromSource(props.structure, source) as NumberStructure;
-
-  if (!props.representation) {
-    representation = getDefaultRepresentation(structure);
-  }
 
   const size = getSize(structure, representation);
 

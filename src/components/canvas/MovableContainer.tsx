@@ -4,6 +4,7 @@ import { BaseStructure } from "@/structures/types";
 import { Arrow, Rect } from "react-konva";
 import render from "./render";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import { useViewStore } from "@/storages/viewStorage";
 
 
 export const getMovableContainerSize = (
@@ -39,6 +40,8 @@ function MovableContainer(props: {
     s.setDragStart,
     s.setPosition,
   ]);
+
+  const [view] = useViewStore((s) => [s.views.find(view => view.id === props.id.split(".")[0])]);
 
   const { position } = props;
   const item = props.item;
@@ -105,8 +108,8 @@ function MovableContainer(props: {
           if (!widgetState?.dragStart) {
             return;
           }
-          const dx = evt.evt.layerX - (widgetState?.dragStart.layerX || 0);
-          const dy = evt.evt.layerY - (widgetState?.dragStart.layerY || 0);
+          const dx = (evt.evt.layerX - (widgetState?.dragStart.layerX || 0)) / (view?.scale || 1);
+          const dy = (evt.evt.layerY - (widgetState?.dragStart.layerY || 0)) / (view?.scale || 1);
           setPosition(props.id, {
             x: widgetState?.dragStart.x + dx,
             y: widgetState?.dragStart.y + dy,

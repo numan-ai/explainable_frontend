@@ -9,6 +9,7 @@ export type ViewType = {
   structure: BaseStructure;
   representation: Representation | null;
   position: Position;
+  scale: number;
 }
 
 type LayoutStoreType = {
@@ -17,7 +18,7 @@ type LayoutStoreType = {
   addView: (view: ViewType) => void;
   setStructure: (viewId: string, structure: BaseStructure, representation: Representation | null) => void;
   modifyStructure: (viewId: string, callback: (structure: BaseStructure) => BaseStructure) => void;
-  moveStructure: (struct_id: string, x: number | null, y: number | null, init: boolean) => void;
+  setScale: (viewId: string, scale: number) => void;
 };
 
 
@@ -61,57 +62,18 @@ export const useViewStore = create<LayoutStoreType>()(
           return state;
         });
       },
-      moveStructure: (struct_id: string, x: number | null, y: number | null, init: boolean = false) => {
+      setScale: (viewId: string, scale: number) => {
         set(state => {
-          if (x === null && y === null) {
-            state.dragStartPosition = null;
-            return state;
-          }
-
-          if (!init && state.dragStartPosition === null) {
-            return state;
-          }
-
-          if (init && x !== null && y !== null) {
-            state.dragStartPosition = {
-              x: x,
-              y: y,
-            };
-            return state;
-          }
-
-          if (state.dragStartPosition === null) {
-            console.error("Can't move structure without drag start position");
-            return state;
-          }
-
-          if (x === null || y === null) {
-            console.error("Can't move structure without new position");
-            return state;
-          }
-
-          const diffX = x - state.dragStartPosition.x;
-          const diffY = y - state.dragStartPosition.y;
-
-          const parts: string[] = struct_id.split(".");
-          const view = state.views.find(view => view.id === parts[0]);
+          const view = state.views.find(view => view.id === viewId);
           if (view === undefined) {
-            console.error("Can't find view", parts[0]);
+            console.error("Can't find view", viewId);
             return state;
           }
-          const structure = view.structure;
-          let current: any = structure;
-          for (let i = 1; i < parts.length; i++) {
-            current = current[parts[i]];
-          }
-          view.position = {
-            x: 100 + diffX,
-            y: 100 + diffY,
-          }
+          view.scale = scale;
 
-          return state
+          return state;
         });
-      }
+      },
     }),
   )
   // , {
