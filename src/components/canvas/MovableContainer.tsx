@@ -1,13 +1,11 @@
 import { Representation } from "@/sources";
+import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import getSize, { Size } from "@/structures/size";
 import { BaseStructure } from "@/structures/types";
-import { Arrow, Rect } from "react-konva";
-import render from "./render";
-import { useWidgetStateStorage, WidgetState, WidgetStateStorageType } from "@/storages/widgetStateStorage";
-import React, { useEffect, useRef, useState } from "react";
 import { scaleValues } from "@/WhiteBoard";
-import { shallow } from 'zustand/shallow'
-import { useShallow } from 'zustand/react/shallow'
+import { Arrow, Rect } from "react-konva";
+import { useShallow } from 'zustand/react/shallow';
+import render from "./render";
 
 
 

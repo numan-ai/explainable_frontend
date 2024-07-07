@@ -1,11 +1,10 @@
-import { Group, Rect } from "react-konva";
+import { getStructureFromSource, RefSource, Representation, Source } from "@/sources";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, Source, RefSource } from "@/sources";
 import { BaseStructure, ListStructure } from "@/structures/types";
+import { Group, Rect } from "react-konva";
+import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 import render from "./render";
-import { Widget } from "../registry";
-import React from "react";
 
 const WIDGET_ID = "list";
 

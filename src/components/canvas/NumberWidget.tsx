@@ -1,14 +1,13 @@
-import { Widget } from "../registry";
-import getByPath from "@/structures/path_ref";
-import { WidgetProps } from "../widget";
-import { useState } from "react";
-import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { getStructureFromSource, Representation, Source } from "@/sources";
+import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import getByPath from "@/structures/path_ref";
 import getSize, { Size } from "@/structures/size";
+import { useState } from "react";
 import { Rect, Text } from "react-konva";
+import { Widget } from "../registry";
+import { WidgetProps } from "../widget";
 
 import { BaseStructure, NumberStructure } from "@/structures/types";
-import React from "react";
 import { useShallow } from "zustand/react/shallow";
 
 
@@ -64,11 +63,11 @@ const getNumberSize = (
   structure: BaseStructure,
   representation: Representation,
 ) => {
-  representation = representation as NumberCanvasRepresentation;
-  if (!representation) {
-    representation = getDefaultRepresentation(structure);
+  let num_representation = representation as NumberCanvasRepresentation;
+  if (!num_representation) {
+    num_representation = getDefaultRepresentation(structure);
   }
-  const numberValue = getNumberValue(structure, representation);
+  const numberValue = getNumberValue(structure, num_representation);
   const width = numberValue.length
 
   return {

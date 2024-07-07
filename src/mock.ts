@@ -180,5 +180,4 @@ export const MOCK_VIEWS = [{
     x: 100,
     y: 100,
   },
-  scale: 1,
 }] as ViewType[];

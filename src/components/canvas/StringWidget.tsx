@@ -1,14 +1,13 @@
-import getSize, { Size } from "@/structures/size";
-import { Rect, Text } from "react-konva";
-import { useState } from "react";
-import { BaseStructure, StringStructure } from "@/structures/types";
-import getByPath from "@/structures/path_ref";
-import { WidgetProps as WidgetComponentProps } from "../widget";
-import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
-import { Widget } from "../registry";
 import { getStructureFromSource, Representation, Source } from "@/sources";
-import React from "react";
+import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import getByPath from "@/structures/path_ref";
+import getSize, { Size } from "@/structures/size";
+import { BaseStructure, StringStructure } from "@/structures/types";
+import { useState } from "react";
+import { Rect, Text } from "react-konva";
 import { useShallow } from "zustand/react/shallow";
+import { Widget } from "../registry";
+import { WidgetProps as WidgetComponentProps } from "../widget";
 
 
 const WIDGET_ID = "string";
@@ -85,15 +84,15 @@ const getStringSize = (
   structure: BaseStructure,
   representation: Representation,
 ) => {
-  representation = representation as StringCanvasRepresentation;
-  if (!representation) {
-    representation = getDefaultRepresentation(structure);
+  let str_representation = representation as StringCanvasRepresentation;
+  if (!str_representation) {
+    str_representation = getDefaultRepresentation(structure);
   }
-  const stringValue = getStringValue(structure, representation.format || "{item}");
+  const stringValue = getStringValue(structure, str_representation.format || "{item}");
   const lines = stringValue.split("\n");
   const biggestLine = Math.min(
     lines.reduce((acc, line) => Math.max(acc, line.length), 0),
-    representation.max_size || Number.MAX_SAFE_INTEGER,
+    str_representation.max_size || Number.MAX_SAFE_INTEGER,
   );
 
   return {
