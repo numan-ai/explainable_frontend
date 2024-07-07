@@ -6,7 +6,7 @@ import getByPath from "@/structures/path_ref";
 import { WidgetProps as WidgetComponentProps } from "../widget";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Widget } from "../registry";
-import { getStructureFromSource, Source } from "@/representation";
+import { getStructureFromSource, Source } from "@/sources";
 
 
 const WIDGET_ID = "string";

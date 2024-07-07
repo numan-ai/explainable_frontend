@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, Source, RefSource } from "@/representation";
+import { getStructureFromSource, Representation, Source, RefSource } from "@/sources";
 import { BaseStructure, ListStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";

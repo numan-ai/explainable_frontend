@@ -1,5 +1,5 @@
 import getWidget from "@/components/registry";
-import { Representation } from "@/representation";
+import { Representation } from "@/sources";
 import { BaseStructure } from "./types";
 
 

@@ -1,4 +1,4 @@
-import { Representation } from "@/representation";
+import { Representation } from "@/sources";
 import getSize, { Size } from "@/structures/size";
 import { BaseStructure } from "@/structures/types";
 import { Arrow, Rect } from "react-konva";

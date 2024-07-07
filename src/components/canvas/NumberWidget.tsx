@@ -3,7 +3,7 @@ import getByPath from "@/structures/path_ref";
 import { WidgetProps } from "../widget";
 import { useState } from "react";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
-import { getStructureFromSource, Source } from "@/representation";
+import { getStructureFromSource, Source } from "@/sources";
 import getSize, { Size } from "@/structures/size";
 import { Rect, Text } from "react-konva";
 
@@ -31,7 +31,7 @@ const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation 
 export const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
   let round = representation.round || null
   let separation = representation.separation || false
-  console.log(separation)
+
 
   const subStructure = getByPath(structure, "item") as NumberStructure;
   if (typeof subStructure.value !== "number") {
@@ -73,7 +73,6 @@ const getNumberSize = (
 
 
 function NumberCanvasComponent(props: WidgetProps) {
-  console.log("HEELO")
   const { position } = props;
   let representation: NumberCanvasRepresentation | null = props.representation as NumberCanvasRepresentation;
 

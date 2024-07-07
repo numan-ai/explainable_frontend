@@ -1,5 +1,5 @@
 import { Size } from "@/structures/size";
-import { Representation } from "@/representation";
+import { Representation } from "@/sources";
 import ListCanvasWidget from "./canvas/ListWidget";
 import VListCanvasWidget from "./canvas/VListWidget";
 import DictCanvasWidget from "./canvas/DictWidget";
@@ -25,7 +25,7 @@ const registeredWidgets: Map<string, Widget> = new Map<string, Widget>([
   [DictCanvasWidget.id, DictCanvasWidget],
   [GraphCanvasWidget.id, GraphCanvasWidget],
   [StringCanvasWidget.id, StringCanvasWidget],
-  [NumberCanvasWidget.id, StringCanvasWidget],
+  [NumberCanvasWidget.id, NumberCanvasWidget],
 ]);
 
 const getWidget = (name: string) => {

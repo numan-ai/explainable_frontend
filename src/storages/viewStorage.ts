@@ -1,4 +1,4 @@
-import type { Representation } from "@/representation";
+import type { Representation } from "@/sources";
 import { BaseStructure } from "@/structures/types";
 import { create } from "zustand";
 import { immer } from 'zustand/middleware/immer'
