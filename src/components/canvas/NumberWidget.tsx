@@ -66,7 +66,7 @@ const getNumberSize = (
     representation = getDefaultRepresentation(structure);
   }
   const numberValue = getNumberValue(structure, representation);
-  const width = numberValue.toString().length
+  const width = numberValue.length
 
   return {
     w: Math.max(10 * width + 25, 100),
@@ -88,7 +88,7 @@ function NumberCanvasComponent(props: WidgetProps) {
 
   const size = getSize(structure, representation);
 
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, _] = useState(false);
   const [
     widgetState,
   ] = useWidgetStateStorage((s) => [

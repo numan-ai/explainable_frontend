@@ -3,7 +3,6 @@ import WhiteBoard from './WhiteBoard';
 import { Input } from './components/ui/input';
 import { ViewType } from './storages/viewStorage';
 import render from './components/canvas/render.tsx';
-import { Rect } from 'react-konva';
 
 
 export type ViewSettings = {

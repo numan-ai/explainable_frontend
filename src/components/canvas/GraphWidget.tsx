@@ -1,13 +1,12 @@
-import { Group, Line, Rect } from "react-konva";
-import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, Source, RefSource } from "@/sources";
-import { BaseStructure, ListStructure, StringStructure } from "@/structures/types";
-import { WidgetProps } from "../widget";
-import render from "./render";
-import { Widget } from "../registry";
-import MovableContainer from "./MovableContainer";
-import React from "react";
+import { getStructureFromSource, Representation, Source } from "@/sources";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
+import getSize, { type Size } from "@/structures/size";
+import { BaseStructure, ListStructure, StringStructure } from "@/structures/types";
+import React from "react";
+import { Group, Line } from "react-konva";
+import { Widget } from "../registry";
+import { WidgetProps } from "../widget";
+import MovableContainer from "./MovableContainer";
 
 const WIDGET_ID = "graph";
 

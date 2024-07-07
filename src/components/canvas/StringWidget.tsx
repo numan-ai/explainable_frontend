@@ -113,7 +113,7 @@ function StringCanvasComponent(props: WidgetComponentProps) {
 
   const size = getSize(structure, representation);
 
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, _] = useState(false);
   const [
     widgetState,
   ] = useWidgetStateStorage((s) => [

@@ -1,5 +1,4 @@
 import { getStringValue } from "./components/canvas/StringWidget";
-import { getNumberValue } from "./components/canvas/NumberWidget";
 import getByPath from "./structures/path_ref";
 import { BaseStructure, NumberStructure, StringStructure } from "./structures/types";
 
@@ -29,10 +28,7 @@ export type StringSource = {
 } & Source;
 
 export type NumberSource = {
-  source: {
-    type: "ref",
-    path: "item",
-  },
+  value: number;
   type: "number";
 } & Source;
 
@@ -64,11 +60,9 @@ export const getStructureFromSource = (base_structure: BaseStructure, source: So
         "value": value,
       } as StringStructure;
     case "number":
-      const num_source = source as NumberSource;
-      const value2 = getNumberValue(base_structure, num_source);
       return {
         "type": "number",
-        "value": value2,
+        "value": (source as NumberSource).value,
       } as NumberStructure;
     default:
       console.error("Unknown source type", source);

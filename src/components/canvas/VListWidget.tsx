@@ -1,6 +1,6 @@
 import { Group, Rect } from "react-konva";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, Source, SourceReference } from "@/sources";
+import { getStructureFromSource, Representation, Source, RefSource } from "@/sources";
 import { BaseStructure, ListStructure } from "@/structures/types";
 import { WidgetProps } from "../widget";
 import render from "./render";
@@ -92,7 +92,7 @@ function ListCanvasComponent(props: WidgetProps) {
       "data": representation.source.map(source => getStructureFromSource(props.structure, source)),
     }
   } else {
-    const source = representation.source as SourceReference;
+    const source = representation.source as RefSource;
     structure = getStructureFromSource(props.structure, source) as ListStructure;
   }
 

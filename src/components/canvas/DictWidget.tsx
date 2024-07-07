@@ -1,12 +1,12 @@
-import { Arrow, Group, Line, Rect } from "react-konva";
+import { getStructureFromSource, RefSource, Representation, Source } from "@/sources";
 import getSize, { type Size } from "@/structures/size";
-import { getStructureFromSource, Representation, Source, RefSource } from "@/sources";
 import { BaseStructure, DictStructure } from "@/structures/types";
-import { WidgetProps } from "../widget";
-import render from "./render";
-import { Widget } from "../registry";
-import MovableContainer from "./MovableContainer";
 import React from "react";
+import { Group } from "react-konva";
+import { Widget } from "../registry";
+import { WidgetProps } from "../widget";
+import MovableContainer from "./MovableContainer";
+import render from "./render";
 
 const WIDGET_ID = "dict";
 
