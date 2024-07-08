@@ -74,7 +74,10 @@ export const useWidgetStateStorage = create<WidgetStateStorageType>()(
             if (justUpdatedState < 0.0) {
               state.tempStates[id].justUpdatedState = 0.0;
             }
-            state.tempStates[id].justUpdatedState -= justUpdatedState;
+            const tmpState = state.tempStates[id];
+            if (tmpState !== null && tmpState.justUpdatedState !== null) {
+              tmpState.justUpdatedState -= justUpdatedState;
+            }
           }
         }),
       }),

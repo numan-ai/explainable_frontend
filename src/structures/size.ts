@@ -1,7 +1,7 @@
+import { getDataclassRepresentation } from "@/components/canvas/render";
 import getWidget from "@/components/registry";
 import { Representation } from "@/sources";
-import { BaseStructure, DataclassStructure, DictStructure } from "./types";
-import { getDataclassRepresentation } from "@/components/canvas/render";
+import { BaseStructure, DataclassStructure } from "./types";
 
 
 export type Size = {

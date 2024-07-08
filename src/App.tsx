@@ -1,21 +1,20 @@
 import "./App.css";
 
+import { Input } from "@/components/ui/input";
 import { Cable, Wifi, WifiOff } from "lucide-react";
-import { Input } from "@/components/ui/input"
-import { Button } from "./components/ui/button";
 import { useEffect, useState } from "react";
 import ExplainableView from "./ExplainableView";
 import { ThemeProvider } from "./components/theme-provider";
-import { useWebsocketURIStore } from './storages/websocketURIStore';
+import { Button } from "./components/ui/button";
 import { useViewStore } from './storages/viewStorage';
+import { useWebsocketURIStore } from './storages/websocketURIStore';
 
 import api from "./api";
-import { pushHistory } from "./structures/history";
 import NoConnectionComponent from "./components/NoConnectionComponent";
-import { IS_MOCKED, MOCK_VIEWS } from "./mock";
-import { config } from "process";
 import { dataclassDisplayConfig } from "./components/canvas/render";
+import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 import { Representation } from "./sources";
+import { pushHistory } from "./structures/history";
 
 
 function ServerURIInput() {

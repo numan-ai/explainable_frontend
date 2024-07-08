@@ -1,15 +1,12 @@
 import { getStructureFromSource, Representation, Source } from "@/sources";
-import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import getByPath from "@/structures/path_ref";
 import getSize, { Size } from "@/structures/size";
-import { useEffect, useRef } from "react";
 import { Rect, Text } from "react-konva";
 import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 
-import { BaseStructure, NumberStructure } from "@/structures/types";
-import { useShallow } from "zustand/react/shallow";
 import getJustUpdatedState from "@/just_updated";
+import { BaseStructure, NumberStructure } from "@/structures/types";
 
 
 const WIDGET_TYPE = "number";

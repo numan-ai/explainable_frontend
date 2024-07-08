@@ -35,10 +35,12 @@ function MovableContainer(props: {
 }) {
   const [
     widgetState,
+    widgetTempState,
     setDragStart,
     setPosition,
   ] = useWidgetStateStorage(useShallow((s) => [
     s.states[props.id],
+    s.tempStates[props.id],
     s.setDragStart,
     s.setPosition,
   ]));
@@ -67,7 +69,7 @@ function MovableContainer(props: {
     setDragStart(props.id, dragStart);
   }
   const currentPosition = widgetState?.position || props.position;
-  const dragStart = widgetState?.dragStart || null;
+  const dragStart = widgetTempState?.dragStart || null;
 
   // const storeRef = useRef<WidgetState>();
   // if (!storeRef.current) {
