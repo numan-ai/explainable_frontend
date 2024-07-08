@@ -1,5 +1,6 @@
 export type BaseStructure = {
   type: string;
+  justUpdated?: number;
 }
 
 export type ListStructure = {
@@ -35,5 +36,6 @@ export type StringStructure = {
 
 export type DataclassStructure = {
   type: "dataclass";
+  subtype: string;
   data: { [key: string]: BaseStructure };
 } & BaseStructure;

@@ -2,9 +2,13 @@ import React from "react";
 import getWidget from "../registry";
 import { Representation } from "@/sources";
 import { BaseStructure, DataclassStructure, DictStructure, StringStructure } from "@/structures/types";
+import { StringCanvasRepresentation } from "./StringWidget";
 
 
-export function getDataclassStructure(structure: DataclassStructure) {
+export const dataclassDisplayConfig = new Map<string, Representation>();
+
+
+export function getDefaultDataclassStructure(structure: DataclassStructure) {
   if (!structure || structure.type !== "dataclass") {
     console.error("Can't get dataclass structure", structure);
     return undefined;
@@ -23,14 +27,41 @@ export function getDataclassStructure(structure: DataclassStructure) {
 }
 
 
-export default function render(structure: BaseStructure, representation: Representation | null, position: Position, id: string, key: number) {  
-  if (structure && structure.type === "dataclass" && !representation) {
-    structure = getDataclassStructure(structure as DataclassStructure) as DictStructure;
+export function getDataclassRepresentation(structure: DataclassStructure, representation: Representation | null) {
+  if (representation) {
+    return representation;
   }
 
+  representation = dataclassDisplayConfig.get((structure as DataclassStructure).subtype) || null;
+
+  if (!representation) {
+    representation = {
+      type: "string",
+      format: "Error rendering dataclass",
+    } as StringCanvasRepresentation;
+  }
+
+  return representation;
+}
+
+
+export default function render(structure: BaseStructure, representation: Representation | null, position: Position, id: string, key: number) {  
   if (!structure) {
     console.error("Can't render structure", structure);
     return null;
+  }
+
+  if (structure.type === "dataclass") {
+    // representation = (!representation) ? (
+    //   dataclassDisplayConfig.get((structure as DataclassStructure).subtype) || null
+    // ) : (
+    //   representation
+    // );
+    // console.log(representation);
+    // if (!representation) {
+    //   structure = getDefaultDataclassStructure(structure as DataclassStructure) as DictStructure;
+    // }
+    representation = getDataclassRepresentation(structure as DataclassStructure, representation);
   }
   
   const widget_name = representation?.type || structure.type;

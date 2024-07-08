@@ -8,7 +8,7 @@ import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 import MovableContainer from "./MovableContainer";
 
-const WIDGET_ID = "graph";
+const WIDGET_TYPE = "graph";
 
 
 export type GraphCanvasRepresentation = {
@@ -29,7 +29,7 @@ export type GraphCanvasRepresentation = {
 
 const getDefaultRepresentation = (_: BaseStructure): GraphCanvasRepresentation => {
   return {
-    type: WIDGET_ID,
+    type: WIDGET_TYPE,
     nodes: {
       id: {
         type: "ref",
@@ -205,7 +205,7 @@ function GraphCanvasComponent(props: WidgetProps) {
 
 
 export default {
-  id: WIDGET_ID,
+  id: WIDGET_TYPE,
   component: GraphCanvasComponent,
   sizeGetter: getGraphSize,
 } as Widget;

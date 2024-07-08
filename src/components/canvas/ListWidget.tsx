@@ -6,19 +6,19 @@ import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 import render from "./render";
 
-const WIDGET_ID = "list";
+const WIDGET_TYPE = "list";
 
 
 export type ListCanvasRepresentation = {
   type: "list";
   source: Source | Source[];
-  item_representation?: Representation | Representation[];
+  item_widget?: Representation | Representation[];
 } & Representation;
 
 
 const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation => {
   return {
-    type: WIDGET_ID,
+    type: WIDGET_TYPE,
     source: {
       type: "ref",
       path: "item",
@@ -50,10 +50,14 @@ const getListSize = (
   
   for (let i = 0; i < items.data.length; i++) {
     const item_structure = items.data[i];
-    const item_representation = Array.isArray(representation.item_representation) ? (
-      representation.item_representation[i]
+    if (item_structure === undefined) {
+      console.error("Can't get structure item", items);
+      return undefined;
+    }
+    const item_representation = Array.isArray(representation.item_widget) ? (
+      representation.item_widget[i]
     ) : (
-      representation.item_representation
+      representation.item_widget
     );
     const itemSize = getSize(item_structure, item_representation || null);
     if (itemSize === undefined) {
@@ -107,10 +111,10 @@ function ListCanvasComponent(props: WidgetProps) {
   let collectedX = representation.style?.margin || 5;
 
   const children = structure.data.map((item, i) => {
-    const item_representation = Array.isArray(representation.item_representation) ? (
-      representation.item_representation[i]
+    const item_representation = Array.isArray(representation.item_widget) ? (
+      representation.item_widget[i]
     ) : (
-      representation.item_representation
+      representation.item_widget
     ) || null;
     const compSize = getSize(item, item_representation);
     if (compSize === undefined) {
@@ -160,7 +164,7 @@ function ListCanvasComponent(props: WidgetProps) {
 
 
 export default {
-  id: WIDGET_ID,
+  id: WIDGET_TYPE,
   component: ListCanvasComponent,
   sizeGetter: getListSize,
 } as Widget;

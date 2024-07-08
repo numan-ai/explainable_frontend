@@ -4,7 +4,7 @@ const getByPath = (structure: BaseStructure, path: string): BaseStructure => {
     const parts = path.split(".");
     let current: any = structure;
     for (let i = 1; i < parts.length; i++) {
-        if (current.type === "list") {
+        if (current.type === "list" || current.type === "dataclass") {
             current = current.data[parts[i]];
         } else if (current.type === "dict" || current.type === "graph") {
             const idx = current.keys.findIndex((key: any) => {
@@ -14,6 +14,10 @@ const getByPath = (structure: BaseStructure, path: string): BaseStructure => {
         } else {
             current = current[parts[i]];
         }
+    }
+
+    if (current === undefined) {
+        console.error("getByPath: Can't find path", path);
     }
 
     return current;

@@ -2,21 +2,22 @@ import { getStructureFromSource, Representation, Source } from "@/sources";
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import getByPath from "@/structures/path_ref";
 import getSize, { Size } from "@/structures/size";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { Rect, Text } from "react-konva";
 import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 
 import { BaseStructure, NumberStructure } from "@/structures/types";
 import { useShallow } from "zustand/react/shallow";
+import getJustUpdatedState from "@/just_updated";
 
 
-const WIDGET_ID = "number";
+const WIDGET_TYPE = "number";
 
 
 export type NumberCanvasRepresentation = {
-  source: Source;
   type: "number";
+  source?: Source;
   round?: number;
   separation?: boolean;
 };
@@ -24,7 +25,7 @@ export type NumberCanvasRepresentation = {
 
 const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation => {
   return {
-    type: WIDGET_ID,
+    type: WIDGET_TYPE,
     source: {
       type: "ref",
       path: "item",
@@ -85,25 +86,24 @@ function NumberCanvasComponent(props: WidgetProps) {
     representation = getDefaultRepresentation(props.structure);
   }
 
-  const source = representation.source as Source
+  let source = representation.source as Source;
+  if (source === undefined) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
   const structure = getStructureFromSource(props.structure, source) as NumberStructure;
 
   const size = getSize(structure, representation);
 
-  const [isHovered, _] = useState(false);
-  const [
-    widgetState,
-  ] = useWidgetStateStorage(useShallow((s) => [
-    s.states[props.id],
-  ]));
+  const justUpdatedState = getJustUpdatedState(props.structure, props.id);
 
   const numberValue = getNumberValue(structure, representation);
   if (size === undefined) {
     console.error("Can't get size of number", structure, representation);
     return <></>;
   }
-  
-  const isCollapsed = widgetState?.isCollapsed || false;
 
   return (
     <>
@@ -112,8 +112,8 @@ function NumberCanvasComponent(props: WidgetProps) {
         y={position.y}
         width={size.w}
         height={size.h}
-        fill={isHovered ? "rgba(30, 41, 59, 0.1)" : "rgba(30, 41, 59, 0.2)"}
-        stroke={isCollapsed ? "rgb(30, 41, 59)" : "rgb(20, 20, 20)"}
+        fill={`rgba(30, 41, 59, ${(justUpdatedState * 0.8 + 0.2).toFixed(2)})`}
+        stroke={false ? "rgb(30, 41, 59)" : "rgb(20, 20, 20)"}
         strokeWidth={1}
         listening={false}
       />
@@ -135,7 +135,7 @@ function NumberCanvasComponent(props: WidgetProps) {
 
 
 export default {
-  id: WIDGET_ID,
+  id: WIDGET_TYPE,
   component: NumberCanvasComponent,
   sizeGetter: getNumberSize,
 } as Widget;

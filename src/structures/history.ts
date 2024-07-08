@@ -109,8 +109,10 @@ export function historyForward(stucture: BaseStructure) {
                     return undefined;
                 }
                 current.values[idx] = setValue.value;
+                current.values[idx].justUpdated = Date.now();
             } else {
                 current[parts[parts.length - 1]] = setValue.value;
+                current[parts[parts.length - 1]].justUpdated = Date.now();
             }
             break;
     }

@@ -8,7 +8,7 @@ import { WidgetProps } from "../widget";
 import MovableContainer from "./MovableContainer";
 import render from "./render";
 
-const WIDGET_ID = "dict";
+const WIDGET_TYPE = "dict";
 
 
 export type DictCanvasRepresentation = {
@@ -21,7 +21,7 @@ export type DictCanvasRepresentation = {
 
 const getDefaultRepresentation = (_: BaseStructure): DictCanvasRepresentation => {
   return {
-    type: WIDGET_ID,
+    type: WIDGET_TYPE,
     source: {
       type: "ref",
       path: "item",
@@ -192,7 +192,7 @@ function DictCanvasComponent(props: WidgetProps) {
 
 
 export default {
-  id: WIDGET_ID,
+  id: WIDGET_TYPE,
   component: DictCanvasComponent,
   sizeGetter: getDictSize,
 } as Widget;

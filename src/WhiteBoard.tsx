@@ -68,27 +68,19 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   const onZoom = (evt: KonvaEventObject<WheelEvent>) => {
-    // console.log("Scale before", scale)
-
     const minScale = 0.05;
     const maxScale = 3;
     evt.cancelBubble = true;
-    const _scale = Math.min(Math.max((scale || 1) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
-    setScale(_scale);
-    scaleValues.set(props.view_id, _scale);
+    const newScale = Math.min(Math.max((scale || 1) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
+    setScale(newScale);
+    scaleValues.set(props.view_id, newScale);
+
+    const [pastX, pastY] = [evt.evt.layerX/scale + stagePosition.x, evt.evt.layerY/scale + stagePosition.y];
+    const [newX, newY] = [evt.evt.layerX/newScale + stagePosition.x, evt.evt.layerY/newScale + stagePosition.y];
+
+    setStagePosition({x: stagePosition.x + (pastX - newX), y: stagePosition.y + (pastY - newY)});
+
     evt.evt.preventDefault();
-
-    const [pastX, pastY] = [evt.evt.layerX/scale + stagePosition.x, evt.evt.layerY/scale + stagePosition.y]
-    const [newX, newY] = [evt.evt.layerX/_scale + stagePosition.x, evt.evt.layerY/_scale + stagePosition.y]
-
-    setStagePosition({x: stagePosition.x + (pastX - newX), y: stagePosition.y + (pastY - newY)})
-
-
-    // console.log(stagePosition.x, stagePosition.y)
-    // console.log(evt.evt.layerX, evt.evt.layerY)
-    // console.log("Scale after", _scale)
-
-    //setStagePosition({x: 10, y: 2})
   }
 
   return (

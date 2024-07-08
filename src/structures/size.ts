@@ -1,7 +1,7 @@
 import getWidget from "@/components/registry";
 import { Representation } from "@/sources";
 import { BaseStructure, DataclassStructure, DictStructure } from "./types";
-import { getDataclassStructure } from "@/components/canvas/render";
+import { getDataclassRepresentation } from "@/components/canvas/render";
 
 
 export type Size = {
@@ -11,13 +11,13 @@ export type Size = {
 
 
 const getSize = (structure: BaseStructure, representation: Representation | null) => {
-  if (structure && structure.type === "dataclass" && !representation) {
-    structure = getDataclassStructure(structure as DataclassStructure) as DictStructure;
-  }
-
   if (!structure) {
     console.error("Can't get size of structure", structure);
     return undefined;
+  }
+
+  if (structure.type === "dataclass") {
+    representation = getDataclassRepresentation(structure as DataclassStructure, representation);
   }
 
   const widget_name = representation?.type || structure.type;

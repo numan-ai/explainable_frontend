@@ -10,12 +10,12 @@ import { Widget } from "../registry";
 import { WidgetProps as WidgetComponentProps } from "../widget";
 
 
-const WIDGET_ID = "string";
+const WIDGET_TYPE = "string";
 
 
 export type StringCanvasRepresentation = {
-  source: Source;
   type: "string";
+  source?: Source;
   max_size?: number;
   format?: string;
 };
@@ -27,7 +27,7 @@ const getDefaultRepresentation = (_: BaseStructure): StringCanvasRepresentation 
       type: "ref",
       path: "item",
     },
-    type: WIDGET_ID,
+    type: WIDGET_TYPE,
     format: "{item}",
   } as StringCanvasRepresentation;
 }
@@ -110,7 +110,13 @@ function StringCanvasComponent(props: WidgetComponentProps) {
     representation = getDefaultRepresentation(props.structure);
   }
 
-  const source = representation.source as Source;
+  let source = representation.source as Source;
+  if (source === undefined) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
   const structure = getStructureFromSource(props.structure, source) as StringStructure;
 
   const size = getSize(structure, representation);
@@ -160,7 +166,7 @@ function StringCanvasComponent(props: WidgetComponentProps) {
 
 
 export default {
-  id: WIDGET_ID,
+  id: WIDGET_TYPE,
   component: StringCanvasComponent,
   sizeGetter: getStringSize,
 } as Widget;

@@ -126,6 +126,9 @@ function MovableContainer(props: {
         stroke="rgb(30, 41, 59)"
         strokeWidth={1}
         onMouseDown={(evt) => {
+          if (evt.evt.altKey) {
+            setPosition(props.id, null);
+          }
           if (evt.evt.shiftKey) {
             return;
           }

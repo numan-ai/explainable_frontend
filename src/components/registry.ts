@@ -6,6 +6,7 @@ import DictCanvasWidget from "./canvas/DictWidget";
 import GraphCanvasWidget from "./canvas/GraphWidget";
 import StringCanvasWidget from "./canvas/StringWidget";
 import NumberCanvasWidget from "./canvas/NumberWidget";
+import TileCanvasWidget from "./canvas/TileWidget";
 import { BaseStructure } from "@/structures/types";
 
 
@@ -26,6 +27,7 @@ const registeredWidgets: Map<string, Widget> = new Map<string, Widget>([
   [GraphCanvasWidget.id, GraphCanvasWidget],
   [StringCanvasWidget.id, StringCanvasWidget],
   [NumberCanvasWidget.id, NumberCanvasWidget],
+  [TileCanvasWidget.id, TileCanvasWidget],
 ]);
 
 const getWidget = (name: string) => {

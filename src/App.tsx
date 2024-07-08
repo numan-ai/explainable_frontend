@@ -13,6 +13,9 @@ import api from "./api";
 import { pushHistory } from "./structures/history";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import { IS_MOCKED, MOCK_VIEWS } from "./mock";
+import { config } from "process";
+import { dataclassDisplayConfig } from "./components/canvas/render";
+import { Representation } from "./sources";
 
 
 function ServerURIInput() {
@@ -139,6 +142,13 @@ export default function App() {
       accumulatedDiffs.get(diff.view_id)!.push(diff);
     });
 
+    api.onMessage("displayConfig", (config) => {
+      dataclassDisplayConfig.clear();
+      for (let [key, value] of Object.entries(config)) {
+        dataclassDisplayConfig.set(key, value as Representation);
+      }
+    });
+
     setInterval(() => {
       for (let view_id of accumulatedDiffs.keys()) {
         const diffs = accumulatedDiffs.get(view_id)!.slice();
@@ -181,7 +191,7 @@ export default function App() {
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
         { view_components}
       </div>
-    )
+    );
   }
   
   return (
