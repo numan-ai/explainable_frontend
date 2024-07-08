@@ -1,5 +1,4 @@
 import { getStructureFromSource, Representation, Source } from "@/sources";
-import getByPath from "@/structures/path_ref";
 import getSize, { Size } from "@/structures/size";
 import { Rect, Text } from "react-konva";
 import { Widget } from "../registry";

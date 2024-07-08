@@ -1,4 +1,4 @@
-import { getStructureFromSource, RefSource, Representation, Source } from "@/sources";
+import { getStructureFromSource, Representation, Source } from "@/sources";
 import getSize, { type Size } from "@/structures/size";
 import { BaseStructure, DictStructure } from "@/structures/types";
 import React, { useMemo } from "react";

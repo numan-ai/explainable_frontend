@@ -110,7 +110,7 @@ function ListCanvasComponent(props: WidgetProps) {
       "data": source.map(source => getStructureFromSource(props.structure, source)),
     }
   } else {
-    structure = getStructureFromSource(props.structure, source as RefSource) as ListStructure;
+    structure = getStructureFromSource(props.structure, source) as ListStructure;
   }
 
   const size = getSize(props.structure, representation);
