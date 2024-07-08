@@ -88,7 +88,15 @@ const getStringSize = (
   if (!str_representation) {
     str_representation = getDefaultRepresentation(structure);
   }
-  const stringValue = getStringValue(structure, str_representation.format || "{item}");
+  let source = str_representation.source as Source;
+  if (!source) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
+  const newStructure = getStructureFromSource(structure, source) as StringStructure;
+  const stringValue = getStringValue(newStructure, str_representation.format || "{item}");
   const lines = stringValue.split("\n");
   const biggestLine = Math.min(
     lines.reduce((acc, line) => Math.max(acc, line.length), 0),

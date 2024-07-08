@@ -34,18 +34,25 @@ const getListSize = (
   if (!representation) {
     representation = getDefaultRepresentation(structure);
   }
+  let source = representation.source as Source;
+  if (!source) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
 
   let w = 0;
   let h = 0;
 
   let items: ListStructure;
-  if (Array.isArray(representation.source)) {
+  if (Array.isArray(source)) {
     items = {
       "type": "list",
-      "data": representation.source.map(source => getStructureFromSource(structure, source)),
+      "data": source.map(source => getStructureFromSource(structure, source)),
     } as ListStructure;
   } else {
-    items = getStructureFromSource(structure, representation.source) as ListStructure;
+    items = getStructureFromSource(structure, source) as ListStructure;
   }
   
   for (let i = 0; i < items.data.length; i++) {
@@ -80,19 +87,26 @@ function ListCanvasComponent(props: WidgetProps) {
   if (!representation) {
     representation = getDefaultRepresentation(props.structure);
   }
+  let source = representation.source as Source;
+  if (!source) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
 
   if (position === undefined || representation === undefined) {
     return <></>;
   }
 
   let structure: ListStructure;
-  if (Array.isArray(representation.source)) {
+  if (Array.isArray(source)) {
     structure = {
       "type": "list",
-      "data": representation.source.map(source => getStructureFromSource(props.structure, source)),
+      "data": source.map(source => getStructureFromSource(props.structure, source)),
     }
   } else {
-    const source = representation.source as RefSource;
+    const source = source as RefSource;
     structure = getStructureFromSource(props.structure, source) as ListStructure;
   }
 

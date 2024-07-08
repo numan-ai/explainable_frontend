@@ -32,15 +32,27 @@ const getDefaultRepresentation = (_: BaseStructure): NumberCanvasRepresentation 
 
 
 export const getNumberValue = (structure: BaseStructure, representation: NumberCanvasRepresentation): string => {
-  let round = representation.round || null
-  let separation = representation.separation || false
+  let round = representation.round || null;
+  let separation = representation.separation || false;
 
-  const subStructure = getByPath(structure, "item") as NumberStructure;
-  if (typeof subStructure.value !== "number") {
+  let numRepresentation = representation as NumberCanvasRepresentation;
+  if (!numRepresentation) {
+    numRepresentation = getDefaultRepresentation(structure);
+  }
+
+  let source = numRepresentation.source as Source;
+  if (!source) {
+    source = {
+      type: "ref",
+      path: "item",
+    } as Source;
+  }
+  const newStructure = getStructureFromSource(structure, source) as NumberStructure;
+  if (typeof newStructure.value !== "number") {
     console.error("Format placeholder item did not resolve to a number");
   }
 
-  var number: number = subStructure.value
+  var number: number = newStructure.value;
   var formattedNumber = number.toString()
 
   if (round !== null){
