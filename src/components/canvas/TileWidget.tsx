@@ -53,7 +53,6 @@ const getTileSize = (
     (getStructureFromSource(structure, tile_representation.height) as NumberStructure).value * 3
   ) : 100;
 
-  console.log(width, height);
 
   return {
     w: width,

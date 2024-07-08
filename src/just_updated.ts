@@ -8,7 +8,6 @@ let updatesCounter = new Set<string>();
 
 export default function getJustUpdatedState(structure: BaseStructure, widget_id: string, decaySpeed = 0.1) {
   // return 0.0;
-  console.log(updatesCounter.size);
   if (updatesCounter.size >= 10) {
     return 0.0;
   }
