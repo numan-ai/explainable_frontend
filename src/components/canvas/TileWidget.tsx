@@ -50,7 +50,7 @@ const getTileSize = (
     (getStructureFromSource(structure, tile_representation.width) as NumberStructure).value
   ) : 100;
   const height = tile_representation.height ? (
-    (getStructureFromSource(structure, tile_representation.height) as NumberStructure).value * 3
+    (getStructureFromSource(structure, tile_representation.height) as NumberStructure).value
   ) : 100;
 
 
@@ -96,10 +96,10 @@ function TileCanvasComponent(props: WidgetComponentProps) {
         listening={false}
       />
       <Rect
-        x={position.x + 2}
-        y={position.y + 2}
-        width={Math.max(size.w - 4, 0)}
-        height={Math.max(size.h - 4, 0)}
+        x={position.x + 1}
+        y={position.y + 1}
+        width={Math.max(size.w - 2, 0)}
+        height={Math.max(size.h - 2, 0)}
         opacity={1 - justUpdatedState * 0.6}
         fill={color}
         strokeWidth={0}
