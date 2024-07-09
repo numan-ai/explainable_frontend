@@ -109,7 +109,7 @@ function ListCanvasComponent(props: WidgetProps) {
     structure = getStructureFromSource(props.structure, source) as ListStructure;
   }
 
-  representation.style = representation?.style;
+  // representation.style = representation?.style;
 
   const size = getSize(props.structure, representation);
   if (size === undefined) {
