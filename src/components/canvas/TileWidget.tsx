@@ -4,7 +4,7 @@ import { BaseStructure, NumberStructure, StringStructure } from "@/structures/ty
 import { Rect } from "react-konva";
 import { Widget } from "../registry";
 import { WidgetProps as WidgetComponentProps } from "../widget";
-import getJustUpdatedState from "@/just_updated";
+// import getJustUpdatedState from "@/just_updated";
 
 
 const WIDGET_TYPE = "tile";
