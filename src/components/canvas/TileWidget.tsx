@@ -77,7 +77,8 @@ function TileCanvasComponent(props: WidgetComponentProps) {
     "#ef233c"
   );
 
-  const justUpdatedState = getJustUpdatedState(props.structure, props.id, 0.2);
+  // const justUpdatedState = getJustUpdatedState(props.structure, props.id, 0.2);
+  const justUpdatedState = 0.0;
 
   if (size === undefined) {
     console.error("Can't get size of tile", props.structure, representation);
