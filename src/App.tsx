@@ -15,7 +15,6 @@ import { dataclassDisplayConfig } from "./components/canvas/render";
 import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 import { Representation } from "./sources";
 import { pushHistory } from "./structures/history";
-import React from "react";
 
 
 function ServerURIInput() {
@@ -122,25 +121,6 @@ export default function App() {
     s.views, s.setStructure, s.modifyStructure,
   ]);
 
-  const requestRef = React.useRef<number>(0);
-  
-  const animate = (_: any) => {
-    for (let view_id of accumulatedDiffs.keys()) {
-      const diffs = accumulatedDiffs.get(view_id)!.slice();
-      accumulatedDiffs.get(view_id)!.length = 0;
-      if (!diffs.length) {
-        continue;
-      }
-      modifyStructure(view_id, data => {
-        for (let diff of diffs) {
-          pushHistory(data, diff);
-        }
-        return data;
-      });
-    }
-    requestRef.current = requestAnimationFrame(animate);
-  }
-
   useEffect(() => {
     api.onConnected(() => {
       setIsConnected(true);
@@ -168,12 +148,22 @@ export default function App() {
       }
     });
 
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-
-    // setInterval(() => {
-      
-    // }, 50);
+    setInterval(() => {
+      // console.log(`I have ${accumulatedDiffs.get("view1")?.length} diffs`);
+      for (let view_id of accumulatedDiffs.keys()) {
+        const diffs = accumulatedDiffs.get(view_id)!.slice();
+        accumulatedDiffs.get(view_id)!.length = 0;
+        if (!diffs.length) {
+          continue;
+        }
+        modifyStructure(view_id, data => {
+          for (let diff of diffs) {
+            pushHistory(data, diff);
+          }
+          return data;
+        });
+      }
+    }, 100);
   }, []);
 
   let comp = null;
