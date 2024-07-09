@@ -61,9 +61,10 @@ class WebSocketClient {
     this.ws.onmessage = (event) => {
       const message = event.data;
       const data = JSON.parse(message);
-      console.log('Got message', data);
-      if (this.messageCallbacks[data.type]) {
-        this.messageCallbacks[data.type].forEach(callback => callback(data.data));
+      if (Array.isArray(data)) {
+        data.forEach(this.processMessage);
+      } else {
+        this.processMessage(data);
       }
     };
 
@@ -73,6 +74,13 @@ class WebSocketClient {
         this.reconnect(this.uri);
       }, 1000);
     };
+  }
+
+  private processMessage = (data: any) => {
+    console.log('Got message', data);
+    if (this.messageCallbacks[data.type]) {
+      this.messageCallbacks[data.type].forEach(callback => callback(data.data));
+    }
   }
 
   public send(message: string) {
