@@ -1,4 +1,3 @@
-import { on } from "events";
 import { IS_MOCKED } from "./mock";
 
 const MIN_CONNECTING_TIME = 250;
