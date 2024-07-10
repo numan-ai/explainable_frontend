@@ -12,7 +12,7 @@ const WIDGET_TYPE = "vlist";
 export type ListCanvasRepresentation = {
   type: "vlist";
   source: Source | Source[];
-  item_representation?: Representation | Representation[];
+  item_widget?: Representation | Representation[];
 } & Representation;
 
 
@@ -57,10 +57,10 @@ const getListSize = (
   
   for (let i = 0; i < items.data.length; i++) {
     const item_structure = items.data[i];
-    const item_representation = Array.isArray(representation.item_representation) ? (
-      representation.item_representation[i]
+    const item_representation = Array.isArray(representation.item_widget) ? (
+      representation.item_widget[i]
     ) : (
-      representation.item_representation
+      representation.item_widget
     );
     const itemSize = getSize(item_structure, item_representation || null);
     if (itemSize === undefined) {
@@ -124,10 +124,10 @@ function ListCanvasComponent(props: WidgetProps) {
   let collectedY = representation.style?.margin ?? 5;
 
   const children = structure.data.map((item, i) => {
-    const item_representation = Array.isArray(representation.item_representation) ? (
-      representation.item_representation[i]
+    const item_representation = Array.isArray(representation.item_widget) ? (
+      representation.item_widget[i]
     ) : (
-      representation.item_representation
+      representation.item_widget
     ) || null;
     const compSize = getSize(item, item_representation);
     if (compSize === undefined) {
