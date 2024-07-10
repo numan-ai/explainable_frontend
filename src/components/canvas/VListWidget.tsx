@@ -12,7 +12,7 @@ const WIDGET_TYPE = "vlist";
 export type ListCanvasRepresentation = {
   type: "vlist";
   source: Source | Source[];
-  item_widget?: Representation | Representation[];
+  item_representation?: Representation | Representation[];
 } & Representation;
 
 
@@ -57,10 +57,10 @@ const getListSize = (
   
   for (let i = 0; i < items.data.length; i++) {
     const item_structure = items.data[i];
-    const item_representation = Array.isArray(representation.item_widget) ? (
-      representation.item_widget[i]
+    const item_representation = Array.isArray(representation.item_representation) ? (
+      representation.item_representation[i]
     ) : (
-      representation.item_widget
+      representation.item_representation
     );
     const itemSize = getSize(item_structure, item_representation || null);
     if (itemSize === undefined) {
@@ -69,12 +69,14 @@ const getListSize = (
     }
 
     w = Math.max(w, itemSize.w);
-    h += itemSize.h + (representation.style?.spacing || 5);
+    h += itemSize.h + (representation.style?.spacing ?? 5);
   }
 
+  h -= (representation.style?.spacing ?? 5)
+
   return {
-    w: w + (representation.style?.margin || 5) * 2,
-    h: h + (representation.style?.margin || 5) * 1,
+    w: w + (representation.style?.margin ?? 5) * 2,
+    h: h + (representation.style?.margin ?? 5) * 2,
   } as Size;
 }
 
@@ -119,13 +121,13 @@ function ListCanvasComponent(props: WidgetProps) {
 
   const style = representation.style || {};
 
-  let collectedY = representation.style?.margin || 5;
+  let collectedY = representation.style?.margin ?? 5;
 
   const children = structure.data.map((item, i) => {
-    const item_representation = Array.isArray(representation.item_widget) ? (
-      representation.item_widget[i]
+    const item_representation = Array.isArray(representation.item_representation) ? (
+      representation.item_representation[i]
     ) : (
-      representation.item_widget
+      representation.item_representation
     ) || null;
     const compSize = getSize(item, item_representation);
     if (compSize === undefined) {
@@ -133,10 +135,10 @@ function ListCanvasComponent(props: WidgetProps) {
       return undefined;
     }
     const item_position = {
-      x: position.x + (style.margin || 5),
+      x: position.x + (style.margin ?? 5),
       y: position.y + collectedY,
     } as Position;
-    collectedY += compSize.h + (style.spacing || 5);
+    collectedY += compSize.h + (style.spacing ?? 5);
     const comp = render(item, item_representation, item_position, `${props.id}.${i}`, i);
     
     return (
