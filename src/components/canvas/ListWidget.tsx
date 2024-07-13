@@ -72,13 +72,15 @@ const getListSize = (
       return undefined;
     }
 
-    w += itemSize.w + (representation.style?.spacing || 5);
+    w += itemSize.w + (representation.style?.spacing ?? 5);
     h = Math.max(h, itemSize.h);
   }
 
+  w -= (representation.style?.spacing ?? 5)
+
   return {
-    w: w + (representation.style?.margin || 5) * 1,
-    h: h + (representation.style?.margin || 5) * 2,
+    w: w + (representation.style?.margin ?? 5) * 2,
+    h: h + (representation.style?.margin ?? 5) * 2,
   } as Size;
 }
 
@@ -121,7 +123,7 @@ function ListCanvasComponent(props: WidgetProps) {
 
   const style = representation.style || {};
 
-  let collectedX = representation.style?.margin || 5;
+  let collectedX = representation.style?.margin ?? 5;
 
   const children = structure.data.map((item, i) => {
     const item_representation = Array.isArray(representation.item_widget) ? (
@@ -136,9 +138,9 @@ function ListCanvasComponent(props: WidgetProps) {
     }
     const item_position = {
       x: position.x + collectedX,
-      y: position.y + (style.margin || 5),
+      y: position.y + (style.margin ?? 5),
     } as Position;
-    collectedX += compSize.w + (style.spacing || 5);
+    collectedX += compSize.w + (style.spacing ?? 5);
     const comp = render(item, item_representation, item_position, `${props.id}.${i}`, i);
     
     return (
