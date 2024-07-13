@@ -1,7 +1,7 @@
-import Highlight from 'react-highlight'
-import { Button } from './ui/button';
 import { Check, ClipboardCopy } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import Highlight from 'react-highlight';
+import { Button } from './ui/button';
 
 const exampleCode = `
 import time
