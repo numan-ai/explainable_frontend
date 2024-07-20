@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ExplainableView from "./ExplainableView";
 import { ThemeProvider } from "./components/theme-provider";
 import { Button } from "./components/ui/button";
+import { toast } from "sonner"
 import { useViewStore } from './storages/viewStorage';
 import { useWebsocketURIStore } from './storages/websocketURIStore';
 
@@ -16,6 +17,13 @@ import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 import { Representation } from "./sources";
 import { pushHistory } from "./structures/history";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
+
+
+const didYouKnowMessages = [
+  "Did you know that you can Alt+Click a widget to reset its position",
+  "Did you know that you can Shft+Drag to move around without dragging widgets"
+]
+
 
 function checkVersionMatches(a: string, b: string) {
   /* only major and minor versions are checked */
@@ -139,6 +147,8 @@ export default function App() {
   ]);
 
   useEffect(() => {
+    toast(didYouKnowMessages[Math.floor(Math.random() * didYouKnowMessages.length)]);
+
     api.onConnected(() => {
       setIsConnected(true);
     });
