@@ -36,12 +36,26 @@ function WhiteBoard(props: WhiteBoardProps) {
   } | null>(null);
 
   useEffect(() => {
-    if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
-      setDimensions({
-        width: divRef.current.offsetWidth - 2,
-        height: divRef.current.offsetHeight
-      });
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        console.log('New width:', entry.contentRect.width);
+        console.log('New height:', entry.contentRect.height);
+        setDimensions({
+          width: entry.contentRect.width - 2,
+          height: entry.contentRect.height
+        });
+      }
+    });
+
+    if (divRef.current) {
+      observer.observe(divRef.current);
     }
+
+    return () => {
+      if (divRef.current) {
+        observer.unobserve(divRef.current);
+      }
+    };
   }, []);
 
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {

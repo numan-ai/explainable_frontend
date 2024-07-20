@@ -28,7 +28,7 @@ export default function NoConnectionComponent() {
   const [copied, setCopied] = useState(false);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-10">
       <h1 className="text-xl font-extrabold mb-3">How to start</h1>
       <div className="relative min-w-[450px]">
         <Button 

@@ -23,7 +23,7 @@ type UIButtonProps = {
 function UIButton(props: UIButtonProps) {
   return (
     <Button
-      className="rounded-none [&:not(:last-child)]:border-r-0 text-slate-300"
+      className="rounded-none [&:not(:last-child)]:border-r-0 text-slate-300 w-8 h-8"
       variant="outline"
       size="icon"
       onClick={props.onClick}>

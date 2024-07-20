@@ -3,20 +3,21 @@ import "./App.css";
 import { Input } from "@/components/ui/input";
 import { Cable, Wifi, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import ExplainableView from "./ExplainableView";
 import { ThemeProvider } from "./components/theme-provider";
 import { Button } from "./components/ui/button";
-import { toast } from "sonner"
 import { useViewStore } from './storages/viewStorage';
 import { useWebsocketURIStore } from './storages/websocketURIStore';
 
 import api, { LATEST_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
+import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 import { dataclassDisplayConfig } from "./components/canvas/render";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
 import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 import { Representation } from "./sources";
 import { pushHistory } from "./structures/history";
-import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 
 
 const didYouKnowMessages = [
@@ -224,11 +225,70 @@ export default function App() {
       );
     });
 
+    const rows = [];
+    for (let idx = 0; idx < view_components.length; idx += 2) {
+      rows.push(
+        <ResizablePanel
+          key={idx}
+          className="rounded-none w-full h-full"
+        >
+          <ResizablePanelGroup direction="vertical">
+            <ResizablePanel className="rounded-none w-full h-full">
+              {view_components[idx]}
+            </ResizablePanel>
+            {view_components[idx + 1] && (
+              <>
+                <ResizableHandle withHandle={true}/>
+                <ResizablePanel className="rounded-none w-full h-full">
+                  {view_components[idx + 1]}
+                </ResizablePanel>
+              </>
+            )}
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      );
+      if (idx !== view_components.length - 1) {
+        rows.push(
+          <ResizableHandle
+            key={-(idx + 1)}
+            withHandle={true}
+          />
+        );
+      }
+      // if (idx !== view_components.length - 1) {
+      //   panels.push(
+      //     <ResizableHandle
+      //       key={-(idx + 1)}
+      //       withHandle={true}
+      //     />
+      //   );
+      // }
+    }
     comp = (
-      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-        { view_components}
-      </div>
-    );
+      <>
+        {/* <HistoryUI 
+          paused={false}
+          viewSettings={{view_id: ""}}
+          onBackClick={() => {
+            
+          }}
+          onPauseClick={() => {
+            api.request("pause", true, (_: any) => {
+            });
+          }}
+          onForwardClick={() => {
+            
+          }} 
+          onSettings={() => {}}
+        /> */}
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="rounded-none border w-full h-full"
+        >
+          {rows}
+        </ResizablePanelGroup>
+      </>
+    )
   }
 
   if (isOutdated) {
@@ -239,13 +299,12 @@ export default function App() {
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex min-h-screen w-full flex-col">
+      <div className="flex min-h-screen w-full flex-col h-screen">
         <Header
           isConnected={isConnected}
         />
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        {/* <ConnectingComponent/> */}
-        {comp}
+        <main className="h-full">
+          {comp}
         </main>
       </div>
     </ThemeProvider>

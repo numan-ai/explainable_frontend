@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import WhiteBoard from './WhiteBoard';
-import { Input } from './components/ui/input';
-import { ViewType } from './storages/viewStorage';
 import render from './components/canvas/render.tsx';
+import { ViewType } from './storages/viewStorage';
+import WhiteBoard from './WhiteBoard';
 
 
 export type ViewSettings = {
@@ -17,7 +15,7 @@ export type ExplainableViewProps = {
 
 function ExplainableView(props: ExplainableViewProps) {
   const view = props.view;
-  const [path, setPath] = useState<string>(view.id);
+  // const [path, setPath] = useState<string>(view.id);
   // useEffect(() => {
   //   api.onConnected(() => {
   //     clearHistory();
@@ -36,34 +34,17 @@ function ExplainableView(props: ExplainableViewProps) {
   const component = render(view.structure, view.representation || null, position, view.id, 0);
 
   return (
-    <div className='slow-appear'>
-      {/* <HistoryUI 
-        paused={false}
-        viewSettings={{view_id: ""}}
-        onBackClick={() => {
-          
-        }}
-        onPauseClick={() => {
-          api.request("pause", true, (paused: any) => {
-          });
-        }}
-        onForwardClick={() => {
-          
-        }} 
-        onSettings={() => {}}
-      /> */}
-      <Input className="p-2 border border-b-0 rounded-none" defaultValue={path} onKeyDown={
+    <div className='slow-appear h-full'>
+      {/* <Input className="p-2 border border-b-0 rounded-none" defaultValue={path} onKeyDown={
         (e: any) => {
           if (e.key === "Enter") {
             setPath(e.target.value);
           }
         }
-      } name='view-path'/>
-      <div className="component-container">
-        <WhiteBoard view_id={view.id}>
-          {component}
-        </WhiteBoard>
-      </div>
+      } name='view-path'/> */}
+      <WhiteBoard view_id={view.id}>
+        {component}
+      </WhiteBoard>
     </div>
   )
 }
