@@ -10,6 +10,8 @@ type WhiteBoardProps = {
   // setScale: (scale: number) => void;
 }
 
+const DEFAULT_SCALE = 0.6;
+
 export const scaleValues = new Map<string, number>();
 
 
@@ -20,7 +22,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     height: 0,
   });
 
-  const [scale, setScale] = useState(scaleValues.get(props.view_id) || 0.6);
+  const [scale, setScale] = useState(scaleValues.get(props.view_id) || DEFAULT_SCALE);
 
   // const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [stagePosition, setStagePosition] = useState({
@@ -85,7 +87,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     const minScale = 0.05;
     const maxScale = 3;
     evt.cancelBubble = true;
-    const newScale = Math.min(Math.max((scale || 1) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
+    const newScale = Math.min(Math.max((scale || DEFAULT_SCALE) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
     setScale(newScale);
     scaleValues.set(props.view_id, newScale);
 
