@@ -20,7 +20,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     height: 0,
   });
 
-  const [scale, setScale] = useState(scaleValues.get(props.view_id) || 1);
+  const [scale, setScale] = useState(scaleValues.get(props.view_id) || 0.6);
 
   // const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [stagePosition, setStagePosition] = useState({
