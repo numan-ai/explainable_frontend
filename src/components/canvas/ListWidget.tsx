@@ -76,7 +76,7 @@ const getListSize = (
     h = Math.max(h, itemSize.h);
   }
 
-  w -= (representation.style?.spacing ?? 5)
+  w -= (representation.style?.spacing ?? 5);
 
   return {
     w: w + (representation.style?.margin ?? 5) * 2,

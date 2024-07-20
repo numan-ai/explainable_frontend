@@ -54,6 +54,11 @@ const getDictSize = (
   const spacing = representation.style?.spacing || 5; 
   const margin = representation.style?.margin || 5;
 
+  let maxKeyW = 0;
+  let maxValueW = 0;
+
+  const movableContainerSpacing = spacing * 2;
+
   for (let i = 0; i < struct.keys.length; i++) {
     const key_structure = struct.keys[i];
     const value_structure = struct.values[i];
@@ -72,16 +77,23 @@ const getDictSize = (
       return undefined;
     }
     
-    const itemW = keySize.w + valueSize.w + spacing;
-    const itemH = Math.max(keySize.h, valueSize.h) + spacing;
+    const itemH = Math.max(keySize.h, valueSize.h);
 
-    w = Math.max(w, itemW) + spacing;
-    h += itemH + spacing * 2;
+    maxKeyW = Math.max(maxKeyW, keySize.w);
+    maxValueW = Math.max(maxValueW, valueSize.w);
+
+    h += itemH + spacing + movableContainerSpacing;
   }
 
+  console.log(maxKeyW, maxValueW);
+
+  w += maxKeyW + maxValueW + spacing * 2 + movableContainerSpacing;
+
+  h -= spacing + movableContainerSpacing;
+
   return {
-    w: w + margin * 2 + spacing * 3,
-    h: h + margin * 1,
+    w: w + margin * 2,
+    h: h + margin * 2,
   } as Size;
 }
 
@@ -183,6 +195,15 @@ function DictCanvasComponent(props: WidgetProps) {
 
   return (
     <>
+      {/* <Rect
+        x={position.x}
+        y={position.y}
+        width={size.w}
+        height={size.h}
+        stroke="rgb(30, 41, 59)"
+        strokeWidth={1}
+        listening={false}
+      /> */}
       {children}
     </>
   );

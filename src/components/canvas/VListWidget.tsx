@@ -1,20 +1,19 @@
 import { getStructureFromSource, Representation, Source } from "@/sources";
 import getSize, { type Size } from "@/structures/size";
 import { BaseStructure, ListStructure } from "@/structures/types";
-import { Group, Rect } from "react-konva";
+import React, { useMemo } from "react";
+import { Rect } from "react-konva";
 import { Widget } from "../registry";
 import { WidgetProps } from "../widget";
 import render from "./render";
 
 const WIDGET_TYPE = "vlist";
 
-
 export type ListCanvasRepresentation = {
   type: "vlist";
   source: Source | Source[];
   item_widget?: Representation | Representation[];
 } & Representation;
-
 
 const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation => {
   return {
@@ -25,7 +24,6 @@ const getDefaultRepresentation = (_: BaseStructure): ListCanvasRepresentation =>
     } as Source,
   } as ListCanvasRepresentation;
 }
-
 
 const getListSize = (
   structure: BaseStructure,
@@ -80,7 +78,6 @@ const getListSize = (
   } as Size;
 }
 
-
 function ListCanvasComponent(props: WidgetProps) {
   const { position } = props;
 
@@ -123,7 +120,7 @@ function ListCanvasComponent(props: WidgetProps) {
 
   let collectedY = representation.style?.margin ?? 5;
 
-  const children = structure.data.map((item, i) => {
+  const children = useMemo(() => structure.data.map((item, i) => {
     const item_representation = Array.isArray(representation.item_widget) ? (
       representation.item_widget[i]
     ) : (
@@ -141,27 +138,14 @@ function ListCanvasComponent(props: WidgetProps) {
     collectedY += compSize.h + (style.spacing ?? 5);
     const comp = render(item, item_representation, item_position, `${props.id}.${i}`, i);
     
-    return (
-      <Group
-        key={i}
-        // onMouseDown={(e) => {
-        //   startDraggingItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-        // }}
-        // onMouseMove={(e) => {
-        //   dragItem(item.struct_id, e.evt.layerX, e.evt.layerY);
-        // }}
-        // onMouseUp={(_) => {
-        //   endDraggingItem(item.struct_id);
-        // }}
-      >
-        {comp}
-      </Group>
-    )
-  });
+    return comp;
+  }), [structure.data, representation.item_widget, position.x, position.y, style.margin, style.spacing, collectedY, props.id]);
+
+  const MemoizedRect = React.memo(Rect);
 
   return (
     <>
-      <Rect
+      <MemoizedRect
         x={position.x}
         y={position.y}
         width={size.w}
@@ -174,7 +158,6 @@ function ListCanvasComponent(props: WidgetProps) {
     </>
   );
 }
-
 
 export default {
   id: WIDGET_TYPE,

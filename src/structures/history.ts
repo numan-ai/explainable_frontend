@@ -12,6 +12,12 @@ export interface HistoryItemSetValue {
     previoiusValue?: any;
 }
 
+export interface HistoryItemListAppend {
+    type: "listAppend";
+    path: string;
+    value: any;
+}
+
 let historyIndex = -1;
 let history: HistoryItem[] = [];
 
@@ -59,6 +65,14 @@ export function historyBack(stucture: BaseStructure) {
             } else {
                 current[parts[parts.length - 1]] = setValue.previoiusValue;
             }
+            break;
+        case "listAppend":
+            // const listAppend = item as HistoryItemListAppend;
+            if (current?.type !== "list") {
+                console.error("Can't append to non-list", current, item.path);
+                return undefined;
+            }
+            current.data.pop();
             break;
     }
 
@@ -114,6 +128,14 @@ export function historyForward(stucture: BaseStructure) {
                 current[parts[parts.length - 1]] = setValue.value;
                 current[parts[parts.length - 1]].justUpdated = Date.now();
             }
+            break;
+        case "listAppend":
+            const listAppend = item as HistoryItemListAppend;
+            if (current?.type !== "list") {
+                console.error("Can't append to non-list", current, item.path);
+                return undefined;
+            }
+            current.data.push(listAppend.value);
             break;
     }
 

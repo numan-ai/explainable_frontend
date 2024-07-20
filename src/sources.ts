@@ -1,6 +1,6 @@
 import { getStringValue } from "./components/canvas/StringWidget";
 import getByPath from "./structures/path_ref";
-import { BaseStructure, NumberStructure, StringStructure } from "./structures/types";
+import { BaseStructure, DictStructure, NumberStructure, StringStructure } from "./structures/types";
 
 
 export type RepresentationStyle = {
@@ -21,6 +21,12 @@ export type RefSource = {
   type: "ref";
   path: string;
 } & Source;
+
+export type DictSource = {
+  type: "dict";
+  keys: Source[];
+  values: Source[];
+}
 
 export type StringSource = {
   type: "string";
@@ -69,6 +75,15 @@ export const getStructureFromSource = (base_structure: BaseStructure, source: So
     case "ref":
       const ref_source = source as RefSource;
       return getByPath(base_structure, ref_source.path);
+    case "dict":
+      const dict_source = source as DictSource;
+      const keys = dict_source.keys.map(key => getStructureFromSource(base_structure, key));
+      const values = dict_source.values.map(value => getStructureFromSource(base_structure, value));
+      return {
+        "type": "dict",
+        "keys": keys,
+        "values": values,
+      } as DictStructure;
     case "string":
       const str_source = source as StringSource;
       if (str_source?.format === undefined) {

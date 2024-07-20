@@ -18,7 +18,10 @@ export const getMovableContainerSize = (
     console.error("Can't get size of item", item, item_representation);
     return undefined;
   }
-  return itemSize;
+  return {
+    w: itemSize.w + 10,
+    h: itemSize.h + 10,
+  };
 }
 
 
@@ -123,8 +126,8 @@ function MovableContainer(props: {
       <Rect
         x={currentPosition.x}
         y={currentPosition.y}
-        width={size.w + 10}
-        height={size.h + 10}
+        width={size.w}
+        height={size.h}
         stroke="rgb(30, 41, 59)"
         strokeWidth={1}
         onMouseDown={(evt) => {
