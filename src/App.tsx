@@ -283,7 +283,7 @@ export default function App() {
         /> */}
         <ResizablePanelGroup
           direction="horizontal"
-          className="rounded-none border w-full h-full"
+          className="rounded-none w-full h-full"
         >
           {rows}
         </ResizablePanelGroup>
