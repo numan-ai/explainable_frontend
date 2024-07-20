@@ -85,8 +85,6 @@ const getDictSize = (
     h += itemH + spacing + movableContainerSpacing;
   }
 
-  console.log(maxKeyW, maxValueW);
-
   w += maxKeyW + maxValueW + spacing * 2 + movableContainerSpacing;
 
   h -= spacing + movableContainerSpacing;

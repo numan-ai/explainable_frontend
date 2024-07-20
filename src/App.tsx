@@ -9,12 +9,27 @@ import { Button } from "./components/ui/button";
 import { useViewStore } from './storages/viewStorage';
 import { useWebsocketURIStore } from './storages/websocketURIStore';
 
-import api from "./api";
+import api, { LATEST_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import { dataclassDisplayConfig } from "./components/canvas/render";
 import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 import { Representation } from "./sources";
 import { pushHistory } from "./structures/history";
+import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
+
+function checkVersionMatches(a: string, b: string) {
+  /* only major and minor versions are checked */
+
+  const a_parts = (a || "0.0.0").split(".");
+  const b_parts = (b || "0.0.0").split(".");
+  if (a_parts[0] !== b_parts[0]) {
+    return false;
+  }
+  if (a_parts[1] !== b_parts[1]) {
+    return false;
+  }
+  return true;
+}
 
 
 function ServerURIInput() {
@@ -117,6 +132,8 @@ function ConnectingComponent() {
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
+  const [isOutdated, setIsOutdated] = useState<boolean | undefined>(undefined);
+
   const [views, setStructure, modifyStructure] = useViewStore((s) => [
     s.views, s.setStructure, s.modifyStructure,
   ]);
@@ -127,6 +144,14 @@ export default function App() {
     });
     api.onDisconnected(() => {
       setIsConnected(false);
+    });
+
+    api.onMessage("init", (data) => {
+      if (!checkVersionMatches(data.version, LATEST_VERSION)) {
+        setIsOutdated(true);
+      } else {
+        setIsOutdated(false);
+      }
     });
 
     api.onMessage("snapshot", (data) => {
@@ -191,6 +216,12 @@ export default function App() {
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
         { view_components}
       </div>
+    );
+  }
+
+  if (isOutdated) {
+    comp = (
+      <ServerIsOutdatedComponent/>
     );
   }
   

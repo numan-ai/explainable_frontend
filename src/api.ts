@@ -1,6 +1,7 @@
 import { IS_MOCKED } from "./mock";
 
 const MIN_CONNECTING_TIME = 250;
+export const LATEST_VERSION = "0.5.0";
 
 class WebSocketClient {
   private ws: WebSocket | null;
@@ -113,6 +114,9 @@ class WebSocketClient {
   public onMessage(message_type: string, callback: (message: any) => void) {
     if (!this.messageCallbacks[message_type]) {
       this.messageCallbacks[message_type] = [];
+    }
+    if (this.messageCallbacks[message_type].includes(callback)) {
+      return;
     }
     this.messageCallbacks[message_type].push(callback);
   }

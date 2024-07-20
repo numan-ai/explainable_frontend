@@ -30,10 +30,10 @@ export default function NoConnectionComponent() {
   return (
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-xl font-extrabold mb-3">How to start</h1>
-      <div className="relative">
+      <div className="relative min-w-[450px]">
         <Button 
           variant="outline"
-          className="absolute right-[10px] top-[10px] w-10 h-10 p-0"
+          className="absolute right-[8px] top-[8px] w-8 h-8 p-0 rounded-[4px]"
           onClick={() => {
             navigator.clipboard.writeText(exampleCode);
             setCopied(true);
