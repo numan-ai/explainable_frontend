@@ -147,7 +147,9 @@ export default function App() {
   ]);
 
   useEffect(() => {
-    toast(didYouKnowMessages[Math.floor(Math.random() * didYouKnowMessages.length)]);
+    setTimeout(() => {
+      toast(didYouKnowMessages[Math.floor(Math.random() * didYouKnowMessages.length)]);
+    }, 350);
 
     api.onConnected(() => {
       setIsConnected(true);
