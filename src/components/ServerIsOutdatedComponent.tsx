@@ -8,7 +8,7 @@ export default function ServerIsOutdatedComponent() {
   const pipCommand = "pip install explainable --upgrade";
 
   return (
-    <div className="flex flex-col items-center justify-center mt-[10vh]">
+    <div className="flex flex-col items-center justify-center mt-[10vh] slower-appear">
       <h1 className="text-xl font-extrabold mb-3">Heads up!</h1>
       <p className="text-sm text-slate-400 text-center">
         Your version of Explainable is outdated. <br/>

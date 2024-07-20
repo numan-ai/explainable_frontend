@@ -11,6 +11,7 @@ class WebSocketClient {
   private closeCallbacks: Array<() => void>;
   private requestId: number;
   private connectionStartTime: number;
+  public currentVersion: string | null;
 
   constructor() {
     this.uri = "";
@@ -21,6 +22,7 @@ class WebSocketClient {
     this.closeCallbacks = [];
     this.requestId = 0;
     this.connectionStartTime = 0;
+    this.currentVersion = null;
   }
 
   public reconnect(uri: string) {

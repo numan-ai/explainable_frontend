@@ -154,12 +154,19 @@ export default function App() {
 
     api.onConnected(() => {
       setIsConnected(true);
+      setTimeout(() => {
+        if (api.currentVersion === null) {
+          setIsOutdated(true);
+        }
+      }, 300);
     });
     api.onDisconnected(() => {
+      api.currentVersion = null;
       setIsConnected(false);
     });
 
     api.onMessage("init", (data) => {
+      api.currentVersion = data.version;
       if (!checkVersionMatches(data.version, LATEST_VERSION)) {
         setIsOutdated(true);
       } else {
@@ -169,6 +176,9 @@ export default function App() {
 
     api.onMessage("snapshot", (data) => {
       setStructure(data.view_id, data.structure, data.widget);
+      if (api.currentVersion === null) {
+        setIsOutdated(true);
+      }
       accumulatedDiffs.clear();
     });
 
@@ -187,7 +197,6 @@ export default function App() {
     });
 
     setInterval(() => {
-      // console.log(`I have ${accumulatedDiffs.get("view1")?.length} diffs`);
       for (let view_id of accumulatedDiffs.keys()) {
         const diffs = accumulatedDiffs.get(view_id)!.slice();
         accumulatedDiffs.get(view_id)!.length = 0;
