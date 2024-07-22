@@ -1,7 +1,7 @@
 import { IS_MOCKED } from "./mock";
 
 const MIN_CONNECTING_TIME = 250;
-export const LATEST_VERSION = "0.5.0";
+export const LATEST_VERSION = "0.5.1";
 
 class WebSocketClient {
   private ws: WebSocket | null;

@@ -21,8 +21,20 @@ import { pushHistory } from "./structures/history";
 
 
 const didYouKnowMessages = [
-  "Did you know that you can Alt+Click a widget to reset its position",
-  "Did you know that you can Shft+Drag to move around without dragging widgets"
+  (<span>
+    Did you know that you can
+    <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+      Alt + Click
+    </kbd>
+    a widget to reset its position
+  </span>),
+  (<span>
+    Did you know that you can 
+    <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+      Shift + Drag
+    </kbd>
+    to move around without dragging widgets
+  </span>)
 ]
 
 

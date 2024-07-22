@@ -13,6 +13,7 @@ export default function ServerIsOutdatedComponent() {
       <p className="text-sm text-slate-400 text-center">
         Your version of Explainable is outdated. <br/>
         Please update to the latest version ({LATEST_VERSION}) to continue.<br/><br/>
+        You can update by running <br/>
         <code>{pipCommand}</code>
         <Button 
           variant="outline"
