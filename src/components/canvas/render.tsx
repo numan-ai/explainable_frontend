@@ -57,7 +57,7 @@ export default function render(structure: BaseStructure, representation: Represe
     // ) : (
     //   representation
     // );
-    // console.log(representation);
+    // representation);
     // if (!representation) {
     //   structure = getDefaultDataclassStructure(structure as DataclassStructure) as DictStructure;
     // }

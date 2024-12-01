@@ -1,41 +1,30 @@
-export type BaseStructure = {
-  type: string;
-  justUpdated?: number;
+export type GraphStructure = {
+  nodes: NodeStructure[];
+  edges: EdgeStructure[];
 }
 
-export type ListStructure = {
-  type: "list";
-  data: BaseStructure[];
-} & BaseStructure;
+export type NodeStructure = {
+  object_id: number;
+  layer: string;
+  node_id: string;
+  widget: string;
+  data: any;
+  default_x: number;
+  default_y: number;
+}
 
-export type DictStructure = {
-  type: "dict";
-  keys: BaseStructure[];
-  values: BaseStructure[];
-} & BaseStructure;
+export type EdgeStructure = {
+  edge_id: string;
+  node_start_id: string;
+  node_end_id: string;
+}
 
-export type NullStructure = {
-  type: "null";
-} & BaseStructure;
+export type Position = {
+  x: number,
+  y: number,
+}
 
-export type NumberStructure = {
-  type: "number";
-  value: number;
-} & BaseStructure;
-
-export type ObjectStructure = {
-  type: "object";
-  subtype: string;
-  data: { [key: string]: BaseStructure };
-} & BaseStructure;
-
-export type StringStructure = {
-  type: "string";
-  value: string;
-} & BaseStructure;
-
-export type DataclassStructure = {
-  type: "dataclass";
-  subtype: string;
-  data: { [key: string]: BaseStructure };
-} & BaseStructure;
+export type Size = {
+  w: number,
+  h: number,
+}

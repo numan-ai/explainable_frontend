@@ -1,13 +1,6 @@
 import { getDataclassRepresentation } from "@/components/canvas/render";
 import getWidget from "@/components/registry";
 import { Representation } from "@/sources";
-import { BaseStructure, DataclassStructure } from "./types";
-
-
-export type Size = {
-  w: number,
-  h: number,
-}
 
 
 const getSize = (structure: BaseStructure, representation: Representation | null) => {

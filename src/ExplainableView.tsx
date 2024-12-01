@@ -1,4 +1,4 @@
-import render from './components/canvas/render.tsx';
+import render from './new_components/render.tsx';
 import { ViewType } from './storages/viewStorage';
 import WhiteBoard from './WhiteBoard';
 
@@ -25,13 +25,8 @@ function ExplainableView(props: ExplainableViewProps) {
   // }, []);
 
   // const structure = takePartOfData(props.view.structure, path);
-
-  const position = props.view.position || {
-    x: 100,
-    y: 100,
-  };
   
-  const component = render(view.structure, view.representation || null, position, view.id, 0);
+  const component = render(view);
 
   return (
     <div className='slow-appear h-full'>
@@ -42,7 +37,7 @@ function ExplainableView(props: ExplainableViewProps) {
           }
         }
       } name='view-path'/> */}
-      <WhiteBoard view_id={view.id}>
+      <WhiteBoard view={view}>
         {component}
       </WhiteBoard>
     </div>

@@ -10,15 +10,27 @@ import { Button } from "./components/ui/button";
 import { useViewStore } from './storages/viewStorage';
 import { useWebsocketURIStore } from './storages/websocketURIStore';
 
+import pako from 'pako';
 import api, { LATEST_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
-import { dataclassDisplayConfig } from "./components/canvas/render";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
 import { IS_MOCKED, MOCK_VIEWS } from "./mock";
-import { Representation } from "./sources";
-import { pushHistory } from "./structures/history";
 
+
+const decompressGzippedData = (gzippedData: string): string | null => {
+  try {
+    const charData = gzippedData.split('').map(function(x){return x.charCodeAt(0);});
+    const buffer = new Uint8Array(charData);
+
+    const decompressedData = pako.ungzip(buffer, { to: 'string' });
+
+    return decompressedData;
+  } catch (error) {
+    console.error('Error decompressing data:', error);
+    return null;
+  }
+};
 
 const didYouKnowMessages = [
   (<span>
@@ -127,9 +139,6 @@ function Header(props: HeaderProps) {
   );
 }
 
-const accumulatedDiffs = new Map<string, any[]>();
-
-
 function Spinner() {
   return (
     <div role="status" className='flex justify-center items-center'>
@@ -155,8 +164,8 @@ export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
   const [isOutdated, setIsOutdated] = useState<boolean | undefined>(undefined);
 
-  const [views, setStructure, modifyStructure] = useViewStore((s) => [
-    s.views, s.setStructure, s.modifyStructure,
+  const [views, setStructure] = useViewStore((s) => [
+    s.views, s.setStructure,
   ]);
 
   useEffect(() => {
@@ -187,42 +196,18 @@ export default function App() {
     });
 
     api.onMessage("snapshot", (data) => {
-      setStructure(data.view_id, data.structure, data.widget);
-      if (api.currentVersion === null) {
-        setIsOutdated(true);
+      const uncompressed = decompressGzippedData(atob(data.structure));
+      if (uncompressed === null) {
+        console.error("Can't decompress structure");
+        return;
       }
-      accumulatedDiffs.clear();
+      const structure = JSON.parse(uncompressed);
+      setStructure(data.view_id, structure);
+      // if (api.currentVersion === null) {
+      //   setIsOutdated(true);
+      // }
+      // accumulatedDiffs.clear();
     });
-
-    api.onMessage("diff", (diff) => {
-      if (!accumulatedDiffs.has(diff.view_id)) {
-        accumulatedDiffs.set(diff.view_id, []);
-      }
-      accumulatedDiffs.get(diff.view_id)!.push(diff);
-    });
-
-    api.onMessage("displayConfig", (config) => {
-      dataclassDisplayConfig.clear();
-      for (let [key, value] of Object.entries(config)) {
-        dataclassDisplayConfig.set(key, value as Representation);
-      }
-    });
-
-    setInterval(() => {
-      for (let view_id of accumulatedDiffs.keys()) {
-        const diffs = accumulatedDiffs.get(view_id)!.slice();
-        accumulatedDiffs.get(view_id)!.length = 0;
-        if (!diffs.length) {
-          continue;
-        }
-        modifyStructure(view_id, data => {
-          for (let diff of diffs) {
-            pushHistory(data, diff);
-          }
-          return data;
-        });
-      }
-    }, 100);
   }, []);
 
   let comp = null;

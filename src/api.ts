@@ -80,7 +80,7 @@ class WebSocketClient {
   }
 
   private processMessage = (data: any) => {
-    console.log('Got message', data);
+    // console.log('Got message', data);
     if (this.messageCallbacks[data.type]) {
       this.messageCallbacks[data.type].forEach(callback => callback(data.data));
     }

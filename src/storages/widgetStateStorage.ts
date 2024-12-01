@@ -1,3 +1,5 @@
+import { Position } from "@/structures/types";
+import { version } from "os";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -20,21 +22,22 @@ export type WidgetTempState = {
 }
 
 export type WidgetStateStorageType = {
-  states: { [key: string]: WidgetState };
+  states: Map<string, WidgetState>;
   tempStates: { [key: string]: WidgetTempState };
   setIsCollapsed: (id: string, isClicked: boolean) => void;
   setDragStart: (id: string, dragStart: DragPosition | null) => void;
   setPosition: (id: string, position: Position | null) => void;
+  setPositionBulk: (positions: Map<string, Position>) => void;
   setJustUpdatedState: (id: string, justUpdatedState: number | null) => void;
 };
 
 function ensureDefaultState(state: WidgetStateStorageType, id: string) {
-  if (state.states[id] === undefined) {
-    state.states[id] = {
+  if (state.states.get(id) === undefined) {
+    state.states.set(id, {
       isCollapsed: false,
       dragStart: null,
       position: null,
-    } as WidgetState;
+    } as WidgetState);
   }
 
   if (state.tempStates[id] === undefined) {
@@ -49,11 +52,11 @@ export const useWidgetStateStorage = create<WidgetStateStorageType>()(
   persist(
     immer(
       (set, _get) => ({
-        states: {},
+        states: new Map<string, WidgetState>(),
         tempStates: {},
         setIsCollapsed: (id: string, isCollapsed: boolean) => set(state => {
           ensureDefaultState(state, id);
-          state.states[id].isCollapsed = isCollapsed;
+          state.states.get(id)!.isCollapsed = isCollapsed;
         }),
         setDragStart: (id: string, dragStart: DragPosition | null) => set(state => {
           ensureDefaultState(state, id);
@@ -61,7 +64,13 @@ export const useWidgetStateStorage = create<WidgetStateStorageType>()(
         }),
         setPosition: (id: string, position: Position | null) => set(state => {
           ensureDefaultState(state, id);
-          state.states[id].position = position;
+          state.states.get(id)!.position = position;
+        }),
+        setPositionBulk: (positions: Map<string, Position>) => set(state => {
+          for (const [key, value] of positions) {
+            ensureDefaultState(state, key);
+            state.states.get(key)!.position = value;
+          }
         }),
         setJustUpdatedState: (id: string, justUpdatedState: number | null) => set(state => {
           ensureDefaultState(state, id);
@@ -84,11 +93,32 @@ export const useWidgetStateStorage = create<WidgetStateStorageType>()(
     ),
     {
       'name': 'numan:explainable.widgetState',
-      partialize: (state) => {
-        return Object.fromEntries(
-          Object.entries(state).filter(([key]) => !['tempStates'].includes(key)),
-        )
-      },
+      // partialize: (state) => {
+        // return Object.fromEntries(
+        //   Object.entries(state).filter(([key]) => !['tempStates'].includes(key)),
+        // )
+      // },
+      storage: {
+        setItem: (name, newValue) => {
+          const data = JSON.stringify({
+            state: Object.fromEntries(
+              Object.entries(newValue.state).filter(([key]) => !['tempStates'].includes(key)),
+            ),
+            version: newValue.version,
+          });
+          localStorage.setItem(name, data);
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+        getItem: (name) => {
+          const str = localStorage.getItem(name)
+          return {
+            state: {
+              ...JSON.parse(str!).state,
+              states: new Map<string, WidgetState>(JSON.parse(str!).state.states),
+            },
+          }
+        },
+      }
     }
   )
 );

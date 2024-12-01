@@ -1,12 +1,16 @@
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Ref, useEffect, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
+import { useWidgetStateStorage } from './storages/widgetStateStorage';
+import stepMinimizeEdgeLength from './graphForce';
+import { ViewType } from './storages/viewStorage';
+import { Position } from './structures/types';
 
 
 type WhiteBoardProps = {
   children: any;
   // scale: number;
-  view_id: string;
+  view: ViewType;
   // setScale: (scale: number) => void;
 }
 
@@ -21,8 +25,23 @@ function WhiteBoard(props: WhiteBoardProps) {
     width: 0,
     height: 0,
   });
+  const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
 
-  const [scale, setScale] = useState(scaleValues.get(props.view_id) || DEFAULT_SCALE);
+  const [
+    widgetStates,
+    tempStates,
+    setDragStart,
+    setPosition,
+    setPositionBulk,
+  ] = useWidgetStateStorage((s) => [
+    s.states,
+    s.tempStates,
+    s.setDragStart,
+    s.setPosition,
+    s.setPositionBulk,
+  ]);
+
+  const [scale, setScale] = useState(scaleValues.get(props.view.id) || DEFAULT_SCALE);
 
   // const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [stagePosition, setStagePosition] = useState({
@@ -60,7 +79,33 @@ function WhiteBoard(props: WhiteBoardProps) {
     };
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      const oldPositions = new Map<string, Position>();
+      for (const [key, value] of Object.entries(widgetStates)) {
+        oldPositions.set(key, value.position);
+      }
+      const newPositions = stepMinimizeEdgeLength(
+        props.view.structure.nodes,
+        props.view.structure.edges,
+        oldPositions,
+      );
+      setPositionBulk(newPositions);
+    }, 40);
+  }, [widgetStates, props.view.structure]);
+
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
+    if (evt.target !== evt.currentTarget && !!evt.target.attrs.meta.id) {
+      const node_id = evt.target.attrs.meta.id;
+      setDraggingNodeId(node_id);
+      setDragStart(node_id, {
+        layerX: evt.evt.layerX,
+        layerY: evt.evt.layerY,
+        x: evt.target.attrs.x,
+        y: evt.target.attrs.y,
+      });
+      return;
+    }
     dragStart.current = {
       x: evt.evt.layerX,
       y: evt.evt.layerY,
@@ -70,6 +115,18 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
+    if (draggingNodeId !== null) {
+      const nodeDragStart = tempStates[draggingNodeId]?.dragStart;
+      const view_scale = scaleValues.get(props.view.id) || 1;
+      const dx = (evt.evt.layerX - (nodeDragStart?.layerX || 0)) / view_scale;
+      const dy = (evt.evt.layerY - (nodeDragStart?.layerY || 0)) / view_scale;
+      const newPos = {
+        x: (nodeDragStart?.x || 0) + dx,
+        y: (nodeDragStart?.y || 0) + dy,
+      };
+      setPosition(draggingNodeId, newPos);
+      return;
+    }
     evt.cancelBubble = true;
     if (dragStart.current) {
       const x = (evt.evt.layerX - dragStart.current.x) / scale;
@@ -79,6 +136,10 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   const dragStageEnd = (evt: KonvaEventObject<MouseEvent>) => {
+    if (draggingNodeId !== null) {
+      setDraggingNodeId(null);
+      return;
+    }
     dragStart.current = null;
     evt.cancelBubble = true;
   }
@@ -89,7 +150,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     evt.cancelBubble = true;
     const newScale = Math.min(Math.max((scale || DEFAULT_SCALE) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
     setScale(newScale);
-    scaleValues.set(props.view_id, newScale);
+    scaleValues.set(props.view.id, newScale);
 
     const [pastX, pastY] = [evt.evt.layerX/scale + stagePosition.x, evt.evt.layerY/scale + stagePosition.y];
     const [newX, newY] = [evt.evt.layerX/newScale + stagePosition.x, evt.evt.layerY/newScale + stagePosition.y];
