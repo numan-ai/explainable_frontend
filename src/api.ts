@@ -1,5 +1,3 @@
-import { IS_MOCKED } from "./mock";
-
 const MIN_CONNECTING_TIME = 250;
 export const LATEST_VERSION = "0.5.1";
 
@@ -26,9 +24,6 @@ class WebSocketClient {
   }
 
   public reconnect(uri: string) {
-    if (IS_MOCKED) {
-      return;
-    }
     if (this.uri === uri && this.ws && this.ws.readyState === WebSocket.OPEN) {
       return;
     }

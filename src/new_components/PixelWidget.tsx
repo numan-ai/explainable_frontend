@@ -1,6 +1,6 @@
 import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Position } from "@/structures/types";
-import { Rect, Text } from "react-konva";
+import { Rect } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
 
 

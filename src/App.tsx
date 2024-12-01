@@ -15,7 +15,6 @@ import api, { LATEST_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
-import { IS_MOCKED, MOCK_VIEWS } from "./mock";
 
 
 const decompressGzippedData = (gzippedData: string): string | null => {
@@ -212,14 +211,14 @@ export default function App() {
 
   let comp = null;
 
-  if (isConnected === false && !IS_MOCKED) {
+  if (isConnected === false) {
     comp =(
       <NoConnectionComponent key={-1}/>
     );
-  } else if (isConnected === undefined && !IS_MOCKED) {
+  } else if (isConnected === undefined) {
     comp = <ConnectingComponent key={-1}/>;
   } else {
-    const view_components = (IS_MOCKED ? MOCK_VIEWS : views).map((view, index) => {
+    const view_components = (views).map((view, index) => {
       return (
         <ExplainableView
           key={index}

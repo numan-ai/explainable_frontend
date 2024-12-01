@@ -10,7 +10,7 @@ export type ViewType = {
 
 type LayoutStoreType = {
   views: ViewType[];
-  dragStartPosition: Position | null;
+  dragStartPosition: null;
   addView: (view: ViewType) => void;
   setStructure: (viewId: string, structure: GraphStructure) => void;
 };

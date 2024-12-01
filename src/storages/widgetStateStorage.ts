@@ -1,5 +1,4 @@
 import { Position } from "@/structures/types";
-import { version } from "os";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
