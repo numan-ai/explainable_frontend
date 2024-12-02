@@ -18,6 +18,8 @@ export type EdgeStructure = {
   node_start_id: string;
   node_end_id: string;
   data: any;
+  line_width: number;
+  line_color: string;
 }
 
 export type Position = {

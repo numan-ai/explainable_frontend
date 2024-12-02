@@ -1,6 +1,7 @@
-import { Position } from "@/structures/types";
+import { EdgeStructure, Position } from "@/structures/types";
 import { Line, Text } from "react-konva";
 
+//@ts-ignore
 function fancy_left_right(x1: number, y1: number, x2: number, y2: number, W: number, _: number){
   return [
     x1 + W*(x2-x1)/Math.abs(x2-x1),
@@ -8,6 +9,7 @@ function fancy_left_right(x1: number, y1: number, x2: number, y2: number, W: num
   ];
 }
 
+//@ts-ignore
 function fancy_top_bottom(x1: number, y1: number, x2: number, y2: number, _: number, H: number){
   return [
     x1 + H*(x2-x1)/Math.abs(y2-y1),
@@ -22,6 +24,7 @@ function simple_left_right(x1: number, y1: number, x2: number, _: number, W: num
   ];
 }
 
+//@ts-ignore
 function simple_top_bottom(x1: number, y1: number, _: number, y2: number, _2: number, H: number){
   return [
     x1,
@@ -32,8 +35,7 @@ function simple_top_bottom(x1: number, y1: number, _: number, y2: number, _2: nu
 export default function EdgeWidget(props: {
   start: Position;
   end: Position;
-  data: any;
-}) {
+} & EdgeStructure) {
 
   // We need to change this to their actual dimensions
   let W1 = 155;
@@ -84,8 +86,8 @@ export default function EdgeWidget(props: {
     <>
       <Line
         points={[p1[0], p1[1], p2[0], p2[1]]}
-        stroke="rgb(240, 240, 240)"  // Should we allow custom color?
-        strokeWidth={2}  // And/or custom width?
+        stroke={props.line_color ?? "rgb(240, 240, 240)"}  // Should we allow custom color?
+        strokeWidth={props.line_width ?? 2}
         listening={false}
       />
       {text}
