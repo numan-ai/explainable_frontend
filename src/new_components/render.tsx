@@ -26,7 +26,7 @@ function renderEdges(view: ViewType) {
       console.error("Can't find positions", edge, startPos, endPos);
       continue;
     }
-    widgets.push(<EdgeWidget start={startPos} end={endPos} key={edge.edge_id} />);
+    widgets.push(<EdgeWidget start={startPos} end={endPos} data={edge.data} key={edge.edge_id} />);
   }
 
   return widgets;
