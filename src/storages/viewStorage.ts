@@ -16,6 +16,14 @@ type LayoutStoreType = {
 };
 
 
+const STRUCTURE_REGISTRY = new Map<string, any>();
+
+
+export function getStructureById(id: string) {
+  return STRUCTURE_REGISTRY.get(id);
+}
+
+
 export const useViewStore = create<LayoutStoreType>()(
   // persist(
   immer(
@@ -39,6 +47,9 @@ export const useViewStore = create<LayoutStoreType>()(
             state.views.push(view);
           }
           view.structure = structure;
+          for (let node of structure.nodes) {
+            STRUCTURE_REGISTRY.set(node.node_id, node);
+          }
 
           return state;
         });
