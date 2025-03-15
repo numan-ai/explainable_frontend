@@ -2,12 +2,22 @@ import TextComponent from "./TextWidget";
 import RowComponent from "./RowWidget";
 import ColumnComponent from "./ColumnWidget";
 import PixelComponent from "./PixelWidget";
+import LineChartComponent from "./LineChartWidget";
 
 const widgets: Record<string, any> = {
     [TextComponent.id]: TextComponent.Widget,
     [RowComponent.id]: RowComponent.Widget,
     [ColumnComponent.id]: ColumnComponent.Widget,
     [PixelComponent.id]: PixelComponent.Widget,
+    [LineChartComponent.id]: LineChartComponent.Widget,
+}
+
+const sizes: Record<string, any> = {
+    [TextComponent.id]: TextComponent.getSize,
+    [RowComponent.id]: RowComponent.getSize,
+    [ColumnComponent.id]: ColumnComponent.getSize,
+    [PixelComponent.id]: PixelComponent.getSize,
+    [LineChartComponent.id]: LineChartComponent.getSize,
 }
 
 export const getWidget = (name: string) => {
@@ -17,13 +27,6 @@ export const getWidget = (name: string) => {
         return undefined;
     }
     return widget;
-}
-
-const sizes: Record<string, any> = {
-    [TextComponent.id]: TextComponent.getSize,
-    [RowComponent.id]: RowComponent.getSize,
-    [ColumnComponent.id]: ColumnComponent.getSize,
-    [PixelComponent.id]: PixelComponent.getSize,
 }
 
 export const getWidgetSize = (name: string, data: any) => {

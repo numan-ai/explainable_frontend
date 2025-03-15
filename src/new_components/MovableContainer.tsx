@@ -14,17 +14,22 @@ function MovableContainer(props: {
 }) {
   const [
     widgetState,
-    setPosition,
+    // setPosition,
   ] = useWidgetStateStorage(useShallow((s) => [
     s.states.get(props.id),
-    s.setPosition,
+    // s.setPosition,
   ]));
 
   const currentPosition = widgetState?.position || props.defaultPosition;
 
-  if (!widgetState) {
-    setPosition(props.id, props.defaultPosition);
-  }
+  // if (!widgetState) {
+  //   setPosition(props.id, props.defaultPosition);
+  // }
+  // useEffect(() => {
+  //   if (!widgetState) {
+  //     setPosition(props.id, props.defaultPosition);
+  //   }
+  // }, [widgetState, setPosition, props.id, props.defaultPosition]);
 
   const size = getWidgetSize(props.widget, props.data);
   if (size === undefined) {

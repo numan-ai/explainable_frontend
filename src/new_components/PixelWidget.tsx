@@ -3,27 +3,28 @@ import { Position } from "@/structures/types";
 import { Rect } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
 
-
+type PixelWidgetData = {
+  size: number | null,
+  width: number | null,
+  height: number | null,
+  color: string,
+}
 const WIDGET_ID = "pixel";
 
 const getSize = (
-  data: {
-    size: number,
-    color: string,
-  },
+  data: PixelWidgetData,
 ) => {
   return {
-    w: data.size,
-    h: data.size,
+    w: data.size ?? data.width ?? 100,
+    h: data.size ?? data.height ?? 100,
   };
 }
-
 
 function Widget(props: {
   container_id: string,
   position: Position,
   id: string,
-  data: {size: number, color: string},
+  data: PixelWidgetData,
 }) {
   const [
     widgetState,

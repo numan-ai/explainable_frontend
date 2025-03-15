@@ -47,6 +47,7 @@ export const useViewStore = create<LayoutStoreType>()(
             state.views.push(view);
           }
           view.structure = structure;
+          STRUCTURE_REGISTRY.clear();
           for (let node of structure.nodes) {
             STRUCTURE_REGISTRY.set(node.node_id, node);
           }

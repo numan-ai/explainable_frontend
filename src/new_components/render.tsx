@@ -3,7 +3,12 @@ import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import EdgeWidget from "./EdgeWidget";
 import MovableContainer from "./MovableContainer";
 import { getWidget } from "./registry";
-import React from "react";
+import React, { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { toast } from "sonner";
+
+
+let NODES_INITIALIZED = 0;
 
 
 function renderEdges(view: ViewType) {
@@ -18,6 +23,7 @@ function renderEdges(view: ViewType) {
   for (let i = 0; i < view.structure.edges.length; i++) {
     const edge = view.structure.edges[i];
     if (!widgetStates.get(edge.node_start_id) || !widgetStates.get(edge.node_end_id)) {
+      // console.error("Can't find positions", edge);
       continue;
     }
     const startPos = widgetStates.get(edge.node_start_id)!.position;
@@ -39,10 +45,34 @@ function renderEdges(view: ViewType) {
 
 
 export default function render(view: ViewType) {
+  const [
+    states,
+    setPosition,
+  ] = useWidgetStateStorage(useShallow((s) => [
+    s.states,
+    s.setPosition,
+  ]));
+
   if (!view.structure) {
     console.error("Can't render structure", view.structure);
     return null;
   }
+
+  // Ensure positions are set in a side effect
+  useEffect(() => {
+    view.structure.nodes.forEach((node) => {
+      if (!states.get(node.node_id) || !states.get(node.node_id)?.position) {
+        setPosition(node.node_id, {
+          x: node.default_x,
+          y: node.default_y,
+        });
+        NODES_INITIALIZED++;
+        if (NODES_INITIALIZED === 1000 && NODES_INITIALIZED % 500 === 0) {
+          toast("More than 1,000 nodes have been created");
+        }
+      }
+    });
+  }, [view.structure.nodes.map(x => x.node_id), setPosition]);
 
   // const node_positions = new Map<string, Position>();
   const widgets = [];
