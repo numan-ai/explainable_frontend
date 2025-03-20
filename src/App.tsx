@@ -51,13 +51,12 @@ const didYouKnowMessages = [
 
 function checkVersionMatches(a: string, b: string) {
   /* only major and minor versions are checked */
-
   const a_parts = (a || "0.0.0").split(".");
   const b_parts = (b || "0.0.0").split(".");
-  if (a_parts[0] !== b_parts[0]) {
+  if (a_parts[0] < b_parts[0]) {
     return false;
   }
-  if (a_parts[1] !== b_parts[1]) {
+  if (a_parts[0] == b_parts[0] && a_parts[1] < b_parts[1]) {
     return false;
   }
   return true;

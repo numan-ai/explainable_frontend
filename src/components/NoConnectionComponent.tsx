@@ -5,23 +5,26 @@ import { Button } from './ui/button';
 
 const exampleCode = `
 import time
+
 import explainable
 
-# start the server
-explainable.init()
 
-# create your data
-lst = [1, 2, 3]
+def draw(cm: explainable.ContextManager):
+    ctx = cm.get("my_var", default=0)
 
-# start observing
-lst = explainable.observe("view1", lst)
+    return explainable.Graph([
+        explainable.TextNode(f"My var: {ctx}"),
+    ], edges=[])
 
-# change your data
+
+explainable.init(draw)
+explainable.add_context()
+
+my_var = 1
+
 while True:
-  lst[0] += 0
-  lst[1] += 1
-  lst[2] += 2
-  time.sleep(1)
+    my_var += 1
+    time.sleep(0.5)
 `.slice(1);
 
 export default function NoConnectionComponent() {
