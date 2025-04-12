@@ -117,7 +117,7 @@ function WhiteBoard(props: WhiteBoardProps) {
   const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
     if (draggingNodeId !== null) {
       const nodeDragStart = tempStates[draggingNodeId]?.dragStart;
-      const view_scale = scaleValues.get(props.view.id) || 1;
+      const view_scale = scaleValues.get(props.view.id) ?? DEFAULT_SCALE;
       const dx = (evt.evt.layerX - (nodeDragStart?.layerX || 0)) / view_scale;
       const dy = (evt.evt.layerY - (nodeDragStart?.layerY || 0)) / view_scale;
       const newPos = {
