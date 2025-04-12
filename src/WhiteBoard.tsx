@@ -49,7 +49,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     y: 20,
   });
 
-  let dragStart = useRef<{ 
+  const dragStart = useRef<{ 
     x: number, 
     y: number,
     initX: number,
@@ -58,7 +58,7 @@ function WhiteBoard(props: WhiteBoardProps) {
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         console.log('New width:', entry.contentRect.width);
         console.log('New height:', entry.contentRect.height);
         setDimensions({
