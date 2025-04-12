@@ -1,23 +1,18 @@
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Ref, useEffect, useRef, useState } from 'react';
+import { Ref, useEffect, useRef, useState, ReactNode } from 'react';
 import { Layer, Stage } from 'react-konva';
 import { useWidgetStateStorage } from './storages/widgetStateStorage';
 import stepMinimizeEdgeLength from './graphForce';
 import { ViewType } from './storages/viewStorage';
 import { Position } from './structures/types';
-
+import { useViewLayoutStore, DEFAULT_SCALE } from './storages/viewLayoutStore';
 
 type WhiteBoardProps = {
-  children: any;
-  // scale: number;
+  children: ReactNode;
   view: ViewType;
-  // setScale: (scale: number) => void;
 }
 
-const DEFAULT_SCALE = 0.6;
-
 export const scaleValues = new Map<string, number>();
-
 
 function WhiteBoard(props: WhiteBoardProps) {
   const divRef: Ref<HTMLDivElement> = useRef(null);
@@ -41,13 +36,15 @@ function WhiteBoard(props: WhiteBoardProps) {
     s.setPositionBulk,
   ]);
 
-  const [scale, setScale] = useState(scaleValues.get(props.view.id) || DEFAULT_SCALE);
-
-  // const [selectedElement, setSelectedElement] = useState<string | null>(null);
-  const [stagePosition, setStagePosition] = useState({
-    x: 20,
-    y: 20,
-  });
+  const [getScale, setScale, getPosition, setStagePos] = useViewLayoutStore((s) => [
+    s.getScale,
+    s.setScale,
+    s.getPosition,
+    s.setPosition,
+  ]);
+  
+  const scale = getScale(props.view.id);
+  const stagePosition = getPosition(props.view.id);
 
   const dragStart = useRef<{ 
     x: number, 
@@ -117,7 +114,7 @@ function WhiteBoard(props: WhiteBoardProps) {
   const dragStageMove = (evt: KonvaEventObject<MouseEvent>) => {
     if (draggingNodeId !== null) {
       const nodeDragStart = tempStates[draggingNodeId]?.dragStart;
-      const view_scale = scaleValues.get(props.view.id) ?? DEFAULT_SCALE;
+      const view_scale = getScale(props.view.id);
       const dx = (evt.evt.layerX - (nodeDragStart?.layerX || 0)) / view_scale;
       const dy = (evt.evt.layerY - (nodeDragStart?.layerY || 0)) / view_scale;
       const newPos = {
@@ -131,7 +128,10 @@ function WhiteBoard(props: WhiteBoardProps) {
     if (dragStart.current) {
       const x = (evt.evt.layerX - dragStart.current.x) / scale;
       const y = (evt.evt.layerY - dragStart.current.y) / scale;
-      setStagePosition({ x: dragStart.current.initX - x, y: dragStart.current.initY - y });
+      setStagePos(props.view.id, { 
+        x: dragStart.current.initX - x, 
+        y: dragStart.current.initY - y 
+      });
     }
   }
 
@@ -149,13 +149,15 @@ function WhiteBoard(props: WhiteBoardProps) {
     const maxScale = 3;
     evt.cancelBubble = true;
     const newScale = Math.min(Math.max((scale || DEFAULT_SCALE) - evt.evt.deltaY / 500 * scale, minScale), maxScale);
-    setScale(newScale);
-    scaleValues.set(props.view.id, newScale);
+    setScale(props.view.id, newScale);
 
     const [pastX, pastY] = [evt.evt.layerX/scale + stagePosition.x, evt.evt.layerY/scale + stagePosition.y];
     const [newX, newY] = [evt.evt.layerX/newScale + stagePosition.x, evt.evt.layerY/newScale + stagePosition.y];
 
-    setStagePosition({x: stagePosition.x + (pastX - newX), y: stagePosition.y + (pastY - newY)});
+    setStagePos(props.view.id, {
+      x: stagePosition.x + (pastX - newX), 
+      y: stagePosition.y + (pastY - newY)
+    });
 
     evt.evt.preventDefault();
   }

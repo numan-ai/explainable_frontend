@@ -111,7 +111,7 @@ function Header(props: HeaderProps) {
             <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
               Explainable
             </h3>
-            <a className="text-xs text-slate-400" href="https://numan.ai/" tabIndex={-1}>by Numan</a>
+            <a className="text-xs text-slate-400" href="https://numan.ai/" tabIndex={-1}>by Numan Team</a>
           </div>
         </nav>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
