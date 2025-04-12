@@ -83,6 +83,9 @@ class WebSocketClient {
 
   public send(message: string) {
     if (!this.ws) {
+      setTimeout(() => {
+        this.send(message);
+      }, 100);
       return;
     }
     this.ws.send(message);

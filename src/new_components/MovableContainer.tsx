@@ -33,7 +33,7 @@ function MovableContainer(props: {
 
   const size = getWidgetSize(props.widget, props.data);
   if (size === undefined) {
-    console.error("Can't get size of list item");
+    console.error("Can't get size of movable container");
     return <></>;
   }
 

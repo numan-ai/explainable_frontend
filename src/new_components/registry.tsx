@@ -3,6 +3,7 @@ import RowComponent from "./RowWidget";
 import ColumnComponent from "./ColumnWidget";
 import PixelComponent from "./PixelWidget";
 import LineChartComponent from "./LineChartWidget";
+import ClickableExclusiveWidget from "./ClickableExclusiveWidget";
 
 const widgets: Record<string, any> = {
     [TextComponent.id]: TextComponent.Widget,
@@ -10,6 +11,7 @@ const widgets: Record<string, any> = {
     [ColumnComponent.id]: ColumnComponent.Widget,
     [PixelComponent.id]: PixelComponent.Widget,
     [LineChartComponent.id]: LineChartComponent.Widget,
+    [ClickableExclusiveWidget.id]: ClickableExclusiveWidget.Widget,
 }
 
 const sizes: Record<string, any> = {
@@ -18,6 +20,7 @@ const sizes: Record<string, any> = {
     [ColumnComponent.id]: ColumnComponent.getSize,
     [PixelComponent.id]: PixelComponent.getSize,
     [LineChartComponent.id]: LineChartComponent.getSize,
+    [ClickableExclusiveWidget.id]: ClickableExclusiveWidget.getSize,
 }
 
 export const getWidget = (name: string) => {

@@ -2,6 +2,8 @@ import { EdgeStructure, NodeStructure, Position } from "@/structures/types";
 import { Line, Text } from "react-konva";
 import { getWidgetSize } from './registry';
 import { getStructureById } from "@/storages/viewStorage";
+import { useShallow } from "zustand/react/shallow";
+import { useExclusiveSelectionStore } from "@/storages/exclusiveSelectionStore";
 
 function simple_left_right(x1: number, y1: number, x2: number, _: number, W: number, _2: number){
   return [
@@ -13,6 +15,9 @@ export default function EdgeWidget(props: {
   start: Position;
   end: Position;
 } & EdgeStructure) {
+  const [selections, setSelection] = useExclusiveSelectionStore(
+    useShallow((s) => [s.selections, s.setSelection])
+  );
 
   // We need to change this to their actual dimensions
   const struct1: NodeStructure | undefined = getStructureById(props.node_start_id);
@@ -51,14 +56,16 @@ export default function EdgeWidget(props: {
     p2 = simple_left_right(x2, y2, x1, y1, size2.w / 2, size2.h / 2)
   }
 
+  const isSelected = selections[props.data.group] === props.edge_id;
+
   let text = null;
-  if (props.data !== null){
+  if (props.data.label !== null){
     text = <Text
       x={(p1[0]+p2[0])/2 - 15}
       y={(p1[1]+p2[1])/2 - 30}
       fontSize={22}
       fill="lightgray"
-      text={props.data}
+      text={props.data.label}
       listening={false}
       align="center"
       verticalAlign="middle"
@@ -66,6 +73,26 @@ export default function EdgeWidget(props: {
   }
   return (
     <>
+      {/* Background line for selection highlight */}
+      <Line
+        points={[p1[0], p1[1], p2[0], p2[1]]}
+        stroke="#2196F3"
+        strokeWidth={32}
+        opacity={0.01}
+        listening={true}
+        onClick={(e) => {
+          e.cancelBubble = false;
+          setSelection(props.data.group, props.edge_id);
+        }}
+      />
+      <Line
+        points={[p1[0], p1[1], p2[0], p2[1]]}
+        stroke="#2196F3"
+        strokeWidth={(props.line_width ?? 2) + 4}
+        opacity={isSelected ? 0.3 : 0.01}
+        listening={false}
+      />
+      
       <Line
         points={[p1[0], p1[1], p2[0], p2[1]]}
         stroke={props.line_color ?? "rgb(240, 240, 240)"}

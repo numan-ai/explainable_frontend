@@ -12,8 +12,6 @@ type WhiteBoardProps = {
   view: ViewType;
 }
 
-export const scaleValues = new Map<string, number>();
-
 function WhiteBoard(props: WhiteBoardProps) {
   const divRef: Ref<HTMLDivElement> = useRef(null);
   const [dimensions, setDimensions] = useState({
@@ -92,7 +90,7 @@ function WhiteBoard(props: WhiteBoardProps) {
   }, [widgetStates, props.view.structure]);
 
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
-    if (evt.target !== evt.currentTarget && !!evt.target.attrs.meta.id) {
+    if (evt.target !== evt.currentTarget && !!evt.target.attrs?.meta?.id) {
       const node_id = evt.target.attrs.meta.id;
       setDraggingNodeId(node_id);
       setDragStart(node_id, {

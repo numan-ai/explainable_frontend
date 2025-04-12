@@ -26,7 +26,7 @@ export default function stepMinimizeEdgeLength(
 
   // Update positions based on edge minimization and node repulsion
   nodes.forEach(node => {
-    const pos = positions.get(node.node_id);
+    const pos = positions.get(node.object_id);
     if (!pos) return;
 
     let totalDx = 0;
@@ -35,9 +35,9 @@ export default function stepMinimizeEdgeLength(
     // Edge attraction force
     edges.forEach(edge => {
       let otherNodeId: string | null = null;
-      if (edge.node_start_id === node.node_id) {
+      if (edge.node_start_id === node.object_id) {
         otherNodeId = edge.node_end_id;
-      } else if (edge.node_end_id === node.node_id) {
+      } else if (edge.node_end_id === node.object_id) {
         otherNodeId = edge.node_start_id;
       }
 
@@ -60,8 +60,8 @@ export default function stepMinimizeEdgeLength(
 
     // Node repulsion force to maintain minimum distance
     nodes.forEach(otherNode => {
-      if (otherNode.node_id !== node.node_id) {
-        const otherPos = positions.get(otherNode.node_id);
+      if (otherNode.object_id !== node.object_id) {
+        const otherPos = positions.get(otherNode.object_id);
         if (!otherPos) return;
 
         const dist = distance(pos, otherPos);
@@ -81,7 +81,7 @@ export default function stepMinimizeEdgeLength(
     });
 
     // Update node position
-    newPositions.set(node.node_id, {
+    newPositions.set(node.object_id, {
       x: pos.x + totalDx,
       y: pos.y + totalDy,
     });

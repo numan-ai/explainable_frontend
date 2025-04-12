@@ -16,7 +16,7 @@ const getSize = (
   for (let widget of data) {
     const size = getWidgetSize(widget.widget, widget.data);
     if (size === undefined) {
-      console.error("Can't get size of list item", widget);
+      console.error("Can't get size of row item", widget);
       return undefined;
     }
     w += size.w;
@@ -48,25 +48,26 @@ function Widget(props: {
 
   const size = getSize(props.data);
   if (size === undefined) {
-    console.error("Can't get size of list item");
+    console.error("Can't get size of row widget");
     return <></>;
   }
 
-  const widgets = [];
+  const widgets: React.ReactNode[] = [];
   let x = props.position.x;
 
-  for (let widget of props.data) {
+  props.data.forEach((widget: any, index: number) => {
     const widgetComponent = getWidget(widget.widget);
     if (!widgetComponent) {
       console.error("Can't find widget", widget.widget);
-      continue;
+      return;
     }
     const size = getWidgetSize(widget.widget, widget.data);
     if (size === undefined) {
-      console.error("Can't get size of list item", widget);
-      continue;
+      console.error("Can't get size of row item", widget);
+      return;
     }
     widgets.push(React.createElement(widgetComponent, {
+      key: index,
       container_id: props.container_id,
       position: {
         x: x,
@@ -76,7 +77,7 @@ function Widget(props: {
       data: widget.data,
     }));
     x += size.w;
-  }
+  });
 
   return (
     <>

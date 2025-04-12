@@ -43,7 +43,7 @@ function Widget(props: {
 
   const size = getSize(props.data);
   if (size === undefined) {
-    console.error("Can't get size of list item");
+    console.error("Can't get size of line chart widget");
     return <></>;
   }
 

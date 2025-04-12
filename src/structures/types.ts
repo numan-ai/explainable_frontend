@@ -4,9 +4,8 @@ export type GraphStructure = {
 }
 
 export type NodeStructure = {
-  object_id: number;
+  object_id: string;
   layer: string;
-  node_id: string;
   widget: string;
   data: any;
   default_x: number;
@@ -14,6 +13,7 @@ export type NodeStructure = {
 }
 
 export type EdgeStructure = {
+  widget: string;
   edge_id: string;
   node_start_id: string;
   node_end_id: string;

@@ -6,6 +6,7 @@ import { getWidget } from "./registry";
 import React, { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { toast } from "sonner";
+import ClickableExclusiveEdgeWidget from "./ClickableExclusiveEdgeWidget";
 
 
 let NODES_INITIALIZED = 0;
@@ -32,12 +33,20 @@ function renderEdges(view: ViewType) {
       console.error("Can't find positions", edge, startPos, endPos);
       continue;
     }
+    if (edge.widget === "clickable_exclusive_edge") {
+      widgets.push(<ClickableExclusiveEdgeWidget
+        start={startPos}
+        end={endPos}
+        {...edge}
+      />);
+    } else {
     widgets.push(<EdgeWidget 
       start={startPos}
-      end={endPos}
-      key={edge.edge_id} 
-      {...edge}
-    />);
+        end={endPos}
+        key={edge.edge_id} 
+        {...edge}
+      />);
+    }
   }
 
   return widgets;
@@ -61,8 +70,8 @@ export default function render(view: ViewType) {
   // Ensure positions are set in a side effect
   useEffect(() => {
     view.structure.nodes.forEach((node) => {
-      if (!states.get(node.node_id) || !states.get(node.node_id)?.position) {
-        setPosition(node.node_id, {
+      if (!states.get(node.object_id) || !states.get(node.object_id)?.position) {
+        setPosition(node.object_id, {
           x: node.default_x,
           y: node.default_y,
         });
@@ -72,7 +81,7 @@ export default function render(view: ViewType) {
         }
       }
     });
-  }, [view.structure.nodes.map(x => x.node_id), setPosition]);
+  }, [view.structure.nodes.map(x => x.object_id), setPosition]);
 
   // const node_positions = new Map<string, Position>();
   const widgets = [];
@@ -87,8 +96,8 @@ export default function render(view: ViewType) {
     }
 
     const elt = React.createElement(widget, {
-      container_id: node.node_id,
-      id: node.node_id,
+      container_id: node.object_id,
+      id: node.object_id,
       position: {
         x: 0,
         y: 0,
@@ -98,8 +107,8 @@ export default function render(view: ViewType) {
 
     widgets.push((
       <MovableContainer
-        key={node.node_id}
-        id={node.node_id}
+        key={node.object_id}
+        id={node.object_id}
         defaultPosition={{
           x: node.default_x,
           y: node.default_y,
