@@ -6,11 +6,16 @@ import { useShallow } from 'zustand/react/shallow';
 
 const WIDGET_ID = "text";
 
+type TextWidgetData = {
+  text: string;
+  width: number;
+}
+
 const getSize = (
-  _: string,
+  data: string | TextWidgetData,
 ) => {
   return {
-    w: 300 + 10,
+    w: data.width ?? 300 + 10,
     h: 90 + 10,
   };
 }
@@ -59,7 +64,7 @@ function Widget(props: {
         height={size.h}
         fontSize={18}
         fill="lightgray"
-        text={props.data}
+        text={props.data.text ?? props.data}
         align="center"
         verticalAlign="middle"
         listening={false}
