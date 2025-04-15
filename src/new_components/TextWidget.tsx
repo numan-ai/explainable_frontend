@@ -9,6 +9,8 @@ const WIDGET_ID = "text";
 type TextWidgetData = {
   text: string;
   width: number;
+  background: string;
+  foreground: string;
 }
 
 const getSize = (
@@ -25,7 +27,7 @@ function Widget(props: {
   container_id: string,
   position: Position,
   id: string,
-  data: string,
+  data: string | TextWidgetData,
 }) {
   const [
     widgetState,
@@ -53,7 +55,7 @@ function Widget(props: {
         width={size.w}
         height={size.h}
         stroke="rgb(30, 41, 59)"
-        fill="rgb(42, 58, 84)"
+        fill={props.data.background ?? "rgb(42, 58, 84)"}
         strokeWidth={1}
         listening={false}
       />
@@ -63,7 +65,7 @@ function Widget(props: {
         width={size.w}
         height={size.h}
         fontSize={18}
-        fill="lightgray"
+        fill={props.data.foreground ?? "lightgray"}
         text={props.data.text ?? props.data}
         align="center"
         verticalAlign="middle"

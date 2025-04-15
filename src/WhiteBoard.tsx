@@ -179,6 +179,7 @@ function WhiteBoard(props: WhiteBoardProps) {
         <Layer>
           {props.children}
         </Layer>
+        <Layer name="top-layer" />
       </Stage>
     </div>
   )

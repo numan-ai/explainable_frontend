@@ -4,6 +4,7 @@ import { getWidgetSize } from './registry';
 import { getStructureById } from "@/storages/viewStorage";
 import { useShallow } from "zustand/react/shallow";
 import { useExclusiveSelectionStore } from "@/storages/exclusiveSelectionStore";
+import { Portal } from 'react-konva-utils';
 
 function simple_left_right(x1: number, y1: number, x2: number, _: number, W: number, _2: number){
   return [
@@ -85,13 +86,15 @@ export default function EdgeWidget(props: {
           setSelection(props.data.group, props.edge_id);
         }}
       />
-      <Line
-        points={[p1[0], p1[1], p2[0], p2[1]]}
-        stroke="#2196F3"
-        strokeWidth={(props.line_width ?? 2) + 4}
-        opacity={isSelected ? 0.3 : 0.01}
-        listening={false}
-      />
+      <Portal selector=".top-layer" enabled={true}>
+        <Line
+          points={[p1[0], p1[1], p2[0], p2[1]]}
+          stroke="#2196F3"
+          strokeWidth={(props.line_width ?? 2) + 4}
+          opacity={isSelected ? 0.3 : 0.01}
+          listening={false}
+        />
+      </Portal>
       
       <Line
         points={[p1[0], p1[1], p2[0], p2[1]]}
