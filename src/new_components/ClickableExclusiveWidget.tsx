@@ -12,6 +12,7 @@ type WidgetData = {
   widget: {
     widget: string;
     data: unknown;
+    object_id: string;
   };
   group: string;
   object_id: string;

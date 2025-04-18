@@ -50,6 +50,12 @@ function Widget(props: {
   const min = props.data.min ?? Math.min(...props.data.data) ?? 0;
   const max = props.data.max ?? Math.max(...props.data.data) ?? 100;
   const points = props.data.data.map((x, i) => [i / props.data.data.length * (size.w - 10), (size.h - 10) - (x - min) / (max - min) * (size.h - 10)]);
+  // replace NaN with 0
+  points.forEach((point, i) => {
+    if (isNaN(point[0]) || isNaN(point[1])) {
+      points[i] = [0, 0];
+    }
+  });
 
   return (
     <>

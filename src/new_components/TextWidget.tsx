@@ -16,6 +16,12 @@ type TextWidgetData = {
 const getSize = (
   data: string | TextWidgetData,
 ) => {
+  if (typeof data === 'string') {
+    return {
+      w: 300 + 10,
+      h: 90 + 10,
+    };
+  }
   return {
     w: data.width ?? 300 + 10,
     h: 90 + 10,
@@ -47,6 +53,10 @@ function Widget(props: {
     return <></>;
   }
 
+  const background = typeof props.data === 'object' && props.data !== null ? props.data.background : null;
+  const foreground = typeof props.data === 'object' && props.data !== null ? props.data.foreground : null;
+  const text = typeof props.data === 'object' && props.data !== null ? props.data.text : props.data;
+
   return (
     <>
       <Rect
@@ -55,7 +65,7 @@ function Widget(props: {
         width={size.w}
         height={size.h}
         stroke="rgb(30, 41, 59)"
-        fill={props.data.background ?? "rgb(42, 58, 84)"}
+        fill={background ?? "rgb(42, 58, 84)"}
         strokeWidth={1}
         listening={false}
       />
@@ -65,8 +75,8 @@ function Widget(props: {
         width={size.w}
         height={size.h}
         fontSize={18}
-        fill={props.data.foreground ?? "lightgray"}
-        text={props.data.text ?? props.data}
+        fill={foreground ?? "lightgray"}
+        text={text ?? props.data}
         align="center"
         verticalAlign="middle"
         listening={false}
