@@ -49,6 +49,7 @@ function MovableContainer(props: {
         strokeWidth={1}
         meta={{
           id: props.id,
+          "test": "!",
         }}
       />
       {props.children}

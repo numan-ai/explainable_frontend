@@ -93,9 +93,6 @@ function Widget(props: {
         fill="white"
         stroke={isSelected ? "#2196F3" : "black"}
         strokeWidth={isSelected ? 2 : 1}
-        meta={{
-          id: props.container_id,
-        }}
       />
       {widget}
     </Group>

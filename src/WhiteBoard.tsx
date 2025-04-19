@@ -101,6 +101,7 @@ function WhiteBoard(props: WhiteBoardProps) {
       });
       return;
     }
+    // drag scene
     dragStart.current = {
       x: evt.evt.layerX,
       y: evt.evt.layerY,
@@ -124,6 +125,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     }
     evt.cancelBubble = true;
     if (dragStart.current) {
+      // drag scene
       const x = (evt.evt.layerX - dragStart.current.x) / scale;
       const y = (evt.evt.layerY - dragStart.current.y) / scale;
       setStagePos(props.view.id, { 
@@ -138,6 +140,7 @@ function WhiteBoard(props: WhiteBoardProps) {
       setDraggingNodeId(null);
       return;
     }
+    // drag scene
     dragStart.current = null;
     evt.cancelBubble = true;
   }
