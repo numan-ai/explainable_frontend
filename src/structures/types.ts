@@ -10,6 +10,7 @@ export type NodeStructure = {
   data: any;
   default_x: number;
   default_y: number;
+  is_draggable: boolean;
 }
 
 export type EdgeStructure = {

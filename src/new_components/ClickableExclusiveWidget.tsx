@@ -41,6 +41,7 @@ function Widget(props: {
   position: Position,
   id: string,
   data: WidgetData,
+  is_draggable: boolean | undefined,
 }) {
   const [
     widgetState,
@@ -80,6 +81,10 @@ function Widget(props: {
     data: props.data.widget.data,
   });
 
+  const meta = (props.is_draggable === true) ? {
+    id: props.container_id,
+  } : {};
+
   return (
     <Group listening={true} onClick={(e) => {
       e.cancelBubble = false;
@@ -93,6 +98,7 @@ function Widget(props: {
         fill="white"
         stroke={isSelected ? "#2196F3" : "black"}
         strokeWidth={isSelected ? 2 : 1}
+        meta={meta}
       />
       {widget}
     </Group>

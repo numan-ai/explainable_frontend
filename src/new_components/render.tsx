@@ -103,6 +103,7 @@ export default function render(view: ViewType) {
         y: 0,
       },
       data: node.data,
+      is_draggable: node.is_draggable ?? true,
     })
 
     widgets.push((
