@@ -91,6 +91,9 @@ function WhiteBoard(props: WhiteBoardProps) {
 
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
     if (evt.target !== evt.currentTarget && !!evt.target.attrs?.meta?.id) {
+      if (evt.target.attrs.meta.is_draggable === false) {
+        return;
+      }
       const node_id = evt.target.attrs.meta.id;
       setDraggingNodeId(node_id);
       setDragStart(node_id, {

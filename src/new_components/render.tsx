@@ -116,6 +116,7 @@ export default function render(view: ViewType) {
         }}
         widget={node.widget}
         data={node.data}
+        is_draggable={node.is_draggable ?? true}
       >
         {elt}
       </MovableContainer>

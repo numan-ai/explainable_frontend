@@ -11,25 +11,19 @@ function MovableContainer(props: {
   widget: string,
   data: any,
   children?: any,
+  is_draggable: boolean,
 }) {
   const [
     widgetState,
-    // setPosition,
   ] = useWidgetStateStorage(useShallow((s) => [
     s.states.get(props.id),
-    // s.setPosition,
   ]));
 
-  const currentPosition = widgetState?.position || props.defaultPosition;
-
-  // if (!widgetState) {
-  //   setPosition(props.id, props.defaultPosition);
-  // }
-  // useEffect(() => {
-  //   if (!widgetState) {
-  //     setPosition(props.id, props.defaultPosition);
-  //   }
-  // }, [widgetState, setPosition, props.id, props.defaultPosition]);
+  const currentPosition = props.is_draggable ? (
+    widgetState?.position || props.defaultPosition
+  ) : (
+    props.defaultPosition
+  );
 
   const size = getWidgetSize(props.widget, props.data);
   if (size === undefined) {
@@ -49,7 +43,7 @@ function MovableContainer(props: {
         strokeWidth={1}
         meta={{
           id: props.id,
-          "test": "!",
+          is_draggable: props.is_draggable,
         }}
       />
       {props.children}

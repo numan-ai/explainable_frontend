@@ -18,7 +18,7 @@ export default function EdgeWidget(props: {
   const struct1: NodeStructure | undefined = getStructureById(props.node_start_id);
   const struct2: NodeStructure | undefined = getStructureById(props.node_end_id);
   if (struct1 === undefined || struct2 === undefined) {
-    console.error("Can't find structure", props.node_start_id, props.node_end_id);
+    console.error("Can't find structure for edge", props.node_start_id, props.node_end_id);
     return <></>;
   }
   const size1 = getWidgetSize(struct1.widget, struct1.data);
