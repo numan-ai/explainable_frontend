@@ -1,5 +1,5 @@
 const MIN_CONNECTING_TIME = 250;
-export const LATEST_VERSION = "0.5.1";
+export const MINIMAL_VERSION = "1.1.0";
 
 class WebSocketClient {
   private ws: WebSocket | null;

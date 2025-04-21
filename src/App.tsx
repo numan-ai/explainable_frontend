@@ -11,7 +11,7 @@ import { useViewStore } from './storages/viewStorage';
 import { useWebsocketURIStore } from './storages/websocketURIStore';
 
 import pako from 'pako';
-import api, { LATEST_VERSION } from "./api";
+import api, { MINIMAL_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
@@ -193,7 +193,7 @@ export default function App() {
 
     api.onMessage("init", (data) => {
       api.currentVersion = data.version;
-      if (!checkVersionMatches(data.version, LATEST_VERSION)) {
+      if (!checkVersionMatches(data.version, MINIMAL_VERSION)) {
         setIsOutdated(true);
       } else {
         setIsOutdated(false);
