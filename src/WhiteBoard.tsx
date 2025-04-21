@@ -19,6 +19,7 @@ function WhiteBoard(props: WhiteBoardProps) {
     height: 0,
   });
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
+  const [draggedPosition, setDraggedPosition] = useState<Position | null>(null);
 
   const [
     widgetStates,
@@ -89,6 +90,20 @@ function WhiteBoard(props: WhiteBoardProps) {
     }, 40);
   }, [widgetStates, props.view.structure]);
 
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Check for Cmd/Ctrl + 0
+      if ((e.metaKey || e.ctrlKey) && e.key === '0') {
+        e.preventDefault();
+        setScale(props.view.id, DEFAULT_SCALE);
+        setStagePos(props.view.id, { x: 0, y: 0 });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [props.view.id, setScale, setStagePos]);
+
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
     if (evt.target !== evt.currentTarget && !!evt.target.attrs?.meta?.id) {
       if (evt.target.attrs.meta.is_draggable === false) {
@@ -120,10 +135,11 @@ function WhiteBoard(props: WhiteBoardProps) {
       const dx = (evt.evt.layerX - (nodeDragStart?.layerX || 0)) / view_scale;
       const dy = (evt.evt.layerY - (nodeDragStart?.layerY || 0)) / view_scale;
       const newPos = {
-        x: (nodeDragStart?.x || 0) + dx,
-        y: (nodeDragStart?.y || 0) + dy,
+        x: Math.round((nodeDragStart?.x || 0) + dx),
+        y: Math.round((nodeDragStart?.y || 0) + dy),
       };
       setPosition(draggingNodeId, newPos);
+      setDraggedPosition(newPos);
       return;
     }
     evt.cancelBubble = true;
@@ -141,6 +157,7 @@ function WhiteBoard(props: WhiteBoardProps) {
   const dragStageEnd = (evt: KonvaEventObject<MouseEvent>) => {
     if (draggingNodeId !== null) {
       setDraggingNodeId(null);
+      setDraggedPosition(null);
       return;
     }
     // drag scene
@@ -167,27 +184,51 @@ function WhiteBoard(props: WhiteBoardProps) {
   }
 
   return (
-    <div className="w-full h-full min-h-[500px] border border-solid" ref={divRef}>
-      <Stage
-        width={dimensions.width}
-        height={dimensions.height}
-        onMouseDown={dragStageStart}
-        onMouseMove={dragStageMove}
-        onMouseUp={dragStageEnd}
-        onWheel={onZoom}
-        onMouseLeave={dragStageEnd}
-        offset={stagePosition}
-        scale={{
-          x: scale,
-          y: scale,
-        }}
-      >
-        <Layer>
-          {props.children}
-        </Layer>
-        <Layer name="top-layer" />
-      </Stage>
-    </div>
+    <>
+      <div className="w-full h-full min-h-[500px] border border-solid" ref={divRef}>
+        <Stage
+          width={dimensions.width}
+          height={dimensions.height}
+          onMouseDown={dragStageStart}
+          onMouseMove={dragStageMove}
+          onMouseUp={dragStageEnd}
+          onWheel={onZoom}
+          onMouseLeave={dragStageEnd}
+          offset={stagePosition}
+          scale={{
+            x: scale,
+            y: scale,
+          }}
+        >
+          <Layer>
+            {props.children}
+          </Layer>
+          <Layer name="top-layer" />
+        </Stage>
+      </div>
+      {draggedPosition && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '74px',
+            right: '10px',
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+            border: '1px solid #2196F3',
+            borderRadius: '4px',
+            padding: '8px 12px',
+            fontFamily: 'monospace',
+            color: '#2196F3',
+            fontSize: '14px',
+            lineHeight: '1.4',
+            zIndex: 1000,
+          }}
+        >
+          {draggingNodeId}
+          <div>x: {draggedPosition.x}</div>
+          <div>y: {draggedPosition.y}</div>
+        </div>
+      )}
+    </>
   )
 }
 

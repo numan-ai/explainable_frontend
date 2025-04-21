@@ -82,10 +82,10 @@ class WebSocketClient {
   }
 
   public send(message: string) {
-    if (!this.ws) {
+    if (!this.ws || this.currentVersion === null) {
       setTimeout(() => {
         this.send(message);
-      }, 100);
+      }, 1000);
       return;
     }
     this.ws.send(message);

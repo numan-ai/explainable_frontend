@@ -45,7 +45,14 @@ const didYouKnowMessages = [
       Shift + Drag
     </kbd>
     to move around without dragging widgets
-  </span>)
+  </span>),
+  (<span>
+    Did you know that you can 
+    <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+      Ctrl + 0
+    </kbd>
+    to reset view position and scale
+  </span>),
 ]
 
 
