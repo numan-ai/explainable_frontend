@@ -105,11 +105,21 @@ function WhiteBoard(props: WhiteBoardProps) {
   }, [props.view.id, setScale, setStagePos]);
 
   const dragStageStart = (evt: KonvaEventObject<MouseEvent>) => {
-    if (evt.target !== evt.currentTarget && !!evt.target.attrs?.meta?.id) {
+    if (evt.target !== evt.currentTarget && !!evt.target.attrs?.meta?.id && !evt.evt.shiftKey) {
       if (evt.target.attrs.meta.is_draggable === false) {
         return;
       }
       const node_id = evt.target.attrs.meta.id;
+
+      // Handle alt-click to reset position
+      if (evt.evt.altKey) {
+        const node = props.view.structure.nodes.find(n => n.object_id === node_id);
+        if (node) {
+          setPosition(node_id, { x: node.default_x, y: node.default_y });
+        }
+        return;
+      }
+
       setDraggingNodeId(node_id);
       setDragStart(node_id, {
         layerX: evt.evt.layerX,
