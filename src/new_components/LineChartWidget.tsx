@@ -2,6 +2,7 @@ import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Position } from "@/structures/types";
 import { Line, Rect, Text } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
+import { CANVAS_COLORS } from "@/lib/colors";
 
 type LineChartWidgetData = {
   width: number | null,
@@ -64,8 +65,8 @@ function Widget(props: {
         y={currentPosition.y + props.position.y}
         width={size.w}
         height={size.h}
-        stroke="rgb(30, 41, 59)"
-        fill={props.data.backgroundColor ?? "rgb(42, 58, 84)"}
+        stroke={CANVAS_COLORS.WIDGET.STROKE}
+        fill={props.data.backgroundColor ?? CANVAS_COLORS.WIDGET.BACKGROUND}
         strokeWidth={1}
         listening={false}
       />
@@ -73,7 +74,7 @@ function Widget(props: {
         x={currentPosition.x + props.position.x + 10}
         y={currentPosition.y + props.position.y + 2}
         points={points.flat()}
-        stroke="red"
+        stroke={props.data.lineColor ?? CANVAS_COLORS.WIDGET.CHART_LINE}
       />
       <Text
         x={currentPosition.x + props.position.x + 5}
@@ -81,7 +82,7 @@ function Widget(props: {
         width={size.w}
         height={18}
         fontSize={18}
-        fill="lightgray"
+        fill={CANVAS_COLORS.WIDGET.TEXT}
         text={max.toFixed(2)}
         verticalAlign="middle"
         listening={false}
@@ -92,7 +93,7 @@ function Widget(props: {
         width={size.w}
         height={18}
         fontSize={18}
-        fill="lightgray"
+        fill={CANVAS_COLORS.WIDGET.TEXT}
         text={min.toFixed(2)}
         verticalAlign="middle"
         listening={false}
@@ -103,7 +104,7 @@ function Widget(props: {
         width={size.w}
         height={18}
         fontSize={18}
-        fill="lightgray"
+        fill={CANVAS_COLORS.WIDGET.TEXT}
         text={(props.data.data[props.data.data.length - 1] ?? NaN).toFixed(2)}
         align="right"
         verticalAlign="middle"

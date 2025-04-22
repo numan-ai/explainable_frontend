@@ -2,8 +2,9 @@ import { EdgeStructure, NodeStructure, Position } from "@/structures/types";
 import { Line, Text } from "react-konva";
 import { getWidgetSize } from './registry';
 import { getStructureById } from "@/storages/viewStorage";
+import { CANVAS_COLORS } from "@/lib/colors";
 
-function simple_left_right(x1: number, y1: number, x2: number, _: number, W: number, _2: number){
+function simple_left_right(x1: number, y1: number, x2: number, _: number, W: number){
   return [
     x1 + W*(x2-x1)/Math.abs(x2-x1),
     y1,
@@ -40,15 +41,15 @@ export default function EdgeWidget(props: {
   // Then we pick a style, I made simple and fancy so we can pick or merge later, here I choose fancy.
 
   if (c1) {
-    p1 = simple_left_right(x1, y1, x2, y2, size1.w / 2, size1.h / 2)
+    p1 = simple_left_right(x1, y1, x2, y2, size1.w / 2)
   } else {
-    p1 = simple_left_right(x1, y1, x2, y2, size1.w / 2, size1.h / 2)
+    p1 = simple_left_right(x1, y1, x2, y2, size1.w / 2)
   }
 
   if (c2) {
-    p2 = simple_left_right(x2, y2, x1, y1, size2.w / 2, size2.h / 2)
+    p2 = simple_left_right(x2, y2, x1, y1, size2.w / 2)
   } else {
-    p2 = simple_left_right(x2, y2, x1, y1, size2.w / 2, size2.h / 2)
+    p2 = simple_left_right(x2, y2, x1, y1, size2.w / 2)
   }
 
   let text = null;
@@ -57,7 +58,7 @@ export default function EdgeWidget(props: {
       x={(p1[0]+p2[0])/2 - 15}
       y={(p1[1]+p2[1])/2 - 30}
       fontSize={22}
-      fill="lightgray"
+      fill={CANVAS_COLORS.WIDGET.TEXT}
       text={props.data}
       listening={false}
       align="center"
@@ -68,7 +69,7 @@ export default function EdgeWidget(props: {
     <>
       <Line
         points={[p1[0], p1[1], p2[0], p2[1]]}
-        stroke={props.line_color ?? "rgb(240, 240, 240)"}
+        stroke={props.line_color ?? CANVAS_COLORS.EDGE.DEFAULT_LINE}
         strokeWidth={props.line_width ?? 2}
         listening={false}
       />

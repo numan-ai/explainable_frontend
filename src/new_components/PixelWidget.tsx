@@ -2,6 +2,7 @@ import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Position } from "@/structures/types";
 import { Rect } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
+import { CANVAS_COLORS } from "@/lib/colors";
 
 type PixelWidgetData = {
   size: number | null,
@@ -51,7 +52,7 @@ function Widget(props: {
         y={currentPosition.y + props.position.y}
         width={size.w}
         height={size.h}
-        stroke="rgb(30, 41, 59)"
+        stroke={CANVAS_COLORS.WIDGET.STROKE}
         fill={props.data.color}
         strokeWidth={1}
         listening={false}

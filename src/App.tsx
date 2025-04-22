@@ -15,6 +15,7 @@ import api, { MINIMAL_VERSION } from "./api";
 import NoConnectionComponent from "./components/NoConnectionComponent";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
+import { UI_COLORS } from "./lib/colors";
 
 
 const decompressGzippedData = (gzippedData: string): string | null => {
@@ -112,13 +113,19 @@ type HeaderProps = {
 function Header(props: HeaderProps) {
   return (
     <div>
-      <header className="sticky top-0 flex h-[64px] items-center gap-4 border-b bg-background px-4 md:px-6 border-slate-500 z-10">
+      <header className="sticky top-0 flex h-[64px] items-center gap-4 border-b px-4 md:px-6 z-10" style={{
+        borderColor: UI_COLORS.BORDER,
+      }}>
         <nav className="flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <div className="flex flex-col items-left">
-            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight" style={{
+              color: UI_COLORS.TEXT_COLOR,
+            }}>
               Explainable
             </h3>
-            <a className="text-xs text-slate-400" href="https://numan.ai/" tabIndex={-1}>by Numan Team</a>
+            <a className="text-xs hover:underline" href="https://numan.ai/" tabIndex={-1} style={{
+              color: UI_COLORS.TEXT_MUTED_COLOR,
+            }}>by Numan Team</a>
           </div>
         </nav>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
@@ -126,12 +133,18 @@ function Header(props: HeaderProps) {
             <div className="relative flex flex-row items-center gap-4">
               <div>
                 {props.isConnected === true ? (
-                  <Wifi className="text-slate-400"/> 
+                  <Wifi style={{
+                    color: UI_COLORS.CONNECTION_COLORS.CONNECTED,
+                  }}/> 
                 ) : (
                   props.isConnected === false ? (
-                    <WifiOff className="text-red-500"/>
+                    <WifiOff style={{
+                      color: UI_COLORS.CONNECTION_COLORS.DISCONNECTED,
+                    }}/>
                   ) : (
-                    <WifiOff className="text-slate-900"/>
+                    <WifiOff style={{
+                      color: UI_COLORS.CONNECTION_COLORS.CONNECTED,
+                    }}/>
                   )
                 )}
               </div>
@@ -158,8 +171,10 @@ function Spinner() {
 
 function ConnectingComponent() {
   return (
-    <div className="flex w-full items-center justify-center flex-col absolute top-16 left-0 right-0 bottom-0 bg-background z-10 overflow-hidden y h-[100vh - 64px] pb-48">
-      <span className="text-2xl font-semibold mb-5 text-slate-400">Connecting</span>
+    <div className="flex w-full items-center justify-center flex-col absolute top-16 left-0 right-0 bottom-0 z-10 overflow-hidden y h-[100vh - 64px] pb-48">
+      <span className="text-2xl font-semibold mb-5" style={{
+        color: UI_COLORS.TEXT_MUTED_COLOR,
+      }}>Connecting</span>
       <Spinner/>
     </div>
   );
@@ -310,7 +325,9 @@ export default function App() {
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex min-h-screen w-full flex-col h-screen">
+      <div className="flex min-h-screen w-full flex-col h-screen" style={{
+        backgroundColor: UI_COLORS.BACKGROUND,
+      }}>
         <Header
           isConnected={isConnected}
         />

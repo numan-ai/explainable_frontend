@@ -6,6 +6,7 @@ import stepMinimizeEdgeLength from './graphForce';
 import { ViewType } from './storages/viewStorage';
 import { Position } from './structures/types';
 import { useViewLayoutStore, DEFAULT_SCALE } from './storages/viewLayoutStore';
+import { UI_COLORS } from './lib/colors';
 
 type WhiteBoardProps = {
   children: ReactNode;

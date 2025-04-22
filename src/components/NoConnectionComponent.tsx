@@ -2,6 +2,7 @@ import { Check, ClipboardCopy } from 'lucide-react';
 import { useState } from 'react';
 import Highlight from 'react-highlight';
 import { Button } from './ui/button';
+import { UI_COLORS } from '@/lib/colors';
 
 const exampleCode = `
 import time
@@ -32,7 +33,9 @@ export default function NoConnectionComponent() {
 
   return (
     <div className="flex flex-col items-center justify-center mt-10">
-      <h1 className="text-xl font-extrabold mb-3">How to start</h1>
+      <h1 className="text-xl font-extrabold mb-3" style={{
+        color: UI_COLORS.TEXT_COLOR,
+      }}>How to start</h1>
       <div className="relative min-w-[450px]">
         <Button 
           variant="outline"

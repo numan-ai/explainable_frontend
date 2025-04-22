@@ -5,6 +5,7 @@ import { getWidget, getWidgetSize } from "./registry";
 import { Group, Rect } from "react-konva";
 import React from "react";
 import { useExclusiveSelectionStore } from "@/storages/exclusiveSelectionStore";
+import { CANVAS_COLORS } from "@/lib/colors";
 
 const WIDGET_ID = "clickable_exclusive";
 
@@ -96,7 +97,7 @@ function Widget(props: {
         width={size.w + 2}
         height={size.h + 2}
         fill="white"
-        stroke={isSelected ? "#2196F3" : "black"}
+        stroke={isSelected ? CANVAS_COLORS.SELECTION.ACTIVE : CANVAS_COLORS.SELECTION.INACTIVE}
         strokeWidth={isSelected ? 2 : 1}
         meta={meta}
       />

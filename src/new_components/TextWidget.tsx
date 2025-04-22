@@ -2,6 +2,7 @@ import { useWidgetStateStorage } from "@/storages/widgetStateStorage";
 import { Position } from "@/structures/types";
 import { Rect, Text } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
+import { CANVAS_COLORS } from "@/lib/colors";
 
 
 const WIDGET_ID = "text";
@@ -64,8 +65,8 @@ function Widget(props: {
         y={currentPosition.y + props.position.y}
         width={size.w}
         height={size.h}
-        stroke="rgb(30, 41, 59)"
-        fill={background ?? "rgb(42, 58, 84)"}
+        stroke={CANVAS_COLORS.WIDGET.STROKE}
+        fill={background ?? CANVAS_COLORS.WIDGET.BACKGROUND}
         strokeWidth={1}
         listening={false}
       />
@@ -75,7 +76,7 @@ function Widget(props: {
         width={size.w}
         height={size.h}
         fontSize={18}
-        fill={foreground ?? "lightgray"}
+        fill={foreground ?? CANVAS_COLORS.WIDGET.TEXT}
         text={text ?? props.data}
         align="center"
         verticalAlign="middle"

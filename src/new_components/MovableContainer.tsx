@@ -3,6 +3,7 @@ import { Position } from "@/structures/types";
 import { Rect } from "react-konva";
 import { useShallow } from 'zustand/react/shallow';
 import { getWidgetSize } from "./registry";
+import { CANVAS_COLORS } from "@/lib/colors";
 
 
 function MovableContainer(props: {
@@ -38,8 +39,7 @@ function MovableContainer(props: {
         y={currentPosition.y}
         width={size.w}
         height={size.h}
-        stroke="rgb(30, 41, 59)"
-        // fill="rgb(42, 58, 84)"
+        stroke={CANVAS_COLORS.WIDGET.STROKE}
         strokeWidth={1}
         meta={{
           id: props.id,
