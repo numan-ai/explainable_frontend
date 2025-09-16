@@ -16,6 +16,8 @@ import NoConnectionComponent from "./components/NoConnectionComponent";
 import ServerIsOutdatedComponent from "./components/ServerIsOutdatedComponent";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
 import { UI_COLORS } from "./lib/colors";
+import ReplayUI from "./components/ReplayUI";
+import { useReplayStore } from "./storages/replayStorage";
 
 
 const decompressGzippedData = (gzippedData: string): string | null => {
@@ -183,6 +185,8 @@ function ConnectingComponent() {
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | undefined>(undefined);
   const [isOutdated, setIsOutdated] = useState<boolean | undefined>(undefined);
+  const [isReplay, setIsReplay] = useState<boolean>(false);
+  const { setIsRunning } = useReplayStore();
 
   const [views, setStructure] = useViewStore((s) => [
     s.views, s.setStructure,
@@ -207,7 +211,13 @@ export default function App() {
     });
 
     api.onMessage("init", (data) => {
+      setIsRunning(true);
       api.currentVersion = data.version;
+      if (data.type === 'replay') {
+        setIsReplay(true);
+      } else {
+        setIsReplay(false);
+      }
       if (!checkVersionMatches(data.version, MINIMAL_VERSION)) {
         setIsOutdated(true);
       } else {
@@ -281,32 +291,9 @@ export default function App() {
           />
         );
       }
-      // if (idx !== view_components.length - 1) {
-      //   panels.push(
-      //     <ResizableHandle
-      //       key={-(idx + 1)}
-      //       withHandle={true}
-      //     />
-      //   );
-      // }
     }
     comp = (
       <>
-        {/* <HistoryUI 
-          paused={false}
-          viewSettings={{view_id: ""}}
-          onBackClick={() => {
-            
-          }}
-          onPauseClick={() => {
-            api.request("pause", true, (_: any) => {
-            });
-          }}
-          onForwardClick={() => {
-            
-          }} 
-          onSettings={() => {}}
-        /> */}
         <ResizablePanelGroup
           direction="horizontal"
           className="rounded-none w-full h-full"
@@ -333,6 +320,9 @@ export default function App() {
         />
         <main className="h-full">
           {comp}
+          {isReplay && (
+            <ReplayUI/>
+          )}
         </main>
       </div>
     </ThemeProvider>
