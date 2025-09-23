@@ -8,6 +8,12 @@ import { Position } from './structures/types';
 import { useViewLayoutStore, DEFAULT_SCALE } from './storages/viewLayoutStore';
 import { Button } from './components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { 
+  calculateViewportBounds, 
+  hasVisibleContent, 
+  calculateContentBounds, 
+  calculateCenteringPosition 
+} from './utils/viewportUtils';
 
 type WhiteBoardProps = {
   children: ReactNode;
@@ -46,6 +52,10 @@ function WhiteBoard(props: WhiteBoardProps) {
   
   const scale = getScale(props.view.id);
   const stagePosition = getPosition(props.view.id);
+  
+  // Check if any content is visible in the current viewport
+  const viewportBounds = calculateViewportBounds(stagePosition, dimensions, scale);
+  const isContentVisible = hasVisibleContent(props.view, widgetStates, viewportBounds);
 
   const dragStart = useRef<{ 
     x: number, 
@@ -219,29 +229,42 @@ function WhiteBoard(props: WhiteBoardProps) {
         </Stage>
       </div>
       
-      {/* Back to Content Button */}
-      <div 
-        style={{
-          position: 'fixed',
-          top: '74px',
-          left: '10px',
-          zIndex: 1000,
-        }}
-      >
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            // Reset view to default state
-            setScale(props.view.id, DEFAULT_SCALE);
-            setStagePos(props.view.id, { x: 0, y: 0 });
+      {/* Back to Content Button - only show when no content is visible */}
+      {!isContentVisible && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '74px',
+            right: '10px',
+            zIndex: 1000,
           }}
-          className="flex items-center gap-2"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Content
-        </Button>
-      </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              // Calculate content bounds to center the view
+              const contentBounds = calculateContentBounds(props.view, widgetStates);
+              
+              if (!contentBounds) {
+                setScale(props.view.id, DEFAULT_SCALE);
+                setStagePos(props.view.id, { x: 0, y: 0 });
+                return;
+              }
+              
+              // Calculate position to center content
+              const centeringPosition = calculateCenteringPosition(contentBounds, dimensions, DEFAULT_SCALE);
+              
+              setScale(props.view.id, DEFAULT_SCALE);
+              setStagePos(props.view.id, centeringPosition);
+            }}
+            className="flex items-center gap-2 z-1000 rounded-none"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Content
+          </Button>
+        </div>
+      )}
 
       {draggedPosition && (
         <div 
