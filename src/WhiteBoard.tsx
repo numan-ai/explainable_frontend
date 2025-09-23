@@ -6,6 +6,8 @@ import stepMinimizeEdgeLength from './graphForce';
 import { ViewType } from './storages/viewStorage';
 import { Position } from './structures/types';
 import { useViewLayoutStore, DEFAULT_SCALE } from './storages/viewLayoutStore';
+import { Button } from './components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 type WhiteBoardProps = {
   children: ReactNode;
@@ -216,6 +218,31 @@ function WhiteBoard(props: WhiteBoardProps) {
           <Layer name="top-layer" />
         </Stage>
       </div>
+      
+      {/* Back to Content Button */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: '74px',
+          left: '10px',
+          zIndex: 1000,
+        }}
+      >
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            // Reset view to default state
+            setScale(props.view.id, DEFAULT_SCALE);
+            setStagePos(props.view.id, { x: 0, y: 0 });
+          }}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Content
+        </Button>
+      </div>
+
       {draggedPosition && (
         <div 
           style={{
